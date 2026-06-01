@@ -24,9 +24,7 @@ pub fn run() {
                 .expect("failed to create separator");
             let task_junk = MenuItem::with_id(app, "task_junk", "Run Junk Cleaner", true, None::<&str>)
                 .expect("failed to create menu item");
-            let task_registry = MenuItem::with_id(app, "task_registry", "Run Registry Cleaner", true, None::<&str>)
-                .expect("failed to create menu item");
-            let quick_sub = Submenu::with_items(app, "Quick Tasks", true, &[&task_junk, &task_registry])
+            let quick_sub = Submenu::with_items(app, "Quick Tasks", true, &[&task_junk])
                 .expect("failed to create submenu");
             let quit = MenuItem::with_id(app, "quit", "Quit", true, Some("Ctrl+Q"))
                 .expect("failed to create menu item");
@@ -50,11 +48,6 @@ pub fn run() {
                                 headless::run_task("junk_cleaner");
                             });
                         }
-                        "task_registry" => {
-                            std::thread::spawn(|| {
-                                headless::run_task("registry_cleaner");
-                            });
-                        }
                         "quit" => {
                             app.exit(0);
                         }
@@ -74,8 +67,6 @@ pub fn run() {
             commands::startup_manager::delete_startup_entry,
             commands::startup_manager::set_startup_delay,
             commands::startup_manager::add_startup_entry,
-            commands::registry_cleaner::scan_registry,
-            commands::registry_cleaner::clean_registry,
             commands::disk_analyzer::get_drives,
             commands::disk_analyzer::scan_drive,
             commands::disk_analyzer::delete_file,
@@ -84,9 +75,6 @@ pub fn run() {
             commands::process_manager::get_services,
             commands::process_manager::change_service_startup,
             commands::process_manager::control_service,
-            commands::settings_tweaker::get_all_tweaks,
-            commands::settings_tweaker::get_presets,
-            commands::settings_tweaker::apply_tweak,
             commands::history::get_scan_history,
             commands::history::clear_scan_history,
             commands::exclusions::get_exclusions,
@@ -96,13 +84,6 @@ pub fn run() {
             commands::scheduler::create_schedule,
             commands::scheduler::delete_schedule,
             commands::scheduler::toggle_schedule,
-            commands::network_optimizer::get_network_adapters,
-            commands::network_optimizer::get_network_tweaks,
-            commands::network_optimizer::get_dns_servers,
-            commands::network_optimizer::set_dns,
-            commands::network_optimizer::restore_dns,
-            commands::network_optimizer::flush_dns,
-            commands::network_optimizer::apply_network_tweak,
             commands::init::init_app,
             commands::system_info::get_system_info,
             commands::benchmark::run_disk_benchmark,
@@ -118,5 +99,5 @@ pub fn run() {
             commands::profiles::import_profile,
         ])
         .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+                .expect("error while running tauri application");
 }

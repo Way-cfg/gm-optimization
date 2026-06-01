@@ -1,5 +1,4 @@
 use crate::db;
-use crate::util::cmd;
 use chrono::Local;
 use walkdir::WalkDir;
 
@@ -51,31 +50,6 @@ fn junk_clean_headless() -> String {
     summary
 }
 
-fn registry_clean_headless() -> String {
-    let keys = vec![
-        r"HKLM\Software\Microsoft\Windows\CurrentVersion\Run",
-        r"HKCU\Software\Microsoft\Windows\CurrentVersion\Run",
-    ];
-    // Just scan and report - actual cleaning requires user review
-    let mut issues = 0u64;
-    for key in &keys {
-        let output = cmd("reg")
-            .args(["query", key])
-            .output();
-        if let Ok(o) = output {
-            if o.status.success() {
-                let stdout = String::from_utf8_lossy(&o.stdout);
-                for line in stdout.lines() {
-                    if line.trim().contains("REG_SZ") {
-                        issues += 1;
-                    }
-                }
-            }
-        }
-    }
-    format!("Headless registry scan: {} startup entries found", issues)
-}
-
 pub fn run_task(task: &str) {
     let db = match db::initialize_database_headless() {
         Ok(d) => d,
@@ -89,10 +63,6 @@ pub fn run_task(task: &str) {
         "junk_cleaner" => {
             let msg = junk_clean_headless();
             (msg, "junk_cleaner", 0i64, 0i64)
-        }
-        "registry_cleaner" => {
-            let msg = registry_clean_headless();
-            (msg, "registry_cleaner", 0i64, 0i64)
         }
         other => {
             eprintln!("Unknown task: {}", other);

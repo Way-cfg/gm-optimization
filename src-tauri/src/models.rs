@@ -34,23 +34,6 @@ pub struct StartupEntry {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct RegistryIssue {
-    pub id: String,
-    pub key_path: String,
-    pub value_name: String,
-    pub current_value: String,
-    pub risk_level: String,
-    pub description: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct RegistryScanResult {
-    pub safe: Vec<RegistryIssue>,
-    pub moderate: Vec<RegistryIssue>,
-    pub risky: Vec<RegistryIssue>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DriveInfo {
     pub name: String,
     pub label: String,
@@ -85,24 +68,6 @@ pub struct ServiceInfo {
     pub status: String,
     pub startup_type: String,
     pub is_system: bool,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct TweakInfo {
-    pub key: String,
-    pub name: String,
-    pub description: String,
-    pub category: String,
-    pub enabled: bool,
-    pub requires_reboot: bool,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct TweakPreset {
-    pub id: String,
-    pub name: String,
-    pub description: String,
-    pub tweak_keys: Vec<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -165,32 +130,6 @@ pub struct Schedule {
     pub day: Option<String>,
     pub enabled: bool,
     pub created_at: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct NetworkTweakInfo {
-    pub key: String,
-    pub name: String,
-    pub description: String,
-    pub category: String,
-    pub enabled: bool,
-    pub requires_reboot: bool,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct NetworkAdapterInfo {
-    pub name: String,
-    pub guid: String,
-    pub description: String,
-    pub speed: String,
-    pub is_active: bool,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct DnsInfo {
-    pub adapter: String,
-    pub servers: Vec<String>,
-    pub is_dhcp: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
