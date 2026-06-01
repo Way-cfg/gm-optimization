@@ -3,7 +3,8 @@
 @theme {
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", monospace;
-  --color-onyx: #05070B;
+  --color-obsidian: #030508;
+  --color-frosted: #0A0F1D;
 }
 
 body {
@@ -15,8 +16,8 @@ body {
 
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.12); }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.04); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.08); }
 
 @keyframes pulse-ring {
   0% { transform: scale(1); opacity: 0.6; }
@@ -31,6 +32,14 @@ body {
   from { stroke-dashoffset: 283; }
   to { stroke-dashoffset: 0; }
 }
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(255,255,255,0.05); }
+  50% { box-shadow: 0 0 40px rgba(255,255,255,0.12); }
+}
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
 
 .tech-ring-spinner {
   animation: pulse-ring 1.5s ease-in-out infinite;
@@ -43,10 +52,5 @@ body {
   stroke-dashoffset: 75;
   transform-origin: center;
   animation: dash 1.5s ease-in-out infinite alternate;
-}
-
-@keyframes slide-in {
-  from { opacity: 0; transform: translateX(40px); }
-  to { opacity: 1; transform: translateX(0); }
 }
 .animate-slide-in { animation: slide-in 0.25s ease-out both; }
