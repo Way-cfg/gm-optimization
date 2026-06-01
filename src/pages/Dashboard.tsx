@@ -33,7 +33,7 @@ function OptimizationArc({ value, max, size = 260 }: { value: number; max: numbe
   const isFull = pct >= 1;
 
   return (
-    <div className="relative neon-glow">
+    <div className="relative">
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth={stroke} />
         <motion.circle

@@ -68,10 +68,18 @@ export default function SplashScreen({ loading }: { loading: boolean }) {
 
             <div className="flex flex-col items-center gap-5">
               <motion.p
+                className="text-sm font-sans font-medium text-white/50 tracking-tight"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.5, ease: "easeOut" }}
+              >
+                Optimization Way
+              </motion.p>
+              <motion.p
                 className="text-[11px] text-white/20 tracking-[0.15em] uppercase"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 0.5, ease: "easeOut" }}
+                transition={{ delay: 0.35, duration: 0.5, ease: "easeOut" }}
               >
                 {loading ? "Loading System Data" : "Ready"}
               </motion.p>
@@ -80,7 +88,7 @@ export default function SplashScreen({ loading }: { loading: boolean }) {
                 className="flex gap-2"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.5, duration: 0.5 }}
+                transition={{ delay: 0.55, duration: 0.5 }}
               >
                 {[0, 1, 2].map(i => (
                   <motion.div
