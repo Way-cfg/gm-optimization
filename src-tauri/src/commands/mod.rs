@@ -5,6 +5,7 @@ pub mod process_manager;
 pub mod history;
 pub mod exclusions;
 pub mod scheduler;
+pub mod tweaks;
 pub mod init;
 pub mod system_info;
 pub mod benchmark;
