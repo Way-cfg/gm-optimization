@@ -9,6 +9,7 @@ import DiskAnalyzer from "./pages/DiskAnalyzer";
 import ProcessManager from "./pages/ProcessManager";
 import SettingsTweaker from "./pages/SettingsTweaker";
 import Scheduler from "./pages/Scheduler";
+import Profiles from "./pages/Profiles";
 import NetworkOptimizer from "./pages/NetworkOptimizer";
 import SystemInfo from "./pages/SystemInfo";
 import Benchmark from "./pages/Benchmark";
@@ -31,6 +32,7 @@ export default function App() {
         <Route path="benchmark" element={<Benchmark />} />
         <Route path="restore" element={<Restore />} />
         <Route path="scheduler" element={<Scheduler />} />
+        <Route path="profiles" element={<Profiles />} />
         </Route>
       </Routes>
     </ToastProvider>

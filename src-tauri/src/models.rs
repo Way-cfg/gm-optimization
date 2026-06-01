@@ -192,3 +192,29 @@ pub struct DnsInfo {
     pub servers: Vec<String>,
     pub is_dhcp: bool,
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ProfileTweak {
+    pub key: String,
+    pub enabled: bool,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ProfileExport {
+    pub version: u32,
+    pub name: String,
+    pub description: String,
+    pub created_at: String,
+    pub tweaks: Vec<ProfileTweak>,
+    pub network_tweaks: Vec<ProfileTweak>,
+    pub exclusions: Vec<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ProfileImport {
+    pub name: String,
+    pub description: String,
+    pub tweaks: Vec<ProfileTweak>,
+    pub network_tweaks: Vec<ProfileTweak>,
+    pub exclusions: Vec<String>,
+}

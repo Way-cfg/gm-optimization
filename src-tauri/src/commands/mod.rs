@@ -11,3 +11,4 @@ pub mod network_optimizer;
 pub mod system_info;
 pub mod benchmark;
 pub mod restore;
+pub mod profiles;

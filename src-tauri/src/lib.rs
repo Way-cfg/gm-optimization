@@ -5,6 +5,8 @@ mod models;
 mod util;
 
 use tauri::Manager;
+use tauri::menu::{Menu, MenuItem, PredefinedMenuItem, Submenu};
+use tauri::tray::TrayIconBuilder;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -15,6 +17,53 @@ pub fn run() {
             let conn = db::initialize_database(app.handle())
                 .expect("Failed to initialize database");
             app.handle().manage(conn);
+
+            let show = MenuItem::with_id(app, "show", "Show Window", true, None::<&str>)
+                .expect("failed to create menu item");
+            let separator = PredefinedMenuItem::separator(app)
+                .expect("failed to create separator");
+            let task_junk = MenuItem::with_id(app, "task_junk", "Run Junk Cleaner", true, None::<&str>)
+                .expect("failed to create menu item");
+            let task_registry = MenuItem::with_id(app, "task_registry", "Run Registry Cleaner", true, None::<&str>)
+                .expect("failed to create menu item");
+            let quick_sub = Submenu::with_items(app, "Quick Tasks", true, &[&task_junk, &task_registry])
+                .expect("failed to create submenu");
+            let quit = MenuItem::with_id(app, "quit", "Quit", true, Some("Ctrl+Q"))
+                .expect("failed to create menu item");
+            let menu = Menu::with_items(app, &[&show, &separator, &quick_sub, &separator, &quit])
+                .expect("failed to create menu");
+
+            let _tray = TrayIconBuilder::new()
+                .icon(app.default_window_icon().unwrap().clone())
+                .menu(&menu)
+                .tooltip("Optimization Way")
+                .on_menu_event(|app, event| {
+                    match event.id().as_ref() {
+                        "show" => {
+                            if let Some(window) = app.get_webview_window("main") {
+                                let _ = window.show();
+                                let _ = window.set_focus();
+                            }
+                        }
+                        "task_junk" => {
+                            std::thread::spawn(|| {
+                                headless::run_task("junk_cleaner");
+                            });
+                        }
+                        "task_registry" => {
+                            std::thread::spawn(|| {
+                                headless::run_task("registry_cleaner");
+                            });
+                        }
+                        "quit" => {
+                            app.exit(0);
+                        }
+                        _ => {}
+                    }
+                })
+                .build(app)
+                .expect("failed to build system tray");
+
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -64,6 +113,8 @@ pub fn run() {
             commands::restore::create_restore_point,
             commands::restore::get_restore_points,
             commands::restore::restore_system,
+            commands::profiles::export_profile,
+            commands::profiles::import_profile,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

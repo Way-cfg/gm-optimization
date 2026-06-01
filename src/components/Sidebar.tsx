@@ -20,6 +20,7 @@ const navItems: NavItem[] = [
   { path: "/benchmark", label: "Benchmark", icon: <span className="text-lg">📊</span> },
   { path: "/restore", label: "System Restore", icon: <span className="text-lg">🔄</span> },
   { path: "/scheduler", label: "Scheduler", icon: <span className="text-lg">⏰</span> },
+  { path: "/profiles", label: "Profiles", icon: <span className="text-lg">📁</span> },
 ];
 
 export default function Sidebar() {
