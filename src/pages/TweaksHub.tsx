@@ -22,6 +22,7 @@ interface TweakDefinition {
   registry?: RegistryEntry[];
   enableScript?: string[];
   disableScript?: string[];
+  commands?: string[];
 }
 
 interface Preset {
@@ -54,6 +55,16 @@ const tweaks: TweakDefinition[] = [
     ],
   },
   {
+    id: "WPFTweaksDiskCleanup",
+    title: "Disk Cleanup - Run",
+    description: "Runs Disk Cleanup on Drive C: and aggressively strips obsolete component data blocks from old Windows Updates.",
+    category: "Essential Tweaks",
+    commands: [
+      "cleanmgr.exe /d C: /VERYLOWDISK",
+      "Dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase",
+    ],
+  },
+  {
     id: "WPFTweaksDisableBitLocker",
     title: "BitLocker - Disable",
     description: "Disables BitLocker encryption on the main system drive.",
@@ -83,14 +94,14 @@ const presets: Preset[] = [
     label: "Balanced Tweak",
     description: "Moderate optimizations for daily use",
     icon: Gauge,
-    tweaks: ["WPFTweaksActivity", "WPFTweaksConsumerFeatures"],
+    tweaks: ["WPFTweaksActivity", "WPFTweaksConsumerFeatures", "WPFTweaksDiskCleanup"],
   },
   {
     id: "extreme",
     label: "Extreme Plus Tweak",
     description: "Maximum system optimization",
     icon: Mountain,
-    tweaks: ["WPFTweaksActivity", "WPFTweaksConsumerFeatures", "WPFTweaksDisableBitLocker"],
+    tweaks: ["WPFTweaksActivity", "WPFTweaksConsumerFeatures", "WPFTweaksDiskCleanup", "WPFTweaksDisableBitLocker"],
   },
 ];
 
@@ -163,6 +174,8 @@ export default function TweaksHub() {
             enableScript: tweak.enableScript,
             disableScript: tweak.disableScript,
           });
+        } else if (tweak.commands) {
+          await invoke<string>("execute_native_commands", { commands: tweak.commands });
         }
         success++;
       } catch (e) {
@@ -217,7 +230,7 @@ export default function TweaksHub() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className={`text-sm font-medium ${isActive ? "text-white/90" : "text-white/60"}`}>{p.label}</div>
-                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/3 selected</div>
+                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/4 selected</div>
                   </div>
                 </div>
                 <div className={`text-[11px] leading-relaxed ${isActive ? "text-white/30" : "text-white/[0.15]"}`}>{p.description}</div>

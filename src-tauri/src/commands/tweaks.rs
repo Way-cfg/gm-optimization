@@ -76,3 +76,31 @@ pub async fn execute_powershell_tweak(
         Ok(stdout.trim().to_string())
     }
 }
+
+#[tauri::command]
+pub async fn execute_native_commands(commands: Vec<String>) -> Result<String, String> {
+    let mut results = Vec::new();
+
+    for cmd_line in &commands {
+        let parts: Vec<&str> = cmd_line.split_whitespace().collect();
+        if parts.is_empty() {
+            continue;
+        }
+        let program = parts[0];
+        let args = &parts[1..];
+
+        let output = cmd(program)
+            .args(args)
+            .output()
+            .map_err(|e| format!("Failed to execute {}: {}", program, e))?;
+
+        if !output.status.success() {
+            let stderr = String::from_utf8_lossy(&output.stderr);
+            results.push(format!("{} failed: {}", program, stderr.trim()));
+        } else {
+            results.push(format!("{} completed", program));
+        }
+    }
+
+    Ok(results.join("\n"))
+}
