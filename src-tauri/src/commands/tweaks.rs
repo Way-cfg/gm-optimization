@@ -53,3 +53,26 @@ pub async fn apply_registry_tweak(entries: Vec<RegistryEntry>, enabled: bool) ->
 
     Ok(results.join("\n"))
 }
+
+#[tauri::command]
+pub async fn execute_powershell_tweak(
+    enabled: bool,
+    enable_script: Vec<String>,
+    disable_script: Vec<String>,
+) -> Result<String, String> {
+    let script = if enabled { &enable_script } else { &disable_script };
+    let joined = script.join("; ");
+
+    let output = cmd("powershell")
+        .args(["-NoProfile", "-NonInteractive", "-Command", &joined])
+        .output()
+        .map_err(|e| format!("Failed to execute PowerShell: {}", e))?;
+
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        Err(format!("PowerShell error: {}", stderr.trim()))
+    } else {
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        Ok(stdout.trim().to_string())
+    }
+}

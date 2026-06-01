@@ -85,6 +85,7 @@ pub fn run() {
             commands::scheduler::delete_schedule,
             commands::scheduler::toggle_schedule,
             commands::tweaks::apply_registry_tweak,
+            commands::tweaks::execute_powershell_tweak,
             commands::init::init_app,
             commands::system_info::get_system_info,
             commands::benchmark::run_disk_benchmark,
