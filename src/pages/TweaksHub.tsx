@@ -74,6 +74,20 @@ const tweaks: TweakDefinition[] = [
     ],
   },
   {
+    id: "WPFTweaksRestorePoint",
+    title: "Restore Point - Create",
+    description: "Removes Windows creation frequency limits and creates a live System Restore snapshot before applying modifications.",
+    category: "Essential Tweaks",
+    registry: [
+      { path: "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\SystemRestore", name: "SystemRestorePointCreationFrequency", value: "0", type_: "DWord" },
+    ],
+    enableScript: [
+      "if (-not (Get-ComputerRestorePoint)) { Enable-ComputerRestore -Drive $Env:SystemDrive }",
+      "Checkpoint-Computer -Description \"System Restore Point created by Optimization Way\" -RestorePointType MODIFY_SETTINGS",
+    ],
+    disableScript: [],
+  },
+  {
     id: "WPFTweaksDisableStoreSearch",
     title: "Microsoft Store Recommended Search Results - Disable",
     description: "Will not display recommended Microsoft Store apps when searching for apps in the Start menu.",
@@ -186,14 +200,14 @@ const presets: Preset[] = [
     label: "Balanced Tweak",
     description: "Moderate optimizations for daily use",
     icon: Gauge,
-    tweaks: ["WPFTweaksActivity", "WPFTweaksPowershell7Tele", "WPFTweaksDisableStoreSearch", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksHiber", "WPFTweaksLocation"],
+    tweaks: ["WPFTweaksActivity", "WPFTweaksPowershell7Tele", "WPFTweaksDisableStoreSearch", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksRestorePoint", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksHiber", "WPFTweaksLocation"],
   },
   {
     id: "extreme",
     label: "Extreme Plus Tweak",
     description: "Maximum system optimization",
     icon: Mountain,
-    tweaks: ["WPFTweaksActivity", "WPFTweaksPowershell7Tele", "WPFTweaksDisableStoreSearch", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksHiber", "WPFTweaksLocation", "WPFTweaksDisableBitLocker"],
+    tweaks: ["WPFTweaksActivity", "WPFTweaksPowershell7Tele", "WPFTweaksDisableStoreSearch", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksRestorePoint", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksHiber", "WPFTweaksLocation", "WPFTweaksDisableBitLocker"],
   },
 ];
 
@@ -327,7 +341,7 @@ export default function TweaksHub() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className={`text-sm font-medium ${isActive ? "text-white/90" : "text-white/60"}`}>{p.label}</div>
-                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/10 selected</div>
+                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/11 selected</div>
                   </div>
                 </div>
                 <div className={`text-[11px] leading-relaxed ${isActive ? "text-white/30" : "text-white/[0.15]"}`}>{p.description}</div>
