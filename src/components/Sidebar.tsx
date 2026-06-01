@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { LayoutDashboard, Zap, Settings, Info, type LucideIcon } from "lucide-react";
+import appLogo from "../../branding_assets/applogo.png";
 
 interface NavItem {
   path: string;
@@ -18,8 +19,7 @@ export default function Sidebar() {
   return (
     <aside className="w-[200px] bg-frosted/80 border-r border-white/[0.04] flex flex-col h-screen shrink-0 backdrop-blur-xl">
       <div className="h-14 flex items-center gap-2 px-4 border-b border-white/[0.04]">
-        <span className="text-sm font-bold text-white/90 tracking-tight">Optimization</span>
-        <span className="text-sm font-light text-white/25">Way</span>
+        <img src={appLogo} alt="Optimization Way" className="h-7 w-auto" />
       </div>
       <nav className="flex-1 overflow-y-auto py-4 px-2 space-y-0.5">
         {navItems.map((item) => (

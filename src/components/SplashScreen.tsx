@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import appLogo from "../../branding_assets/applogo.png";
 
 function SpinnerRing() {
   const size = 80;
@@ -53,9 +54,9 @@ export default function SplashScreen({ loading }: { loading: boolean }) {
               <SpinnerRing />
             </div>
 
-            <div className="text-center">
-              <h1 className="text-xl font-semibold text-white/80 tracking-tight">Optimization Way</h1>
-              <p className="text-[11px] text-white/20 mt-2 tracking-[0.15em] uppercase">
+            <div className="flex flex-col items-center gap-4">
+              <img src={appLogo} alt="Optimization Way" className="h-10 w-auto" />
+              <p className="text-[11px] text-white/20 tracking-[0.15em] uppercase">
                 {loading ? "Loading System Data" : "Ready"}
               </p>
             </div>
