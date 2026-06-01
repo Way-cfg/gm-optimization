@@ -97,6 +97,22 @@ const tweaks: TweakDefinition[] = [
     ],
   },
   {
+    id: "WPFTweaksHiber",
+    title: "Hibernation - Disable",
+    description: "Hibernation saves what is in memory before turning the PC off. Disabling it instantly frees up gigabytes of storage equivalent to your system RAM.",
+    category: "Essential Tweaks",
+    registry: [
+      { path: "HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\Power", name: "HibernateEnabled", value: "0", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FlyoutMenuSettings", name: "ShowHibernateOption", value: "0", type_: "DWord" },
+    ],
+    enableScript: [
+      "powercfg.exe /hibernate off",
+    ],
+    disableScript: [
+      "powercfg.exe /hibernate on",
+    ],
+  },
+  {
     id: "WPFTweaksDisableBitLocker",
     title: "BitLocker - Disable",
     description: "Disables BitLocker encryption on the main system drive.",
@@ -126,14 +142,14 @@ const presets: Preset[] = [
     label: "Balanced Tweak",
     description: "Moderate optimizations for daily use",
     icon: Gauge,
-    tweaks: ["WPFTweaksActivity", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup"],
+    tweaks: ["WPFTweaksActivity", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksHiber"],
   },
   {
     id: "extreme",
     label: "Extreme Plus Tweak",
     description: "Maximum system optimization",
     icon: Mountain,
-    tweaks: ["WPFTweaksActivity", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksDisableBitLocker"],
+    tweaks: ["WPFTweaksActivity", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksHiber", "WPFTweaksDisableBitLocker"],
   },
 ];
 
@@ -200,13 +216,15 @@ export default function TweaksHub() {
       try {
         if (tweak.registry) {
           await invoke<string>("apply_registry_tweak", { entries: tweak.registry, enabled: true });
-        } else if (tweak.enableScript && tweak.disableScript) {
+        }
+        if (tweak.enableScript && tweak.disableScript) {
           await invoke<string>("execute_powershell_tweak", {
             enabled: true,
             enableScript: tweak.enableScript,
             disableScript: tweak.disableScript,
           });
-        } else if (tweak.commands) {
+        }
+        if (tweak.commands) {
           await invoke<string>("execute_native_commands", { commands: tweak.commands });
         }
         success++;
@@ -262,7 +280,7 @@ export default function TweaksHub() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className={`text-sm font-medium ${isActive ? "text-white/90" : "text-white/60"}`}>{p.label}</div>
-                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/6 selected</div>
+                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/7 selected</div>
                   </div>
                 </div>
                 <div className={`text-[11px] leading-relaxed ${isActive ? "text-white/30" : "text-white/[0.15]"}`}>{p.description}</div>
