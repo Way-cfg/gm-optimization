@@ -1,0 +1,102 @@
+use crate::models::{InfoEntry, SystemInfo};
+use crate::util::cmd;
+
+fn run_pwsh(script: &str) -> String {
+    cmd("powershell")
+        .args(["-Command", script])
+        .output()
+        .ok()
+        .map(|o| String::from_utf8_lossy(&o.stdout).trim().to_string())
+        .unwrap_or_default()
+}
+
+#[tauri::command]
+pub async fn get_system_info() -> Result<SystemInfo, String> {
+    // CPU
+    let cpu_name = run_pwsh("(Get-CimInstance Win32_Processor).Name");
+    let cpu_cores = run_pwsh("(Get-CimInstance Win32_Processor).NumberOfCores");
+    let cpu_threads = run_pwsh("(Get-CimInstance Win32_Processor).NumberOfLogicalProcessors");
+    let cpu_speed = run_pwsh("[math]::Round((Get-CimInstance Win32_Processor).MaxClockSpeed / 1000, 2)");
+    let cpu_arch = run_pwsh("(Get-CimInstance Win32_Processor).Architecture");
+    let cpu_l2 = run_pwsh("(Get-CimInstance Win32_Processor).L2CacheSize");
+    let cpu_l3 = run_pwsh("(Get-CimInstance Win32_Processor).L3CacheSize");
+
+    let cpu = vec![
+        InfoEntry { label: "Model".into(), value: cpu_name },
+        InfoEntry { label: "Cores".into(), value: cpu_cores },
+        InfoEntry { label: "Threads".into(), value: cpu_threads },
+        InfoEntry { label: "Max Clock".into(), value: format!("{} GHz", cpu_speed) },
+        InfoEntry { label: "L2 Cache".into(), value: format!("{} KB", cpu_l2) },
+        InfoEntry { label: "L3 Cache".into(), value: format!("{} KB", cpu_l3) },
+        InfoEntry { label: "Architecture".into(), value: cpu_arch },
+    ];
+
+    // GPU
+    let gpu_name = run_pwsh("(Get-CimInstance Win32_VideoController).Name -join ', '");
+    let gpu_ram = run_pwsh("(Get-CimInstance Win32_VideoController).AdapterRAM | ForEach-Object { if ($_ -gt 1e9) { '{0:N1} GB' -f ($_ / 1e9) } else { '{0:N0} MB' -f ($_ / 1e6) } }");
+    let gpu_driver = run_pwsh("(Get-CimInstance Win32_VideoController).DriverVersion");
+    let gpu_res = run_pwsh("(Get-CimInstance Win32_VideoController).CurrentHorizontalResolution + 'x' + (Get-CimInstance Win32_VideoController).CurrentVerticalResolution");
+
+    let gpu = vec![
+        InfoEntry { label: "GPU".into(), value: gpu_name },
+        InfoEntry { label: "VRAM".into(), value: gpu_ram },
+        InfoEntry { label: "Driver".into(), value: gpu_driver },
+        InfoEntry { label: "Resolution".into(), value: gpu_res },
+    ];
+
+    // RAM
+    let ram_total = run_pwsh("[math]::Round((Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory / 1e9, 1)");
+    let ram_speed = run_pwsh("(Get-CimInstance Win32_PhysicalMemory | Select-Object -First 1).Speed");
+    let ram_form = run_pwsh("(Get-CimInstance Win32_PhysicalMemory | Select-Object -First 1).FormFactor");
+    let ram_slots = run_pwsh("@(Get-CimInstance Win32_PhysicalMemory).Count");
+
+    let ram = vec![
+        InfoEntry { label: "Total".into(), value: format!("{} GB", ram_total) },
+        InfoEntry { label: "Speed".into(), value: format!("{} MHz", ram_speed) },
+        InfoEntry { label: "Slots Used".into(), value: ram_slots },
+        InfoEntry { label: "Form Factor".into(), value: ram_form },
+    ];
+
+    // Motherboard
+    let mb_manuf = run_pwsh("(Get-CimInstance Win32_BaseBoard).Manufacturer");
+    let mb_product = run_pwsh("(Get-CimInstance Win32_BaseBoard).Product");
+    let bios_vendor = run_pwsh("(Get-CimInstance Win32_BIOS).Manufacturer");
+    let bios_ver = run_pwsh("(Get-CimInstance Win32_BIOS).SMBIOSBIOSVersion");
+    let bios_date = run_pwsh("(Get-CimInstance Win32_BIOS).ReleaseDate");
+
+    let motherboard = vec![
+        InfoEntry { label: "Manufacturer".into(), value: mb_manuf },
+        InfoEntry { label: "Model".into(), value: mb_product },
+        InfoEntry { label: "BIOS Vendor".into(), value: bios_vendor },
+        InfoEntry { label: "BIOS Version".into(), value: bios_ver },
+        InfoEntry { label: "BIOS Date".into(), value: bios_date },
+    ];
+
+    // Storage
+    let mut storage = Vec::new();
+    for line in run_pwsh("Get-CimInstance Win32_DiskDrive | Select-Object Model, Size, InterfaceType, MediaType | ConvertTo-Csv -NoTypeInformation").lines() {
+        if line.is_empty() || line.starts_with('\"') && !line.starts_with("\"Model\"") {
+            let parts: Vec<&str> = line.split(',').collect();
+            if parts.len() >= 4 {
+                let model = parts[0].trim_matches('"').to_string();
+                let size_gb = parts[1].trim_matches('"').parse::<f64>().unwrap_or(0.0) / 1e9;
+                let iface = parts[2].trim_matches('"').to_string();
+                let media = parts[3].trim_matches('"').to_string();
+                storage.push(InfoEntry {
+                    label: format!("{:.0} GB {} {}", size_gb, iface, media),
+                    value: model,
+                });
+            }
+        }
+    }
+
+    let os_name = run_pwsh("(Get-CimInstance Win32_OperatingSystem).Caption");
+    let os_ver = run_pwsh("(Get-CimInstance Win32_OperatingSystem).Version");
+
+    let network = vec![
+        InfoEntry { label: "OS".into(), value: os_name },
+        InfoEntry { label: "Build".into(), value: os_ver },
+    ];
+
+    Ok(SystemInfo { cpu, gpu, ram, motherboard, storage, network })
+}
