@@ -18,8 +18,8 @@ const navItems: NavItem[] = [
 export default function Sidebar() {
   return (
     <aside className="w-[200px] bg-frosted/80 border-r border-white/[0.04] flex flex-col h-screen shrink-0 backdrop-blur-xl">
-      <div className="h-14 flex items-center gap-2 px-4 border-b border-white/[0.04]">
-        <img src={appLogo} alt="Optimization Way" className="h-7 w-auto" />
+      <div className="flex items-center justify-center py-6 px-4 border-b border-white/[0.04]">
+        <img src={appLogo} alt="Optimization Way" className="h-20 w-auto" />
       </div>
       <nav className="flex-1 overflow-y-auto py-4 px-2 space-y-0.5">
         {navItems.map((item) => (

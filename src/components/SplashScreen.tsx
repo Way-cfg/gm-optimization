@@ -3,26 +3,40 @@ import { motion, AnimatePresence } from "framer-motion";
 import appLogo from "../../branding_assets/applogo.png";
 
 function SpinnerRing() {
-  const size = 80;
+  const size = 180;
   const stroke = 3;
   const r = (size - stroke) / 2;
   const circumference = 2 * Math.PI * r;
 
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,85,0,0.08)" strokeWidth={stroke} />
-      <motion.circle
-        cx={size / 2} cy={size / 2} r={r}
-        fill="none"
-        stroke="#FF5500"
-        strokeWidth={stroke}
-        strokeLinecap="round"
-        strokeDasharray={`${circumference * 0.3} ${circumference}`}
-        animate={{ strokeDashoffset: [0, -circumference * 0.7] }}
-        transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
-        style={{ filter: "drop-shadow(0 0 8px rgba(255,85,0,0.5))" }}
+    <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="absolute inset-0">
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,85,0,0.08)" strokeWidth={stroke} />
+        <motion.g
+          style={{ originX: `${size / 2}px`, originY: `${size / 2}px` }}
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
+        >
+          <circle
+            cx={size / 2} cy={size / 2} r={r}
+            fill="none"
+            stroke="#FF5500"
+            strokeWidth={stroke}
+            strokeLinecap="round"
+            strokeDasharray={`${circumference * 0.25} ${circumference}`}
+            style={{ filter: "drop-shadow(0 0 8px rgba(255,85,0,0.5))" }}
+          />
+        </motion.g>
+      </svg>
+      <motion.img
+        src={appLogo}
+        alt="Optimization Way"
+        className="h-24 w-auto"
+        initial={{ opacity: 0, scale: 0.85 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
       />
-    </svg>
+    </div>
   );
 }
 
@@ -45,32 +59,39 @@ export default function SplashScreen({ loading }: { loading: boolean }) {
           transition={{ duration: 0.5, ease: "easeInOut" }}
         >
           <motion.div
-            initial={{ opacity: 0, scale: 0.85 }}
+            initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="flex flex-col items-center gap-8"
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="flex flex-col items-center gap-10"
           >
-            <div className="relative flex items-center justify-center">
-              <SpinnerRing />
-            </div>
+            <SpinnerRing />
 
-            <div className="flex flex-col items-center gap-4">
-              <img src={appLogo} alt="Optimization Way" className="h-32 w-auto" />
-              <p className="text-[11px] text-white/20 tracking-[0.15em] uppercase">
+            <div className="flex flex-col items-center gap-5">
+              <motion.p
+                className="text-[11px] text-white/20 tracking-[0.15em] uppercase"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.5, ease: "easeOut" }}
+              >
                 {loading ? "Loading System Data" : "Ready"}
-              </p>
-            </div>
+              </motion.p>
 
-            <div className="flex gap-2">
-              {[0, 1, 2].map(i => (
-                <motion.div
-                  key={i}
-                  className="w-1.5 h-1.5 rounded-full"
-                  style={{ backgroundColor: "#FF5500" }}
-                  animate={{ opacity: loading ? [0.2, 0.8, 0.2] : 0.8 }}
-                  transition={loading ? { duration: 1.2, repeat: Infinity, delay: i * 0.25, ease: "easeInOut" } : { duration: 0.3 }}
-                />
-              ))}
+              <motion.div
+                className="flex gap-2"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.5 }}
+              >
+                {[0, 1, 2].map(i => (
+                  <motion.div
+                    key={i}
+                    className="w-1.5 h-1.5 rounded-full"
+                    style={{ backgroundColor: "#FF5500" }}
+                    animate={{ opacity: loading ? [0.2, 0.8, 0.2] : 0.8 }}
+                    transition={loading ? { duration: 1.2, repeat: Infinity, delay: i * 0.25, ease: "easeInOut" } : { duration: 0.3 }}
+                  />
+                ))}
+              </motion.div>
             </div>
           </motion.div>
         </motion.div>
