@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { invoke } from "@tauri-apps/api/core";
 import { Cpu, MemoryStick, HardDrive, Activity } from "lucide-react";
+import appLogo from "../../branding_assets/applogo.png";
 
 interface DriveSummary {
   letter: string;
@@ -158,8 +159,12 @@ export default function Dashboard({ initData }: { initData?: InitResult | null }
 
   return (
     <motion.div variants={container} initial="hidden" animate="show" className="max-w-4xl mx-auto">
-      <motion.div variants={item} className="flex justify-center mb-8 mt-2">
-        <OptimizationArc value={status === "EXTREME" ? 100 : 45} max={100} size={260} />
+      <motion.div variants={item} className="bg-frosted/80 backdrop-blur-xl border border-white/[0.04] rounded-2xl p-6 mb-8 mt-2">
+        <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8">
+          <img src={appLogo} alt="Optimization Way" className="h-20 md:h-24 w-auto" />
+          <div className="hidden md:block w-px h-28 bg-white/[0.04]" />
+          <OptimizationArc value={status === "EXTREME" ? 100 : 45} max={100} size={240} />
+        </div>
       </motion.div>
 
       <motion.div variants={item} className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-6">

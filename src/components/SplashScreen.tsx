@@ -55,7 +55,7 @@ export default function SplashScreen({ loading }: { loading: boolean }) {
             </div>
 
             <div className="flex flex-col items-center gap-4">
-              <img src={appLogo} alt="Optimization Way" className="h-10 w-auto" />
+              <img src={appLogo} alt="Optimization Way" className="h-32 w-auto" />
               <p className="text-[11px] text-white/20 tracking-[0.15em] uppercase">
                 {loading ? "Loading System Data" : "Ready"}
               </p>
