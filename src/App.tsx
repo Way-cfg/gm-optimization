@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { invoke } from "@tauri-apps/api/core";
 import { ToastProvider } from "./components/Toast";
 import SplashScreen from "./components/SplashScreen";
@@ -10,33 +10,37 @@ import TweaksHub from "./pages/TweaksHub";
 import AppSettings from "./pages/AppSettings";
 import AboutSystem from "./pages/AboutSystem";
 
-interface SystemInfo {
-  cpu: { label: string; value: string }[];
-  gpu: { label: string; value: string }[];
-  ram: { label: string; value: string }[];
-  storage: { label: string; value: string }[];
-  network: { label: string; value: string }[];
+interface DriveSummary {
+  letter: string;
+  size: string;
+}
+
+interface InitResult {
+  cpu_name: string;
+  gpu_name: string;
+  ram_total: string;
+  drives: DriveSummary[];
 }
 
 export default function App() {
   const [ready, setReady] = useState(false);
-  const [initData, setInitData] = useState<SystemInfo | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [initData, setInitData] = useState<InitResult | null>(null);
 
   useEffect(() => {
-    invoke<SystemInfo>("init_app")
-      .then(setInitData)
-      .catch(() => {});
-  }, []);
-
-  const handleFinish = useCallback(() => {
-    setReady(true);
+    invoke<InitResult>("init_app")
+      .then(data => {
+        setInitData(data);
+        setLoading(false);
+        const t = setTimeout(() => setReady(true), 600);
+        return () => clearTimeout(t);
+      })
+      .catch(() => setLoading(false));
   }, []);
 
   return (
     <>
-      <AnimatePresence>
-        {!ready && <SplashScreen onFinish={handleFinish} />}
-      </AnimatePresence>
+      <SplashScreen loading={loading} />
       {ready && (
         <motion.div
           initial={{ opacity: 0 }}

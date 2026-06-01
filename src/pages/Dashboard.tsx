@@ -1,14 +1,16 @@
-import { useEffect, useState } from "react";
-import { invoke } from "@tauri-apps/api/core";
 import { motion } from "framer-motion";
-import { Cpu, MemoryStick, Activity } from "lucide-react";
+import { Cpu, MemoryStick, HardDrive } from "lucide-react";
 
-interface SystemInfo {
-  cpu: { label: string; value: string }[];
-  ram: { label: string; value: string }[];
-  gpu: { label: string; value: string }[];
-  storage: { label: string; value: string }[];
-  network: { label: string; value: string }[];
+interface DriveSummary {
+  letter: string;
+  size: string;
+}
+
+interface InitResult {
+  cpu_name: string;
+  gpu_name: string;
+  ram_total: string;
+  drives: DriveSummary[];
 }
 
 function StatusArc({ value, max, size = 200 }: { value: number; max: number; size?: number }) {
@@ -38,18 +40,17 @@ function StatusArc({ value, max, size = 200 }: { value: number; max: number; siz
   );
 }
 
-function MetricBadge({ icon: Icon, label, value, sub }: {
-  icon: typeof Cpu; label: string; value: string; sub?: string;
+function SpecCard({ icon: Icon, label, value }: {
+  icon: typeof Cpu; label: string; value: string;
 }) {
   return (
     <div className="flex items-center gap-3 px-4 py-3 bg-white/[0.03] border border-white/[0.05] rounded-xl">
-      <div className="w-9 h-9 rounded-lg bg-white/[0.04] flex items-center justify-center">
+      <div className="w-9 h-9 rounded-lg bg-white/[0.04] flex items-center justify-center shrink-0">
         <Icon size={16} strokeWidth={1.5} className="text-white/35" />
       </div>
-      <div>
+      <div className="min-w-0">
         <div className="text-[11px] text-white/25 uppercase tracking-widest">{label}</div>
-        <div className="text-sm font-mono font-medium text-white/70 mt-0.5">{value}</div>
-        {sub && <div className="text-[11px] text-white/20 font-mono">{sub}</div>}
+        <div className="text-sm font-mono font-medium text-white/70 mt-0.5 truncate">{value}</div>
       </div>
     </div>
   );
@@ -64,34 +65,13 @@ const item = {
   show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" } as const },
 } as const;
 
-export default function Dashboard({ initData }: { initData?: SystemInfo | null }) {
-  const [info, setInfo] = useState<SystemInfo | null>(initData || null);
-  const [cpuLoad] = useState(32);
-  const [ramPct] = useState(45);
+export default function Dashboard({ initData }: { initData?: InitResult | null }) {
   const status: string = "OPTIMIZED";
-
-  useEffect(() => {
-    if (!initData) {
-      invoke<SystemInfo>("get_system_info").then(setInfo).catch(() => {});
-    }
-  }, [initData]);
-
-  const ramTotal = info ? parseFloat(info.ram.find(e => e.label === "Total")?.value.replace(" GB", "") || "16") : 16;
-  const cpuName = info?.cpu.find(e => e.label === "Model")?.value || "";
-  const cores = info?.cpu.find(e => e.label === "Cores")?.value || "";
-  const gpuName = info?.gpu.find(e => e.label === "GPU")?.value || "";
-  const osArch = info?.cpu.find(e => e.label === "Architecture")?.value || "x64";
-  const drives = info?.storage.length || 0;
+  const drivesText = initData?.drives.map(d => `${d.letter} ${d.size}`).join(", ") || "—";
 
   return (
     <motion.div variants={container} initial="hidden" animate="show" className="max-w-4xl mx-auto">
-      <motion.div variants={item} className="mb-8 text-center">
-        <h1 className="text-xl font-semibold text-white/90 tracking-tight">Dashboard</h1>
-        <p className="text-sm text-white/25 mt-1 font-mono">{cpuName || "Loading..."}</p>
-        {gpuName && <p className="text-[11px] text-white/15 mt-0.5 font-mono">{gpuName}</p>}
-      </motion.div>
-
-      <motion.div variants={item} className="flex justify-center mb-10">
+      <motion.div variants={item} className="flex justify-center mb-10 mt-4">
         <div className="relative">
           <StatusArc value={status === "EXTREME" ? 95 : 72} max={100} size={220} />
           <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -108,30 +88,18 @@ export default function Dashboard({ initData }: { initData?: SystemInfo | null }
                 {status === "EXTREME" ? "EXTREME MODE" : "OPTIMIZED"}
               </div>
               <div className="text-[10px] text-white/20 font-mono mt-2">
-                {status === "EXTREME" ? "Ultimate Performance Profile" : "Safe & Balanced"}
+                {status === "EXTREME" ? "Ultimate Performance" : "Safe & Balanced"}
               </div>
             </motion.div>
           </div>
         </div>
       </motion.div>
 
-      <motion.div variants={item} className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-8">
-        <MetricBadge icon={Cpu} label="CPU" value={`${cpuLoad}%`} sub={`${cores} cores`} />
-        <MetricBadge icon={MemoryStick} label="RAM" value={`${ramTotal.toFixed(1)} GB`} sub={`${ramPct}% utilized`} />
-        <MetricBadge icon={Activity} label="Drives" value={`${drives} drives`} sub={osArch} />
-        <MetricBadge icon={Activity} label="GPU" value={gpuName.split(" ").slice(0, 2).join(" ") || "—"} sub={gpuName.split(" ").slice(2).join(" ") || ""} />
-      </motion.div>
-
-      <motion.div variants={item} className="bg-frosted/80 backdrop-blur-xl border border-white/[0.05] rounded-2xl p-6">
-        <div className="text-[11px] text-white/20 uppercase tracking-widest mb-5">System Overview</div>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-3">
-          {info?.cpu.filter(e => e.label !== "Architecture").map(e => (
-            <div key={e.label} className="flex justify-between text-sm">
-              <span className="text-white/25 font-mono text-[11px] uppercase tracking-wider">{e.label}</span>
-              <span className="text-white/60 font-mono text-xs">{e.value}</span>
-            </div>
-          ))}
-        </div>
+      <motion.div variants={item} className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-8">
+        <SpecCard icon={Cpu} label="CPU" value={initData?.cpu_name || "—"} />
+        <SpecCard icon={Cpu} label="GPU" value={initData?.gpu_name || "—"} />
+        <SpecCard icon={MemoryStick} label="RAM" value={initData?.ram_total || "—"} />
+        <SpecCard icon={HardDrive} label="Drives" value={drivesText} />
       </motion.div>
     </motion.div>
   );

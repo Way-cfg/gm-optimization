@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-function SpinnerRing({ pct }: { pct: number }) {
+function SpinnerRing() {
   const size = 80;
   const stroke = 3;
   const r = (size - stroke) / 2;
   const circumference = 2 * Math.PI * r;
-  const offset = circumference * (1 - pct / 100);
 
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="rotate-[-90deg]">
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
       <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth={stroke} />
       <motion.circle
         cx={size / 2} cy={size / 2} r={r}
@@ -17,35 +16,23 @@ function SpinnerRing({ pct }: { pct: number }) {
         stroke="rgba(255,255,255,0.55)"
         strokeWidth={stroke}
         strokeLinecap="round"
-        strokeDasharray={`${circumference} ${circumference}`}
-        initial={{ strokeDashoffset: circumference }}
-        animate={{ strokeDashoffset: offset }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
+        strokeDasharray={`${circumference * 0.3} ${circumference}`}
+        animate={{ strokeDashoffset: [0, -circumference * 0.7] }}
+        transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
       />
     </svg>
   );
 }
 
-export default function SplashScreen({ onFinish }: { onFinish: () => void }) {
-  const [pct, setPct] = useState(0);
+export default function SplashScreen({ loading }: { loading: boolean }) {
   const [show, setShow] = useState(true);
 
   useEffect(() => {
-    if (pct < 100) {
-      const t = setTimeout(() => setPct(p => Math.min(p + 2, 100)), 30);
+    if (!loading) {
+      const t = setTimeout(() => setShow(false), 400);
       return () => clearTimeout(t);
     }
-  }, [pct]);
-
-  useEffect(() => {
-    if (pct >= 100) {
-      const t = setTimeout(() => {
-        setShow(false);
-        setTimeout(onFinish, 500);
-      }, 300);
-      return () => clearTimeout(t);
-    }
-  }, [pct, onFinish]);
+  }, [loading]);
 
   return (
     <AnimatePresence>
@@ -62,15 +49,14 @@ export default function SplashScreen({ onFinish }: { onFinish: () => void }) {
             className="flex flex-col items-center gap-8"
           >
             <div className="relative flex items-center justify-center">
-              <SpinnerRing pct={pct} />
-              <div className="absolute text-lg font-mono font-medium text-white/60">
-                {pct}%
-              </div>
+              <SpinnerRing />
             </div>
 
             <div className="text-center">
               <h1 className="text-xl font-semibold text-white/80 tracking-tight">Optimization Way</h1>
-              <p className="text-[11px] text-white/20 mt-2 tracking-[0.15em] uppercase">Initializing System Engine</p>
+              <p className="text-[11px] text-white/20 mt-2 tracking-[0.15em] uppercase">
+                {loading ? "Loading System Data" : "Ready"}
+              </p>
             </div>
 
             <div className="flex gap-1.5">
@@ -78,8 +64,8 @@ export default function SplashScreen({ onFinish }: { onFinish: () => void }) {
                 <motion.div
                   key={i}
                   className="w-1.5 h-1.5 rounded-full bg-white/30"
-                  animate={{ opacity: [0.2, 0.7, 0.2] }}
-                  transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.25, ease: "easeInOut" }}
+                  animate={{ opacity: loading ? [0.2, 0.7, 0.2] : 0.7 }}
+                  transition={loading ? { duration: 1.2, repeat: Infinity, delay: i * 0.25, ease: "easeInOut" } : { duration: 0.3 }}
                 />
               ))}
             </div>
