@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { invoke } from "@tauri-apps/api/core";
-import { Check, History, ShieldOff, AlertTriangle } from "lucide-react";
+import { Check, History, ShieldOff, AlertTriangle, Zap, Gauge, Mountain, Sparkles } from "lucide-react";
 import { useToast } from "../components/Toast";
 
 interface RegistryEntry {
@@ -16,13 +16,20 @@ interface TweakDefinition {
   title: string;
   description: string;
   category: string;
-  icon?: typeof ShieldOff;
   requiresConfirmation?: boolean;
   confirmTitle?: string;
   confirmMessage?: string;
   registry?: RegistryEntry[];
   enableScript?: string[];
   disableScript?: string[];
+}
+
+interface Preset {
+  id: string;
+  label: string;
+  description: string;
+  icon: React.ComponentType<{ size?: number; strokeWidth?: number; className?: string }>;
+  tweaks: string[];
 }
 
 const tweaks: TweakDefinition[] = [
@@ -38,11 +45,19 @@ const tweaks: TweakDefinition[] = [
     ],
   },
   {
+    id: "WPFTweaksConsumerFeatures",
+    title: "ConsumerFeatures - Disable",
+    description: "Windows will not automatically install any games, third-party apps, or application links from the Windows Store for the signed-in user. Some default Apps will be inaccessible (eg. Phone Link).",
+    category: "Essential Tweaks",
+    registry: [
+      { path: "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent", name: "DisableWindowsConsumerFeatures", value: "1", type_: "DWord" },
+    ],
+  },
+  {
     id: "WPFTweaksDisableBitLocker",
     title: "BitLocker - Disable",
     description: "Disables BitLocker encryption on the main system drive.",
     category: "Essential Tweaks",
-    icon: ShieldOff,
     requiresConfirmation: true,
     confirmTitle: "Disable BitLocker?",
     confirmMessage: "This will decrypt your system drive. The process may take several minutes depending on drive size. Your data will remain accessible during and after decryption.",
@@ -52,6 +67,30 @@ const tweaks: TweakDefinition[] = [
     disableScript: [
       "Enable-BitLocker -MountPoint $Env:SystemDrive",
     ],
+  },
+];
+
+const presets: Preset[] = [
+  {
+    id: "simple",
+    label: "Simple Tweak",
+    description: "Essential privacy and performance tweaks",
+    icon: Zap,
+    tweaks: ["WPFTweaksActivity"],
+  },
+  {
+    id: "balanced",
+    label: "Balanced Tweak",
+    description: "Moderate optimizations for daily use",
+    icon: Gauge,
+    tweaks: ["WPFTweaksActivity", "WPFTweaksConsumerFeatures"],
+  },
+  {
+    id: "extreme",
+    label: "Extreme Plus Tweak",
+    description: "Maximum system optimization",
+    icon: Mountain,
+    tweaks: ["WPFTweaksActivity", "WPFTweaksConsumerFeatures", "WPFTweaksDisableBitLocker"],
   },
 ];
 
@@ -67,61 +106,84 @@ const child = {
 } as const;
 
 export default function TweaksHub() {
-  const [enabled, setEnabled] = useState<Set<string>>(new Set());
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [activePreset, setActivePreset] = useState<string | null>(null);
+  const [running, setRunning] = useState(false);
   const [applying, setApplying] = useState<Set<string>>(new Set());
   const [confirm, setConfirm] = useState<TweakDefinition | null>(null);
   const { toast } = useToast();
 
-  const doToggle = async (tweak: TweakDefinition, turningOn: boolean) => {
-    setApplying(prev => new Set(prev).add(tweak.id));
-
-    try {
-      if (tweak.registry) {
-        await invoke<string>("apply_registry_tweak", {
-          entries: tweak.registry,
-          enabled: turningOn,
-        });
-      } else if (tweak.enableScript && tweak.disableScript) {
-        await invoke<string>("execute_powershell_tweak", {
-          enabled: turningOn,
-          enableScript: tweak.enableScript,
-          disableScript: tweak.disableScript,
-        });
-      }
-
-      if (turningOn) {
-        setEnabled(prev => new Set(prev).add(tweak.id));
-      } else {
-        setEnabled(prev => {
-          const next = new Set(prev);
-          next.delete(tweak.id);
-          return next;
-        });
-      }
-
-      toast("success", `${tweak.title} ${turningOn ? "applied" : "removed"}`);
-    } catch (e) {
-      toast("error", `Failed: ${e}`);
-    }
-
-    setApplying(prev => {
+  const toggleCheck = (id: string) => {
+    setSelected(prev => {
       const next = new Set(prev);
-      next.delete(tweak.id);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
       return next;
     });
+    setActivePreset(null);
   };
 
-  const handleClick = (tweak: TweakDefinition) => {
-    if (applying.has(tweak.id)) return;
+  const applyPreset = (preset: Preset) => {
+    setSelected(new Set(preset.tweaks));
+    setActivePreset(preset.id);
+  };
 
-    const turningOn = !enabled.has(tweak.id);
-
-    if (turningOn && tweak.requiresConfirmation) {
-      setConfirm(tweak);
+  const runSelected = async () => {
+    const ids = Array.from(selected);
+    if (ids.length === 0) {
+      toast("info", "No tweaks selected");
       return;
     }
 
-    doToggle(tweak, turningOn);
+    const confirmTweak = tweaks.find(t => t.requiresConfirmation && selected.has(t.id));
+    if (confirmTweak) {
+      setConfirm(confirmTweak);
+      return;
+    }
+
+    await executeBatch(ids);
+  };
+
+  const executeBatch = async (ids: string[]) => {
+    setRunning(true);
+    let success = 0;
+    let fail = 0;
+    const errors: string[] = [];
+
+    for (const id of ids) {
+      setApplying(prev => new Set(prev).add(id));
+      const tweak = tweaks.find(t => t.id === id)!;
+
+      try {
+        if (tweak.registry) {
+          await invoke<string>("apply_registry_tweak", { entries: tweak.registry, enabled: true });
+        } else if (tweak.enableScript && tweak.disableScript) {
+          await invoke<string>("execute_powershell_tweak", {
+            enabled: true,
+            enableScript: tweak.enableScript,
+            disableScript: tweak.disableScript,
+          });
+        }
+        success++;
+      } catch (e) {
+        fail++;
+        errors.push(`${tweak.title}: ${e}`);
+      }
+
+      setApplying(prev => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+    }
+
+    setRunning(false);
+
+    if (fail > 0) {
+      toast("error", `Applied ${success}/${ids.length} tweaks — ${fail} failed`);
+    } else {
+      toast("success", `Applied all ${success} tweaks successfully`);
+    }
   };
 
   return (
@@ -129,7 +191,39 @@ export default function TweaksHub() {
       <motion.div variants={container} initial="hidden" animate="show" className="max-w-3xl mx-auto">
         <motion.div variants={child} className="mb-8">
           <h1 className="text-xl font-semibold text-white/90 tracking-tight">Tweaks Hub</h1>
-          <p className="text-sm text-white/25 mt-1">Toggle individual tweaks on or off</p>
+          <p className="text-sm text-white/25 mt-1">Select tweaks or use a preset, then run all at once</p>
+        </motion.div>
+
+        <motion.div variants={child} className="flex gap-3 mb-6">
+          {presets.map(p => {
+            const Icon = p.icon;
+            const isActive = activePreset === p.id;
+            const count = p.tweaks.filter(id => selected.has(id)).length;
+            return (
+              <div
+                key={p.id}
+                onClick={() => applyPreset(p)}
+                className={`flex-1 p-4 rounded-2xl border cursor-pointer transition-all duration-200 ${
+                  isActive
+                    ? "bg-neon/[0.06] border-neon/30"
+                    : "bg-frosted/80 backdrop-blur-xl border-white/[0.05] hover:border-white/[0.12]"
+                }`}
+              >
+                <div className="flex items-center gap-2.5 mb-2">
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                    isActive ? "bg-neon/[0.12]" : "bg-white/[0.04]"
+                  }`}>
+                    <Icon size={15} strokeWidth={1.5} className={isActive ? "text-neon" : "text-white/30"} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className={`text-sm font-medium ${isActive ? "text-white/90" : "text-white/60"}`}>{p.label}</div>
+                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/3 selected</div>
+                  </div>
+                </div>
+                <div className={`text-[11px] leading-relaxed ${isActive ? "text-white/30" : "text-white/[0.15]"}`}>{p.description}</div>
+              </div>
+            );
+          })}
         </motion.div>
 
         {categories.map(cat => (
@@ -139,37 +233,69 @@ export default function TweaksHub() {
               <span className="text-[11px] text-white/20 uppercase tracking-widest">{cat}</span>
             </div>
             <div className="space-y-1">
-              {tweaks.filter(t => t.category === cat).map(tweak => (
-                <div
-                  key={tweak.id}
-                  onClick={() => handleClick(tweak)}
-                  className="flex items-center gap-3 px-3 py-3 rounded-xl bg-white/[0.02] border border-white/[0.04] hover:bg-white/[0.04] cursor-pointer transition-all duration-200"
-                >
-                  <div className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all duration-200 shrink-0 ${
-                    enabled.has(tweak.id)
-                      ? "bg-neon/[0.15] border-neon/40"
-                      : "border-white/[0.12] hover:border-white/25"
-                  }`}>
-                    {applying.has(tweak.id) ? (
-                      <div className="w-3 h-3 border-2 border-neon/20 border-t-neon rounded-full animate-spin" />
-                    ) : enabled.has(tweak.id) ? (
-                      <Check size={12} strokeWidth={3} className="text-neon" />
-                    ) : null}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className={`text-sm font-medium transition-colors duration-200 ${enabled.has(tweak.id) ? "text-white/80" : "text-white/50"}`}>
-                      {tweak.title}
+              {tweaks.filter(t => t.category === cat).map(tweak => {
+                const isChecked = selected.has(tweak.id);
+                const isApplying = applying.has(tweak.id);
+                return (
+                  <div
+                    key={tweak.id}
+                    onClick={() => !running && toggleCheck(tweak.id)}
+                    className={`flex items-center gap-3 px-3 py-3 rounded-xl bg-white/[0.02] border transition-all duration-200 ${
+                      running ? "opacity-50 pointer-events-none" : "cursor-pointer hover:bg-white/[0.04]"
+                    } ${isChecked ? "border-white/[0.08]" : "border-white/[0.04]"}`}
+                  >
+                    <div className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all duration-200 shrink-0 ${
+                      isApplying
+                        ? "border-neon/40 bg-neon/[0.1]"
+                        : isChecked
+                          ? "bg-neon/[0.15] border-neon/40"
+                          : "border-white/[0.12] hover:border-white/25"
+                    }`}>
+                      {isApplying ? (
+                        <div className="w-3 h-3 border-2 border-neon/20 border-t-neon rounded-full animate-spin" />
+                      ) : isChecked ? (
+                        <Check size={12} strokeWidth={3} className="text-neon" />
+                      ) : null}
                     </div>
-                    <div className="text-[11px] text-white/20 mt-0.5">{tweak.description}</div>
+                    <div className="min-w-0 flex-1">
+                      <div className={`text-sm font-medium transition-colors duration-200 ${isChecked ? "text-white/80" : "text-white/50"}`}>
+                        {tweak.title}
+                      </div>
+                      <div className="text-[11px] text-white/20 mt-0.5">{tweak.description}</div>
+                    </div>
+                    {tweak.requiresConfirmation && (
+                      <AlertTriangle size={12} strokeWidth={1.5} className="text-white/15 shrink-0" />
+                    )}
                   </div>
-                  {tweak.requiresConfirmation && !enabled.has(tweak.id) && !applying.has(tweak.id) && (
-                    <AlertTriangle size={14} strokeWidth={1.5} className="text-white/15 shrink-0" />
-                  )}
-                </div>
-              ))}
+                );
+              })}
             </div>
           </motion.div>
         ))}
+
+        <motion.div variants={child} className="pb-8">
+          <button
+            onClick={runSelected}
+            disabled={running || selected.size === 0}
+            className="relative w-full py-3.5 rounded-2xl bg-neon/15 border border-neon/25 text-neon text-sm font-medium hover:bg-neon/25 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2.5 group overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-neon/[0.04] to-transparent group-hover:via-neon/[0.08] transition-all duration-500" />
+            <span className="relative flex items-center gap-2.5">
+              {running ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-neon/20 border-t-neon rounded-full animate-spin" />
+                  Running Optimization…
+                </>
+              ) : (
+                <>
+                  <Sparkles size={15} strokeWidth={1.5} />
+                  Run Optimization Way Engine
+                  <span className="text-[11px] text-neon/40 font-normal">({selected.size})</span>
+                </>
+              )}
+            </span>
+          </button>
+        </motion.div>
       </motion.div>
 
       {confirm && (
@@ -193,13 +319,11 @@ export default function TweaksHub() {
                 <ShieldOff size={16} strokeWidth={1.5} className="text-crimson" />
               </div>
               <div>
-                <div className="text-sm font-medium text-white/80">{confirm.confirmTitle || "Confirm?"}</div>
+                <div className="text-sm font-medium text-white/80">{confirm.confirmTitle}</div>
                 <div className="text-[11px] text-white/25 mt-0.5">This action requires confirmation</div>
               </div>
             </div>
-            <p className="text-xs text-white/40 leading-relaxed mb-6">
-              {confirm.confirmMessage}
-            </p>
+            <p className="text-xs text-white/40 leading-relaxed mb-6">{confirm.confirmMessage}</p>
             <div className="flex gap-2 justify-end">
               <button
                 onClick={() => setConfirm(null)}
@@ -209,9 +333,8 @@ export default function TweaksHub() {
               </button>
               <button
                 onClick={() => {
-                  const tweak = confirm;
                   setConfirm(null);
-                  doToggle(tweak, true);
+                  executeBatch(Array.from(selected));
                 }}
                 className="px-4 py-2 rounded-lg text-xs font-medium text-white bg-crimson/80 hover:bg-crimson transition-all duration-200"
               >
