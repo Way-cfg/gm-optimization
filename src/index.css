@@ -1,28 +1,52 @@
 @import "tailwindcss";
 
-:root {
-  color-scheme: dark;
+@theme {
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+  --color-onyx: #05070B;
 }
 
 body {
   margin: 0;
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #1e1e2e; }
-::-webkit-scrollbar-thumb { background: #45475a; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #585b70; }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.12); }
 
-@keyframes fade-in {
-  from { opacity: 0; transform: translateY(4px); }
-  to   { opacity: 1; transform: translateY(0); }
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.6; }
 }
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes dash {
+  from { stroke-dashoffset: 283; }
+  to { stroke-dashoffset: 0; }
+}
+
+.tech-ring-spinner {
+  animation: pulse-ring 1.5s ease-in-out infinite;
+}
+.tech-ring-spinner svg {
+  animation: spin-slow 2s linear infinite;
+}
+.tech-ring-spinner circle {
+  stroke-dasharray: 283;
+  stroke-dashoffset: 75;
+  transform-origin: center;
+  animation: dash 1.5s ease-in-out infinite alternate;
+}
+
 @keyframes slide-in {
   from { opacity: 0; transform: translateX(40px); }
-  to   { opacity: 1; transform: translateX(0); }
+  to { opacity: 1; transform: translateX(0); }
 }
-
-.animate-fade-in { animation: fade-in 0.2s ease-out both; }
 .animate-slide-in { animation: slide-in 0.25s ease-out both; }

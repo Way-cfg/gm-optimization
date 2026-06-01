@@ -28,9 +28,9 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const colors: Record<ToastType, string> = {
-    success: "bg-emerald-600 border-emerald-500",
-    error: "bg-red-600 border-red-500",
-    info: "bg-blue-600 border-blue-500",
+    success: "border-white/[0.08]",
+    error: "border-white/[0.08]",
+    info: "border-white/[0.08]",
   };
 
   return (
@@ -40,7 +40,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
         {toasts.map((t) => (
           <div
             key={t.id}
-            className={`pointer-events-auto px-4 py-2.5 rounded border text-sm text-white shadow-lg animate-slide-in ${colors[t.type]}`}
+            className={`pointer-events-auto px-4 py-2.5 rounded-lg border text-sm text-white/80 shadow-2xl backdrop-blur-xl bg-white/[0.04] ${colors[t.type]}`}
           >
             {t.message}
           </div>
