@@ -17,7 +17,7 @@ export default function ConfirmDialog({ open, title, message, confirmLabel = "Co
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-[#0A0D14]/90 backdrop-blur-xl border border-white/[0.06] rounded-xl p-5 w-80 shadow-2xl"
+        className="bg-frosted/90 backdrop-blur-xl border border-white/[0.06] rounded-xl p-5 w-80 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <h3 className="font-semibold text-sm mb-2 text-white/80">{title}</h3>

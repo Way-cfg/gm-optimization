@@ -39,7 +39,7 @@ export default function SplashScreen({ loading }: { loading: boolean }) {
     <AnimatePresence>
       {show && (
         <motion.div
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#020203]"
+          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-obsidian"
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5, ease: "easeInOut" }}
         >
