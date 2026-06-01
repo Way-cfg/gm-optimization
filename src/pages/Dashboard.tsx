@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { motion } from "framer-motion";
-import { Cpu, MemoryStick, Activity, Wifi } from "lucide-react";
+import { Cpu, MemoryStick, Activity } from "lucide-react";
 
 interface SystemInfo {
   cpu: { label: string; value: string }[];
@@ -64,21 +64,22 @@ const item = {
   show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" } as const },
 } as const;
 
-export default function Dashboard() {
-  const [info, setInfo] = useState<SystemInfo | null>(null);
+export default function Dashboard({ initData }: { initData?: SystemInfo | null }) {
+  const [info, setInfo] = useState<SystemInfo | null>(initData || null);
   const [cpuLoad] = useState(32);
   const [ramPct] = useState(45);
-  const [ping] = useState(12);
   const status: string = "OPTIMIZED";
 
   useEffect(() => {
-    invoke<SystemInfo>("get_system_info").then(setInfo).catch(() => {});
-  }, []);
+    if (!initData) {
+      invoke<SystemInfo>("get_system_info").then(setInfo).catch(() => {});
+    }
+  }, [initData]);
 
   const ramTotal = info ? parseFloat(info.ram.find(e => e.label === "Total")?.value.replace(" GB", "") || "16") : 16;
   const cpuName = info?.cpu.find(e => e.label === "Model")?.value || "";
   const cores = info?.cpu.find(e => e.label === "Cores")?.value || "";
-  const gpu = info?.gpu.find(e => e.label === "GPU")?.value || "";
+  const gpuName = info?.gpu.find(e => e.label === "GPU")?.value || "";
   const osArch = info?.cpu.find(e => e.label === "Architecture")?.value || "x64";
   const drives = info?.storage.length || 0;
 
@@ -87,6 +88,7 @@ export default function Dashboard() {
       <motion.div variants={item} className="mb-8 text-center">
         <h1 className="text-xl font-semibold text-white/90 tracking-tight">Dashboard</h1>
         <p className="text-sm text-white/25 mt-1 font-mono">{cpuName || "Loading..."}</p>
+        {gpuName && <p className="text-[11px] text-white/15 mt-0.5 font-mono">{gpuName}</p>}
       </motion.div>
 
       <motion.div variants={item} className="flex justify-center mb-10">
@@ -114,10 +116,10 @@ export default function Dashboard() {
       </motion.div>
 
       <motion.div variants={item} className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-8">
-        <MetricBadge icon={Cpu} label="CPU Load" value={`${cpuLoad}%`} sub={`${cores} cores`} />
+        <MetricBadge icon={Cpu} label="CPU" value={`${cpuLoad}%`} sub={`${cores} cores`} />
         <MetricBadge icon={MemoryStick} label="RAM" value={`${ramTotal.toFixed(1)} GB`} sub={`${ramPct}% utilized`} />
         <MetricBadge icon={Activity} label="Drives" value={`${drives} drives`} sub={osArch} />
-        <MetricBadge icon={Wifi} label="Latency" value={`${ping} ms`} sub={gpu.substring(0, 20)} />
+        <MetricBadge icon={Activity} label="GPU" value={gpuName.split(" ").slice(0, 2).join(" ") || "—"} sub={gpuName.split(" ").slice(2).join(" ") || ""} />
       </motion.div>
 
       <motion.div variants={item} className="bg-frosted/80 backdrop-blur-xl border border-white/[0.05] rounded-2xl p-6">

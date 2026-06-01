@@ -10,8 +10,7 @@ fn run_pwsh(script: &str) -> String {
         .unwrap_or_default()
 }
 
-#[tauri::command]
-pub async fn get_system_info() -> Result<SystemInfo, String> {
+pub async fn collect_system_info() -> Result<SystemInfo, String> {
     // CPU
     let cpu_name = run_pwsh("(Get-CimInstance Win32_Processor).Name");
     let cpu_cores = run_pwsh("(Get-CimInstance Win32_Processor).NumberOfCores");
@@ -99,4 +98,9 @@ pub async fn get_system_info() -> Result<SystemInfo, String> {
     ];
 
     Ok(SystemInfo { cpu, gpu, ram, motherboard, storage, network })
+}
+
+#[tauri::command]
+pub async fn get_system_info() -> Result<SystemInfo, String> {
+    collect_system_info().await
 }

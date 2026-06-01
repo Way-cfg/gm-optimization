@@ -8,6 +8,7 @@ pub mod history;
 pub mod exclusions;
 pub mod scheduler;
 pub mod network_optimizer;
+pub mod init;
 pub mod system_info;
 pub mod benchmark;
 pub mod restore;

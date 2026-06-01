@@ -103,6 +103,7 @@ pub fn run() {
             commands::network_optimizer::restore_dns,
             commands::network_optimizer::flush_dns,
             commands::network_optimizer::apply_network_tweak,
+            commands::init::init_app,
             commands::system_info::get_system_info,
             commands::benchmark::run_disk_benchmark,
             commands::benchmark::run_network_benchmark,
