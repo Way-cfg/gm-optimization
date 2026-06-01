@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { invoke } from "@tauri-apps/api/core";
-import { Check, History, ShieldOff, AlertTriangle, Zap, Gauge, Mountain, Sparkles } from "lucide-react";
+import { Check, History, ShieldOff, AlertTriangle, RotateCw, Zap, Gauge, Mountain, Sparkles } from "lucide-react";
 import { useToast } from "../components/Toast";
 
 interface RegistryEntry {
@@ -23,6 +23,7 @@ interface TweakDefinition {
   enableScript?: string[];
   disableScript?: string[];
   commands?: string[];
+  requiresReboot?: boolean;
 }
 
 interface Preset {
@@ -61,6 +62,28 @@ const tweaks: TweakDefinition[] = [
     category: "Essential Tweaks",
     registry: [
       { path: "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\TaskbarDeveloperSettings", name: "TaskbarEndTask", value: "1", type_: "DWord" },
+    ],
+  },
+  {
+    id: "WPFTweaksDisableExplorerAutoDiscovery",
+    title: "File Explorer Automatic Folder Discovery - Disable",
+    description: "Windows Explorer automatically tries to guess the type of the folder based on its contents, slowing down the browsing experience. WARNING! Will disable File Explorer grouping.",
+    category: "Essential Tweaks",
+    requiresReboot: true,
+    enableScript: [
+      "$bags = \"HKCU:\\Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\Shell\\Bags\"",
+      "$bagMRU = \"HKCU:\\Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\Shell\\BagMRU\"",
+      "Remove-Item -Path $bags -Recurse -Force",
+      "Remove-Item -Path $bagMRU -Recurse -Force",
+      "$allFolders = \"HKCU:\\Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\Shell\\Bags\\AllFolders\\Shell\"",
+      "if (!(Test-Path $allFolders)) { New-Item -Path $allFolders -Force }",
+      "New-ItemProperty -Path $allFolders -Name \"FolderType\" -Value \"NotSpecified\" -PropertyType String -Force",
+    ],
+    disableScript: [
+      "$bags = \"HKCU:\\Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\Shell\\Bags\"",
+      "$bagMRU = \"HKCU:\\Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\Shell\\BagMRU\"",
+      "Remove-Item -Path $bags -Recurse -Force",
+      "Remove-Item -Path $bagMRU -Recurse -Force",
     ],
   },
   {
@@ -103,14 +126,14 @@ const presets: Preset[] = [
     label: "Balanced Tweak",
     description: "Moderate optimizations for daily use",
     icon: Gauge,
-    tweaks: ["WPFTweaksActivity", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksDiskCleanup"],
+    tweaks: ["WPFTweaksActivity", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup"],
   },
   {
     id: "extreme",
     label: "Extreme Plus Tweak",
     description: "Maximum system optimization",
     icon: Mountain,
-    tweaks: ["WPFTweaksActivity", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksDiskCleanup", "WPFTweaksDisableBitLocker"],
+    tweaks: ["WPFTweaksActivity", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksDisableBitLocker"],
   },
 ];
 
@@ -239,7 +262,7 @@ export default function TweaksHub() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className={`text-sm font-medium ${isActive ? "text-white/90" : "text-white/60"}`}>{p.label}</div>
-                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/5 selected</div>
+                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/6 selected</div>
                   </div>
                 </div>
                 <div className={`text-[11px] leading-relaxed ${isActive ? "text-white/30" : "text-white/[0.15]"}`}>{p.description}</div>
@@ -285,6 +308,9 @@ export default function TweaksHub() {
                       </div>
                       <div className="text-[11px] text-white/20 mt-0.5">{tweak.description}</div>
                     </div>
+                    {tweak.requiresReboot && (
+                      <RotateCw size={12} strokeWidth={1.5} className="text-neon/40 shrink-0" />
+                    )}
                     {tweak.requiresConfirmation && (
                       <AlertTriangle size={12} strokeWidth={1.5} className="text-white/15 shrink-0" />
                     )}
