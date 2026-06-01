@@ -55,6 +55,15 @@ const tweaks: TweakDefinition[] = [
     ],
   },
   {
+    id: "WPFTweaksEndTaskOnTaskbar",
+    title: "End Task With Right Click - Enable",
+    description: "Enables option to end task when right clicking a program in the taskbar.",
+    category: "Essential Tweaks",
+    registry: [
+      { path: "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\TaskbarDeveloperSettings", name: "TaskbarEndTask", value: "1", type_: "DWord" },
+    ],
+  },
+  {
     id: "WPFTweaksDiskCleanup",
     title: "Disk Cleanup - Run",
     description: "Runs Disk Cleanup on Drive C: and aggressively strips obsolete component data blocks from old Windows Updates.",
@@ -87,21 +96,21 @@ const presets: Preset[] = [
     label: "Simple Tweak",
     description: "Essential privacy and performance tweaks",
     icon: Zap,
-    tweaks: ["WPFTweaksActivity"],
+    tweaks: ["WPFTweaksActivity", "WPFTweaksEndTaskOnTaskbar"],
   },
   {
     id: "balanced",
     label: "Balanced Tweak",
     description: "Moderate optimizations for daily use",
     icon: Gauge,
-    tweaks: ["WPFTweaksActivity", "WPFTweaksConsumerFeatures", "WPFTweaksDiskCleanup"],
+    tweaks: ["WPFTweaksActivity", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksDiskCleanup"],
   },
   {
     id: "extreme",
     label: "Extreme Plus Tweak",
     description: "Maximum system optimization",
     icon: Mountain,
-    tweaks: ["WPFTweaksActivity", "WPFTweaksConsumerFeatures", "WPFTweaksDiskCleanup", "WPFTweaksDisableBitLocker"],
+    tweaks: ["WPFTweaksActivity", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksDiskCleanup", "WPFTweaksDisableBitLocker"],
   },
 ];
 
@@ -230,7 +239,7 @@ export default function TweaksHub() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className={`text-sm font-medium ${isActive ? "text-white/90" : "text-white/60"}`}>{p.label}</div>
-                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/4 selected</div>
+                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/5 selected</div>
                   </div>
                 </div>
                 <div className={`text-[11px] leading-relaxed ${isActive ? "text-white/30" : "text-white/[0.15]"}`}>{p.description}</div>
