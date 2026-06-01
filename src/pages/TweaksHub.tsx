@@ -11,6 +11,11 @@ interface RegistryEntry {
   type_: string;
 }
 
+interface ServiceEntry {
+  name: string;
+  startup_type: string;
+}
+
 interface TweakDefinition {
   id: string;
   title: string;
@@ -20,6 +25,7 @@ interface TweakDefinition {
   confirmTitle?: string;
   confirmMessage?: string;
   registry?: RegistryEntry[];
+  services?: ServiceEntry[];
   enableScript?: string[];
   disableScript?: string[];
   commands?: string[];
@@ -113,6 +119,20 @@ const tweaks: TweakDefinition[] = [
     ],
   },
   {
+    id: "WPFTweaksLocation",
+    title: "Location Tracking - Disable",
+    description: "Disables Windows Location Tracking infrastructure, sensors, and map auto-updates to prevent telemetry overhead.",
+    category: "Essential Tweaks",
+    services: [
+      { name: "lfsvc", startup_type: "Disable" },
+    ],
+    registry: [
+      { path: "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\location", name: "Value", value: "Deny", type_: "String" },
+      { path: "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Sensor\\Overrides\\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}", name: "SensorPermissionState", value: "0", type_: "DWord" },
+      { path: "HKLM\\SYSTEM\\Maps", name: "AutoUpdateEnabled", value: "0", type_: "DWord" },
+    ],
+  },
+  {
     id: "WPFTweaksDisableBitLocker",
     title: "BitLocker - Disable",
     description: "Disables BitLocker encryption on the main system drive.",
@@ -142,14 +162,14 @@ const presets: Preset[] = [
     label: "Balanced Tweak",
     description: "Moderate optimizations for daily use",
     icon: Gauge,
-    tweaks: ["WPFTweaksActivity", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksHiber"],
+    tweaks: ["WPFTweaksActivity", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksHiber", "WPFTweaksLocation"],
   },
   {
     id: "extreme",
     label: "Extreme Plus Tweak",
     description: "Maximum system optimization",
     icon: Mountain,
-    tweaks: ["WPFTweaksActivity", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksHiber", "WPFTweaksDisableBitLocker"],
+    tweaks: ["WPFTweaksActivity", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksHiber", "WPFTweaksLocation", "WPFTweaksDisableBitLocker"],
   },
 ];
 
@@ -227,6 +247,9 @@ export default function TweaksHub() {
         if (tweak.commands) {
           await invoke<string>("execute_native_commands", { commands: tweak.commands });
         }
+        if (tweak.services) {
+          await invoke<string>("configure_services", { entries: tweak.services });
+        }
         success++;
       } catch (e) {
         fail++;
@@ -280,7 +303,7 @@ export default function TweaksHub() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className={`text-sm font-medium ${isActive ? "text-white/90" : "text-white/60"}`}>{p.label}</div>
-                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/7 selected</div>
+                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/8 selected</div>
                   </div>
                 </div>
                 <div className={`text-[11px] leading-relaxed ${isActive ? "text-white/30" : "text-white/[0.15]"}`}>{p.description}</div>
