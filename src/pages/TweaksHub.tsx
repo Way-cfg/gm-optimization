@@ -62,6 +62,18 @@ const tweaks: TweakDefinition[] = [
     ],
   },
   {
+    id: "WPFTweaksPowershell7Tele",
+    title: "PowerShell 7 Telemetry - Disable",
+    description: "Creates a system environment variable called 'POWERSHELL_TELEMETRY_OPTOUT' with a value of '1' to tell PowerShell 7 to opt-out of telemetry collections.",
+    category: "Essential Tweaks",
+    enableScript: [
+      "[Environment]::SetEnvironmentVariable('POWERSHELL_TELEMETRY_OPTOUT', '1', 'Machine')",
+    ],
+    disableScript: [
+      "[Environment]::SetEnvironmentVariable('POWERSHELL_TELEMETRY_OPTOUT', '', 'Machine')",
+    ],
+  },
+  {
     id: "WPFTweaksDisableStoreSearch",
     title: "Microsoft Store Recommended Search Results - Disable",
     description: "Will not display recommended Microsoft Store apps when searching for apps in the Start menu.",
@@ -167,21 +179,21 @@ const presets: Preset[] = [
     label: "Simple Tweak",
     description: "Essential privacy and performance tweaks",
     icon: Zap,
-    tweaks: ["WPFTweaksActivity", "WPFTweaksDisableStoreSearch", "WPFTweaksEndTaskOnTaskbar"],
+    tweaks: ["WPFTweaksActivity", "WPFTweaksPowershell7Tele", "WPFTweaksDisableStoreSearch", "WPFTweaksEndTaskOnTaskbar"],
   },
   {
     id: "balanced",
     label: "Balanced Tweak",
     description: "Moderate optimizations for daily use",
     icon: Gauge,
-    tweaks: ["WPFTweaksActivity", "WPFTweaksDisableStoreSearch", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksHiber", "WPFTweaksLocation"],
+    tweaks: ["WPFTweaksActivity", "WPFTweaksPowershell7Tele", "WPFTweaksDisableStoreSearch", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksHiber", "WPFTweaksLocation"],
   },
   {
     id: "extreme",
     label: "Extreme Plus Tweak",
     description: "Maximum system optimization",
     icon: Mountain,
-    tweaks: ["WPFTweaksActivity", "WPFTweaksDisableStoreSearch", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksHiber", "WPFTweaksLocation", "WPFTweaksDisableBitLocker"],
+    tweaks: ["WPFTweaksActivity", "WPFTweaksPowershell7Tele", "WPFTweaksDisableStoreSearch", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksHiber", "WPFTweaksLocation", "WPFTweaksDisableBitLocker"],
   },
 ];
 
@@ -315,7 +327,7 @@ export default function TweaksHub() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className={`text-sm font-medium ${isActive ? "text-white/90" : "text-white/60"}`}>{p.label}</div>
-                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/9 selected</div>
+                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/10 selected</div>
                   </div>
                 </div>
                 <div className={`text-[11px] leading-relaxed ${isActive ? "text-white/30" : "text-white/[0.15]"}`}>{p.description}</div>
