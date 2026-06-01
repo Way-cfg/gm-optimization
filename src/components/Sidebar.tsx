@@ -27,13 +27,13 @@ export default function Sidebar() {
             key={item.path}
             to={item.path}
             end={item.path === "/"}
-            className={({ isActive }) =>
-              `flex items-center gap-2.5 px-3 py-2.5 text-sm rounded-lg transition-all duration-200 ${
-                isActive
-                  ? "bg-white/[0.06] text-white"
-                  : "text-white/35 hover:text-white/60 hover:bg-white/[0.02]"
-              }`
-            }
+             className={({ isActive }) =>
+               `flex items-center gap-2.5 px-3 py-2.5 text-sm rounded-lg transition-all duration-200 ${
+                 isActive
+                   ? "bg-neon/[0.1] text-neon"
+                   : "text-white/35 hover:text-white/60 hover:bg-white/[0.02]"
+               }`
+             }
           >
             <item.icon size={16} strokeWidth={1.5} />
             <span>{item.label}</span>

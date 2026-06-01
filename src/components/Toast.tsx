@@ -28,8 +28,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const colors: Record<ToastType, string> = {
-    success: "border-white/[0.08]",
-    error: "border-white/[0.08]",
+    success: "border-emerald/30",
+    error: "border-crimson/30",
     info: "border-white/[0.08]",
   };
 

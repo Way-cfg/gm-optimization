@@ -88,7 +88,7 @@ export default function AppSettings() {
         <div className="flex items-center justify-between">
           <span className="text-sm text-white/50">Theme</span>
           <div className="flex items-center gap-2 bg-white/[0.03] border border-white/[0.05] rounded-xl p-1">
-            <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.06] text-white/60 text-xs transition-all">
+            <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neon/[0.12] text-neon text-xs transition-all">
               <Moon size={13} strokeWidth={1.5} />
               Dark
             </button>
@@ -106,11 +106,11 @@ export default function AppSettings() {
           <span className="text-[11px] text-white/20 uppercase tracking-widest">Backup & Profiles</span>
         </div>
         <div className="grid grid-cols-2 gap-2">
-          <button onClick={exportProfile} className="flex items-center gap-2 px-3 py-2.5 bg-white/[0.03] border border-white/[0.05] rounded-xl hover:bg-white/[0.05] transition-all text-sm text-white/50 hover:text-white/70">
+          <button onClick={exportProfile} className="flex items-center gap-2 px-3 py-2.5 bg-white/[0.03] border border-white/[0.05] rounded-xl hover:bg-neon/[0.08] hover:border-neon/20 transition-all text-sm text-white/50 hover:text-neon">
             <Upload size={14} strokeWidth={1.5} />
             Export Profile
           </button>
-          <button onClick={importProfile} className="flex items-center gap-2 px-3 py-2.5 bg-white/[0.03] border border-white/[0.05] rounded-xl hover:bg-white/[0.05] transition-all text-sm text-white/50 hover:text-white/70">
+          <button onClick={importProfile} className="flex items-center gap-2 px-3 py-2.5 bg-white/[0.03] border border-white/[0.05] rounded-xl hover:bg-neon/[0.08] hover:border-neon/20 transition-all text-sm text-white/50 hover:text-neon">
             <Download size={14} strokeWidth={1.5} />
             Import Profile
           </button>
@@ -135,7 +135,7 @@ export default function AppSettings() {
                 <button
                   onClick={() => toggleSchedule(s.id, !s.enabled)}
                   className={`px-3 py-1 rounded-lg text-xs transition-all ${
-                    s.enabled ? "bg-white/[0.08] text-white/60" : "bg-white/[0.03] text-white/20"
+                    s.enabled ? "bg-neon/[0.12] text-neon" : "bg-white/[0.03] text-white/20"
                   }`}
                 >
                   {s.enabled ? "Enabled" : "Disabled"}

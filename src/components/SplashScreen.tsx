@@ -9,16 +9,17 @@ function SpinnerRing() {
 
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth={stroke} />
+      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,85,0,0.08)" strokeWidth={stroke} />
       <motion.circle
         cx={size / 2} cy={size / 2} r={r}
         fill="none"
-        stroke="rgba(255,255,255,0.55)"
+        stroke="#FF5500"
         strokeWidth={stroke}
         strokeLinecap="round"
         strokeDasharray={`${circumference * 0.3} ${circumference}`}
         animate={{ strokeDashoffset: [0, -circumference * 0.7] }}
         transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
+        style={{ filter: "drop-shadow(0 0 8px rgba(255,85,0,0.5))" }}
       />
     </svg>
   );
@@ -38,7 +39,7 @@ export default function SplashScreen({ loading }: { loading: boolean }) {
     <AnimatePresence>
       {show && (
         <motion.div
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#030508]"
+          className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#020203]"
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5, ease: "easeInOut" }}
         >
@@ -59,12 +60,13 @@ export default function SplashScreen({ loading }: { loading: boolean }) {
               </p>
             </div>
 
-            <div className="flex gap-1.5">
+            <div className="flex gap-2">
               {[0, 1, 2].map(i => (
                 <motion.div
                   key={i}
-                  className="w-1.5 h-1.5 rounded-full bg-white/30"
-                  animate={{ opacity: loading ? [0.2, 0.7, 0.2] : 0.7 }}
+                  className="w-1.5 h-1.5 rounded-full"
+                  style={{ backgroundColor: "#FF5500" }}
+                  animate={{ opacity: loading ? [0.2, 0.8, 0.2] : 0.8 }}
                   transition={loading ? { duration: 1.2, repeat: Infinity, delay: i * 0.25, ease: "easeInOut" } : { duration: 0.3 }}
                 />
               ))}

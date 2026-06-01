@@ -26,7 +26,7 @@ export default function ConfirmDialog({ open, title, message, confirmLabel = "Co
           <button onClick={onCancel} className="px-3 py-1.5 text-xs bg-white/[0.04] hover:bg-white/[0.08] rounded-lg transition-all duration-200 text-white/50">
             Cancel
           </button>
-          <button onClick={onConfirm} className="px-3 py-1.5 text-xs bg-white/[0.08] hover:bg-white/[0.12] rounded-lg transition-all duration-200 text-white/80">
+          <button onClick={onConfirm} className="px-3 py-1.5 text-xs bg-neon/[0.15] hover:bg-neon/[0.25] rounded-lg transition-all duration-200 text-neon">
             {confirmLabel}
           </button>
         </div>

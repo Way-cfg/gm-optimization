@@ -46,9 +46,9 @@ interface Preset {
 }
 
 const presets: Preset[] = [
-  { key: "simple", label: "Simple Tweak", desc: "Basic cleanups and safe configurations", icon: Shield, color: "rgba(255,255,255,0.25)" },
-  { key: "balanced", label: "Balanced Tweak", desc: "Gaming optimization & privacy controls", icon: Zap, color: "rgba(255,255,255,0.35)" },
-  { key: "extreme", label: "Extreme Plus Tweak", desc: "Deep latency & service stripping", icon: Flame, color: "rgba(255,255,255,0.45)" },
+  { key: "simple", label: "Simple Tweak", desc: "Basic cleanups and safe configurations", icon: Shield, color: "#FF5500" },
+  { key: "balanced", label: "Balanced Tweak", desc: "Gaming optimization & privacy controls", icon: Zap, color: "#FF5500" },
+  { key: "extreme", label: "Extreme Plus Tweak", desc: "Deep latency & service stripping", icon: Flame, color: "#FF5500" },
 ];
 
 const categories = ["Storage", "Registry", "Startup", "Network", "Windows OS"];
@@ -102,7 +102,7 @@ export default function TweaksHub() {
     setRunning(true);
     try {
       await new Promise(r => setTimeout(r, 2000));
-      confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ["#ffffff", "#888888", "#cccccc"] });
+      confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ["#FF5500", "#00C853", "#ffffff"] });
       toast("success", "Optimization Way Engine completed successfully");
     } catch {
       toast("error", "Engine run failed");
@@ -124,7 +124,7 @@ export default function TweaksHub() {
             onClick={() => selectPreset(p.key)}
             className={`text-left p-4 rounded-xl border transition-all duration-300 ${
               activePreset === p.key
-                ? "bg-white/[0.06] border-white/[0.12]"
+                ? "bg-neon/[0.08] border-neon/30"
                 : "bg-white/[0.02] border-white/[0.05] hover:bg-white/[0.04]"
             }`}
           >
@@ -136,7 +136,7 @@ export default function TweaksHub() {
                 <div className="text-sm font-medium text-white/70">{p.label}</div>
                 <div className="text-[11px] text-white/25">{p.desc}</div>
               </div>
-              {activePreset === p.key && <Check size={16} strokeWidth={1.5} className="text-white/40 ml-auto" />}
+              {activePreset === p.key && <Check size={16} strokeWidth={1.5} className="text-neon ml-auto" />}
             </div>
             <div className="text-[11px] text-white/15 font-mono">
               {tweakItems.filter(t => t.presets.includes(p.key)).length} tweaks
@@ -171,10 +171,10 @@ export default function TweaksHub() {
                         >
                       <div className={`w-4 h-4 rounded border flex items-center justify-center transition-all duration-200 ${
                         checked.has(t.id)
-                          ? "bg-white/20 border-white/30"
+                          ? "bg-neon/[0.15] border-neon/40"
                           : "border-white/[0.12] hover:border-white/25"
                       }`}>
-                        {checked.has(t.id) && <Check size={10} strokeWidth={3} className="text-white/80" />}
+                        {checked.has(t.id) && <Check size={10} strokeWidth={3} className="text-neon" />}
                       </div>
                       <span className="text-sm text-white/50">{t.label}</span>
                       </div>
@@ -190,12 +190,12 @@ export default function TweaksHub() {
         <button
           onClick={runEngine}
           disabled={running}
-          className="flex items-center gap-2.5 px-8 py-3 bg-white/[0.06] border border-white/[0.1] rounded-xl text-sm font-medium text-white/70 hover:bg-white/[0.09] transition-all duration-300 disabled:opacity-30"
-          style={{ animation: running ? "none" : "glow-pulse 3s ease-in-out infinite" }}
+          className="flex items-center gap-2.5 px-8 py-3 bg-neon/[0.12] border border-neon/30 rounded-xl text-sm font-medium text-neon hover:bg-neon/[0.18] transition-all duration-300 disabled:opacity-30 neon-glow"
+          style={{ animation: running ? "none" : "neon-glow 2.5s ease-in-out infinite" }}
         >
           {running ? (
             <>
-              <div className="w-4 h-4 border-2 border-white/20 border-t-white/60 rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-neon/20 border-t-neon rounded-full animate-spin" />
               Running...
             </>
           ) : (
