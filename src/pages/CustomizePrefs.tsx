@@ -59,6 +59,15 @@ const toggles: ToggleDefinition[] = [
     ],
   },
   {
+    id: "WPFToggleBingSearch",
+    title: "Start Menu Bing Search",
+    description: "If enabled, Bing web search results will be included in your Start Menu search.",
+    defaultState: true,
+    registry: [
+      { path: "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Search", name: "BingSearchEnabled", value: "1", type_: "DWord" },
+    ],
+  },
+  {
     id: "WPFToggleHideSettingsHome",
     title: "Settings Home Page",
     description: "Enable or disable the Home Page in the Windows Settings app.",
