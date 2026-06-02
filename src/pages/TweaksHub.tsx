@@ -400,6 +400,25 @@ const tweaks: TweakDefinition[] = [
     ],
   },
   {
+    id: "WPFTweaksRemoveOneDrive",
+    title: "Microsoft OneDrive - Remove",
+    description: "Denies permission to remove OneDrive user files, then uses its own uninstaller to remove it and restores the original permission afterward.",
+    category: "Advanced Tweaks",
+    enableScript: [
+      "Stop-Process -Name FileCoAuth -Force -ErrorAction SilentlyContinue",
+      "Start-Process 'C:\\Windows\\System32\\OneDriveSetup.exe' -ArgumentList '/uninstall' -Wait",
+      "Stop-Process -Name FileCoAuth, Explorer -Force -ErrorAction SilentlyContinue",
+      "Remove-Item \"$env:LOCALAPPDATA\\Microsoft\\OneDrive\" -Recurse -Force -ErrorAction SilentlyContinue",
+      "Remove-Item \"C:\\ProgramData\\Microsoft OneDrive\" -Recurse -Force -ErrorAction SilentlyContinue",
+      "Set-Service -Name OneSyncSvc -StartupType Disabled",
+    ],
+    disableScript: [
+      "Write-Host 'Installing OneDrive...'",
+      "winget install Microsoft.OneDrive --source winget",
+      "Set-Service -Name OneSyncSvc -StartupType Automatic",
+    ],
+  },
+  {
     id: "WPFTweaksDisableBitLocker",
     title: "BitLocker - Disable",
     description: "Disables BitLocker encryption on the main system drive.",
@@ -570,7 +589,7 @@ export default function TweaksHub() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className={`text-sm font-medium ${isActive ? "text-white/90" : "text-white/60"}`}>{p.label}</div>
-                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/26 selected</div>
+                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/27 selected</div>
                   </div>
                 </div>
                 <div className={`text-[11px] leading-relaxed ${isActive ? "text-white/30" : "text-white/[0.15]"}`}>{p.description}</div>
