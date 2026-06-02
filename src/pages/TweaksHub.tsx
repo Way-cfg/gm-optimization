@@ -437,6 +437,21 @@ const tweaks: TweakDefinition[] = [
     ],
   },
   {
+    id: "WPFTweaksXboxRemoval",
+    title: "Xbox & Gaming Components - Remove",
+    description: "Removes Xbox services, the Xbox app, Game Bar, and related authentication components.",
+    category: "Advanced Tweaks",
+    registry: [
+      { path: "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\GameDVR", name: "AppCaptureEnabled", value: "0", type_: "DWord" },
+    ],
+    enableScript: [
+      "@('Microsoft.XboxIdentityProvider','Microsoft.XboxSpeechToTextOverlay','Microsoft.GamingApp','Microsoft.Xbox.TCUI','Microsoft.XboxGamingOverlay') | ForEach-Object { Get-AppxPackage $_ -AllUsers | Remove-AppxPackage -AllUsers }",
+    ],
+    disableScript: [
+      "Write-Host 'Xbox components removed. Reinstall from Microsoft Store if needed.'",
+    ],
+  },
+  {
     id: "WPFTweaksWindowsAI",
     title: "Windows AI - Disable",
     description: "Removes or disables all AI features and packages including Copilot, Recall, and Notepad AI.",
@@ -716,7 +731,7 @@ export default function TweaksHub() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className={`text-sm font-medium ${isActive ? "text-white/90" : "text-white/60"}`}>{p.label}</div>
-                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/35 selected</div>
+                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/36 selected</div>
                   </div>
                 </div>
                 <div className={`text-[11px] leading-relaxed ${isActive ? "text-white/30" : "text-white/[0.15]"}`}>{p.description}</div>
