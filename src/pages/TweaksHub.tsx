@@ -270,6 +270,25 @@ const tweaks: TweakDefinition[] = [
     ],
   },
   {
+    id: "WPFTweaksBlockAdobeNet",
+    title: "Adobe URL Block List - Enable",
+    description: "Reduces user interruptions by selectively blocking connections to Adobe's activation and telemetry servers. Credit: Ruddernation-Designs",
+    category: "Advanced Tweaks",
+    enableScript: [
+      "$hostsUrl = \"https://github.com/Ruddernation-Designs/Adobe-URL-Block-List/raw/refs/heads/master/hosts\"",
+      "$hosts = \"$Env:SystemRoot\\System32\\drivers\\etc\\hosts\"",
+      "Move-Item $hosts \"$hosts.bak\"",
+      "Invoke-WebRequest $hostsUrl -OutFile $hosts",
+      "ipconfig /flushdns",
+    ],
+    disableScript: [
+      "$hosts = \"$Env:SystemRoot\\System32\\drivers\\etc\\hosts\"",
+      "Remove-Item $hosts",
+      "Move-Item \"$hosts.bak\" $hosts",
+      "ipconfig /flushdns",
+    ],
+  },
+  {
     id: "WPFTweaksDisableBitLocker",
     title: "BitLocker - Disable",
     description: "Disables BitLocker encryption on the main system drive.",
@@ -440,7 +459,7 @@ export default function TweaksHub() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className={`text-sm font-medium ${isActive ? "text-white/90" : "text-white/60"}`}>{p.label}</div>
-                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/17 selected</div>
+                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/18 selected</div>
                   </div>
                 </div>
                 <div className={`text-[11px] leading-relaxed ${isActive ? "text-white/30" : "text-white/[0.15]"}`}>{p.description}</div>
