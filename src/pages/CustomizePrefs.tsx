@@ -59,6 +59,15 @@ const toggles: ToggleDefinition[] = [
     ],
   },
   {
+    id: "WPFToggleVerboseLogon",
+    title: "Logon Verbose Mode",
+    description: "Show detailed messages during the login process for troubleshooting and diagnostics.",
+    defaultState: false,
+    registry: [
+      { path: "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System", name: "VerboseStatus", value: "1", type_: "DWord" },
+    ],
+  },
+  {
     id: "WPFToggleLoginBlur",
     title: "Logon Screen Acrylic Blur",
     description: "If enabled, the acrylic blur effect will be shown on the Windows login screen background.",
