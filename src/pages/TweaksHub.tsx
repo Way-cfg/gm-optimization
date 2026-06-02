@@ -437,6 +437,30 @@ const tweaks: TweakDefinition[] = [
     ],
   },
   {
+    id: "WPFTweaksWindowsAI",
+    title: "Windows AI - Disable",
+    description: "Removes or disables all AI features and packages including Copilot, Recall, and Notepad AI.",
+    category: "Advanced Tweaks",
+    registry: [
+      { path: "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer", name: "SettingsPageVisibility", value: "hide:aicomponents", type_: "String" },
+      { path: "HKLM\\SOFTWARE\\Policies\\WindowsNotepad", name: "DisableAIFeatures", value: "1", type_: "DWord" },
+    ],
+    enableScript: [
+      "$Appx = (Get-AppxPackage MicrosoftWindows.Client.CoreAI).PackageFullName",
+      "$Sid = (Get-LocalUser $Env:UserName).Sid.Value",
+      "New-Item 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Appx\\AppxAllUserStore\\EndOfLife\\$Sid\\$Appx' -Force",
+      "Get-AppxPackage -AllUsers *Copilot* | Remove-AppxPackage -AllUsers",
+      "Get-AppxPackage -AllUsers Microsoft.MicrosoftOfficeHub | Remove-AppxPackage -AllUsers",
+      "Remove-AppxPackage $Appx",
+      "Set-Service -Name WSAIFabricSvc -StartupType Disabled",
+      "Disable-WindowsOptionalFeature -FeatureName Recall -Online",
+    ],
+    disableScript: [
+      "Set-Service -Name WSAIFabricSvc -StartupType Manual",
+      "Enable-WindowsOptionalFeature -FeatureName Recall -Online",
+    ],
+  },
+  {
     id: "WPFTweaksDisplay",
     title: "Visual Effects - Set to Best Performance",
     description: "Sets the system preferences to performance. You can do this manually with sysdm.cpl as well.",
@@ -692,7 +716,7 @@ export default function TweaksHub() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className={`text-sm font-medium ${isActive ? "text-white/90" : "text-white/60"}`}>{p.label}</div>
-                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/34 selected</div>
+                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/35 selected</div>
                   </div>
                 </div>
                 <div className={`text-[11px] leading-relaxed ${isActive ? "text-white/30" : "text-white/[0.15]"}`}>{p.description}</div>
