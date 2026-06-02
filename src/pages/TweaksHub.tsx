@@ -231,6 +231,15 @@ const tweaks: TweakDefinition[] = [
     ],
   },
   {
+    id: "WPFTweaksWPBT",
+    title: "Windows Platform Binary Table (WPBT) - Disable",
+    description: "If enabled, WPBT allows your computer vendor to execute programs at boot time, such as anti-theft software, software drivers, as well as force install software without user consent. Poses potential security risk.",
+    category: "Essential Tweaks",
+    registry: [
+      { path: "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager", name: "DisableWpbtExecution", value: "1", type_: "DWord" },
+    ],
+  },
+  {
     id: "WPFTweaksHiber",
     title: "Hibernation - Disable",
     description: "Hibernation saves what is in memory before turning the PC off. Disabling it instantly frees up gigabytes of storage equivalent to your system RAM.",
@@ -290,14 +299,14 @@ const presets: Preset[] = [
     label: "Balanced Tweak",
     description: "Moderate optimizations for daily use",
     icon: Gauge,
-    tweaks: ["WPFTweaksActivity", "WPFTweaksTelemetry", "WPFTweaksPowershell7Tele", "WPFTweaksDisableStoreSearch", "WPFTweaksDeleteTempFiles", "WPFTweaksDeBloat", "WPFTweaksWidget", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksRevertStartMenu", "WPFTweaksRestorePoint", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksHiber", "WPFTweaksLocation"],
+    tweaks: ["WPFTweaksActivity", "WPFTweaksTelemetry", "WPFTweaksPowershell7Tele", "WPFTweaksDisableStoreSearch", "WPFTweaksDeleteTempFiles", "WPFTweaksDeBloat", "WPFTweaksWidget", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksRevertStartMenu", "WPFTweaksRestorePoint", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksWPBT", "WPFTweaksHiber", "WPFTweaksLocation"],
   },
   {
     id: "extreme",
     label: "Extreme Plus Tweak",
     description: "Maximum system optimization",
     icon: Mountain,
-    tweaks: ["WPFTweaksActivity", "WPFTweaksTelemetry", "WPFTweaksPowershell7Tele", "WPFTweaksDisableStoreSearch", "WPFTweaksDeleteTempFiles", "WPFTweaksDeBloat", "WPFTweaksWidget", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksRevertStartMenu", "WPFTweaksRestorePoint", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksHiber", "WPFTweaksLocation", "WPFTweaksDisableBitLocker"],
+    tweaks: ["WPFTweaksActivity", "WPFTweaksTelemetry", "WPFTweaksPowershell7Tele", "WPFTweaksDisableStoreSearch", "WPFTweaksDeleteTempFiles", "WPFTweaksDeBloat", "WPFTweaksWidget", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksRevertStartMenu", "WPFTweaksRestorePoint", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksWPBT", "WPFTweaksHiber", "WPFTweaksLocation", "WPFTweaksDisableBitLocker"],
   },
 ];
 
@@ -431,7 +440,7 @@ export default function TweaksHub() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className={`text-sm font-medium ${isActive ? "text-white/90" : "text-white/60"}`}>{p.label}</div>
-                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/16 selected</div>
+                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/17 selected</div>
                   </div>
                 </div>
                 <div className={`text-[11px] leading-relaxed ${isActive ? "text-white/30" : "text-white/[0.15]"}`}>{p.description}</div>
