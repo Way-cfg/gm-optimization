@@ -59,6 +59,16 @@ const toggles: ToggleDefinition[] = [
     ],
   },
   {
+    id: "WPFToggleMultiplaneOverlay",
+    title: "Multiplane Overlay",
+    description: "Enable or disable the Multiplane Overlay, which can sometimes cause issues with graphics cards.",
+    defaultState: false,
+    registry: [
+      { path: "HKLM\\SOFTWARE\\Microsoft\\Windows\\Dwm", name: "OverlayTestMode", value: "0", type_: "DWord" },
+      { path: "HKLM\\SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers", name: "DisableOverlays", value: "1", type_: "DWord" },
+    ],
+  },
+  {
     id: "WPFToggleMouseAcceleration",
     title: "Mouse Acceleration",
     description: "If enabled, the cursor movement is affected by the speed of your physical mouse movements.",
