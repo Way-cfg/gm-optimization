@@ -59,6 +59,15 @@ const toggles: ToggleDefinition[] = [
     ],
   },
   {
+    id: "WPFToggleTaskView",
+    title: "Taskbar Task View Icon",
+    description: "If enabled, Task View Button in Taskbar will be shown.",
+    defaultState: true,
+    registry: [
+      { path: "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", name: "ShowTaskViewButton", value: "1", type_: "DWord" },
+    ],
+  },
+  {
     id: "WPFToggleTaskbarSearch",
     title: "Taskbar Search Icon",
     description: "If enabled, Search Button will be on the Taskbar.",
