@@ -59,6 +59,21 @@ const toggles: ToggleDefinition[] = [
     ],
   },
   {
+    id: "WPFToggleHiddenFiles",
+    title: "File Explorer Hidden Files",
+    description: "If enabled, Hidden Files will be shown.",
+    defaultState: false,
+    registry: [
+      { path: "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", name: "Hidden", value: "1", type_: "DWord" },
+    ],
+    enableScript: [
+      "Stop-Process -Name 'explorer' -Force",
+    ],
+    disableScript: [
+      "Stop-Process -Name 'explorer' -Force",
+    ],
+  },
+  {
     id: "WPFToggleLongPaths",
     title: "Enable Long Paths",
     description: "Enables support for file paths longer than 260 characters.",
