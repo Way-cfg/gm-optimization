@@ -59,6 +59,15 @@ const toggles: ToggleDefinition[] = [
     ],
   },
   {
+    id: "WPFToggleStickyKeys",
+    title: "Sticky Keys",
+    description: "If enabled, Sticky Keys is activated. Sticky keys is an accessibility feature that assists users who have physical disabilities or helps reduce repetitive strain injury.",
+    defaultState: true,
+    registry: [
+      { path: "HKCU\\Control Panel\\Accessibility\\StickyKeys", name: "Flags", value: "506", type_: "DWord" },
+    ],
+  },
+  {
     id: "WPFToggleStartMenuRecommendations",
     title: "Start Menu Recommendations",
     description: "If disabled, then you will not see recommendations in the Start Menu. WARNING: This will also disable Windows Spotlight on your Lock Screen as a side effect.",
