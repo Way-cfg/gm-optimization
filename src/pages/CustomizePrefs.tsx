@@ -59,6 +59,15 @@ const toggles: ToggleDefinition[] = [
     ],
   },
   {
+    id: "WPFToggleLoginBlur",
+    title: "Logon Screen Acrylic Blur",
+    description: "If enabled, the acrylic blur effect will be shown on the Windows login screen background.",
+    defaultState: true,
+    registry: [
+      { path: "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System", name: "DisableAcrylicBackgroundOnLogon", value: "0", type_: "DWord" },
+    ],
+  },
+  {
     id: "WPFToggleGameMode",
     title: "Game Mode",
     description: "If enabled, Windows prioritizes gaming performance by allocating system resources. Disable for audio/video production to prevent interference.",
