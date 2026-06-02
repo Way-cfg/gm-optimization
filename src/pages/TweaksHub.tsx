@@ -62,6 +62,37 @@ const tweaks: TweakDefinition[] = [
     ],
   },
   {
+    id: "WPFTweaksTelemetry",
+    title: "Telemetry - Disable",
+    description: "Disables Microsoft Telemetry.",
+    category: "Essential Tweaks",
+    registry: [
+      { path: "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo", name: "Enabled", value: "0", type_: "DWord" },
+      { path: "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Privacy", name: "TailoredExperiencesWithDiagnosticDataEnabled", value: "0", type_: "DWord" },
+      { path: "HKCU\\Software\\Microsoft\\Speech_OneCore\\Settings\\OnlineSpeechPrivacy", name: "HasAccepted", value: "0", type_: "DWord" },
+      { path: "HKCU\\Software\\Microsoft\\Input\\TIPC", name: "Enabled", value: "0", type_: "DWord" },
+      { path: "HKCU\\Software\\Microsoft\\InputPersonalization", name: "RestrictImplicitInkCollection", value: "1", type_: "DWord" },
+      { path: "HKCU\\Software\\Microsoft\\InputPersonalization", name: "RestrictImplicitTextCollection", value: "1", type_: "DWord" },
+      { path: "HKCU\\Software\\Microsoft\\InputPersonalization\\TrainedDataStore", name: "HarvestContacts", value: "0", type_: "DWord" },
+      { path: "HKCU\\Software\\Microsoft\\Personalization\\Settings", name: "AcceptedPrivacyPolicy", value: "0", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\DataCollection", name: "AllowTelemetry", value: "0", type_: "DWord" },
+      { path: "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", name: "Start_TrackProgs", value: "0", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System", name: "PublishUserActivities", value: "0", type_: "DWord" },
+      { path: "HKCU\\Software\\Microsoft\\Siuf\\Rules", name: "NumberOfSIUFInPeriod", value: "0", type_: "DWord" },
+    ],
+    enableScript: [
+      "Set-MpPreference -SubmitSamplesConsent 2",
+      "Set-Service -Name diagtrack -StartupType Disabled",
+      "Set-Service -Name wermgr -StartupType Disabled",
+      "Remove-ItemProperty -Path \"HKCU:\\Software\\Microsoft\\Siuf\\Rules\" -Name PeriodInNanoSeconds",
+    ],
+    disableScript: [
+      "Set-MpPreference -SubmitSamplesConsent 1",
+      "Set-Service -Name diagtrack -StartupType Automatic",
+      "Set-Service -Name wermgr -StartupType Automatic",
+    ],
+  },
+  {
     id: "WPFTweaksPowershell7Tele",
     title: "PowerShell 7 Telemetry - Disable",
     description: "Creates a system environment variable called 'POWERSHELL_TELEMETRY_OPTOUT' with a value of '1' to tell PowerShell 7 to opt-out of telemetry collections.",
@@ -214,21 +245,21 @@ const presets: Preset[] = [
     label: "Simple Tweak",
     description: "Essential privacy and performance tweaks",
     icon: Zap,
-    tweaks: ["WPFTweaksActivity", "WPFTweaksPowershell7Tele", "WPFTweaksDisableStoreSearch", "WPFTweaksEndTaskOnTaskbar"],
+    tweaks: ["WPFTweaksActivity", "WPFTweaksTelemetry", "WPFTweaksPowershell7Tele", "WPFTweaksDisableStoreSearch", "WPFTweaksEndTaskOnTaskbar"],
   },
   {
     id: "balanced",
     label: "Balanced Tweak",
     description: "Moderate optimizations for daily use",
     icon: Gauge,
-    tweaks: ["WPFTweaksActivity", "WPFTweaksPowershell7Tele", "WPFTweaksDisableStoreSearch", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksRevertStartMenu", "WPFTweaksRestorePoint", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksHiber", "WPFTweaksLocation"],
+    tweaks: ["WPFTweaksActivity", "WPFTweaksTelemetry", "WPFTweaksPowershell7Tele", "WPFTweaksDisableStoreSearch", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksRevertStartMenu", "WPFTweaksRestorePoint", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksHiber", "WPFTweaksLocation"],
   },
   {
     id: "extreme",
     label: "Extreme Plus Tweak",
     description: "Maximum system optimization",
     icon: Mountain,
-    tweaks: ["WPFTweaksActivity", "WPFTweaksPowershell7Tele", "WPFTweaksDisableStoreSearch", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksRevertStartMenu", "WPFTweaksRestorePoint", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksHiber", "WPFTweaksLocation", "WPFTweaksDisableBitLocker"],
+    tweaks: ["WPFTweaksActivity", "WPFTweaksTelemetry", "WPFTweaksPowershell7Tele", "WPFTweaksDisableStoreSearch", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksRevertStartMenu", "WPFTweaksRestorePoint", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksHiber", "WPFTweaksLocation", "WPFTweaksDisableBitLocker"],
   },
 ];
 
@@ -362,7 +393,7 @@ export default function TweaksHub() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className={`text-sm font-medium ${isActive ? "text-white/90" : "text-white/60"}`}>{p.label}</div>
-                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/12 selected</div>
+                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/13 selected</div>
                   </div>
                 </div>
                 <div className={`text-[11px] leading-relaxed ${isActive ? "text-white/30" : "text-white/[0.15]"}`}>{p.description}</div>
