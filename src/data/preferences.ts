@@ -53,6 +53,15 @@ export const toggles: ToggleDefinition[] = [
     ],
   },
   {
+    id: "WPFToggleTransparencyEffects",
+    title: "Transparency Effects",
+    description: "Enable/Disable Windows transparency effects.",
+    defaultState: false,
+    registry: [
+      { path: "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", name: "EnableTransparency", value: "0", type_: "DWord" },
+    ],
+  },
+  {
     id: "WPFToggleTaskView",
     title: "Taskbar Task View Icon",
     description: "If enabled, Task View Button in Taskbar will be shown.",
