@@ -437,6 +437,21 @@ const tweaks: TweakDefinition[] = [
     ],
   },
   {
+    id: "WPFTweaksRightClickMenu",
+    title: "Right-Click Menu Previous Layout - Enable",
+    description: "Restores the classic context menu when right-clicking in File Explorer, replacing the simplified Windows 11 version.",
+    category: "Advanced Tweaks",
+    enableScript: [
+      "New-Item -Path 'HKCU:\\Software\\Classes\\CLSID\\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\\InprocServer32' -Force -Value ''",
+      "Stop-Process -Name 'explorer' -Force",
+    ],
+    disableScript: [
+      "Remove-Item -Path 'HKCU:\\Software\\Classes\\CLSID\\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}' -Recurse -Confirm:$false -Force",
+      "Write-Host 'Restarting explorer.exe...'",
+      "Stop-Process -Name 'explorer' -Force",
+    ],
+  },
+  {
     id: "WPFTweaksDisableWarningForUnsignedRdp",
     title: "RDP Unsigned File Warnings - Disable",
     description: "Disables warnings shown when launching unsigned RDP files introduced with the latest Windows 10 and 11 updates.",
@@ -617,7 +632,7 @@ export default function TweaksHub() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className={`text-sm font-medium ${isActive ? "text-white/90" : "text-white/60"}`}>{p.label}</div>
-                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/29 selected</div>
+                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/30 selected</div>
                   </div>
                 </div>
                 <div className={`text-[11px] leading-relaxed ${isActive ? "text-white/30" : "text-white/[0.15]"}`}>{p.description}</div>
