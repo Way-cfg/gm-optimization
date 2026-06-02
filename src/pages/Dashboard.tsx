@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { invoke } from "@tauri-apps/api/core";
 import { Cpu, MemoryStick, HardDrive, Activity } from "lucide-react";
+import MagicBento from "../components/MagicBento";
 
 interface DriveSummary {
   letter: string;
@@ -171,6 +172,11 @@ export default function Dashboard({ initData }: { initData?: InitResult | null }
 
       <motion.div variants={item}>
         <ActivityStream entries={history} />
+      </motion.div>
+
+      <motion.div variants={item} className="mt-8">
+        <div className="text-xs text-white/15 uppercase tracking-widest mb-3 pl-1">Architecture</div>
+        <MagicBento />
       </motion.div>
     </motion.div>
   );
