@@ -88,9 +88,7 @@ pub fn run() {
             commands::restore::restore_system,
             commands::profiles::export_profile,
             commands::profiles::import_profile,
-            commands::monitoring::get_performance_metrics,
-            commands::monitoring::get_network_speed,
-            commands::monitoring::get_system_status,
+
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

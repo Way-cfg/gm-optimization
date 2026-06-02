@@ -176,7 +176,7 @@ export default function Dashboard({ initData }: { initData?: InitResult | null }
         <SpecCard icon={HardDrive} label="Drives" value={drivesText} />
       </motion.div>
 
-      <motion.div variants={item}>
+      <motion.div variants={item} className="mb-4">
         <Link to="/wizard" className="block group">
           <GlowCard className="card-glow bg-frosted/80 backdrop-blur-xl border border-white/[0.05] rounded-2xl p-5 flex items-center gap-4 transition-all duration-200 hover:border-neon/30 hover:bg-neon/[0.03]">
             <div className="w-10 h-10 rounded-xl bg-neon/[0.1] flex items-center justify-center shrink-0 group-hover:bg-neon/[0.15] transition-colors">

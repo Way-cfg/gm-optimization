@@ -10,7 +10,7 @@ import {
 } from 'framer-motion';
 import { useMemo, useRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Activity, Zap, SlidersHorizontal, Settings, Info, type LucideIcon } from 'lucide-react';
+import { LayoutDashboard, Zap, SlidersHorizontal, Settings, Info, type LucideIcon } from 'lucide-react';
 import appLogo from "../assets/applogo.png";
 
 interface NavItem {
@@ -21,7 +21,6 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { path: "/", label: "Dashboard", icon: LayoutDashboard },
-  { path: "/monitoring", label: "Monitoring", icon: Activity },
   { path: "/tweaks", label: "Tweaks Hub", icon: Zap },
   { path: "/customize", label: "Customize", icon: SlidersHorizontal },
   { path: "/settings", label: "Settings", icon: Settings },
