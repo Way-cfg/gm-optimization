@@ -99,7 +99,6 @@ export default function DockSidebar() {
   const mouseY = useMotionValue(Infinity);
   const isPanelHovered = useMotionValue(0);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const itemRefs = useRef<(HTMLElement | null)[]>([]);
 
   const spring: SpringOptions = { mass: 0.1, stiffness: 150, damping: 12 };
   const magnification = 70;
@@ -111,24 +110,6 @@ export default function DockSidebar() {
   const widthRow = useTransform(isPanelHovered, [0, 1], [panelWidth, maxWidth]);
   const width = useSpring(widthRow, spring);
 
-  const updateHoveredZone = (clientY: number) => {
-    let found: number | null = null;
-    let closestDist = Infinity;
-    itemRefs.current.forEach((el, i) => {
-      if (!el) return;
-      const r = el.getBoundingClientRect();
-      const center = r.top + r.height / 2;
-      const dist = Math.abs(clientY - center);
-      if (dist < closestDist) {
-        closestDist = dist;
-        found = i;
-      }
-    });
-    if (found !== null && closestDist < 80) {
-      setHoveredIndex(found);
-    }
-  };
-
   return (
     <aside className="h-screen flex items-center relative z-20 shrink-0">
       <motion.div
@@ -136,7 +117,6 @@ export default function DockSidebar() {
         onMouseMove={({ clientY }) => {
           isPanelHovered.set(1);
           mouseY.set(clientY);
-          updateHoveredZone(clientY);
         }}
         onMouseLeave={() => {
           isPanelHovered.set(0);
@@ -155,11 +135,7 @@ export default function DockSidebar() {
             const Icon = item.icon;
 
             return (
-              <div
-                key={item.path}
-                ref={(el) => { itemRefs.current[index] = el; }}
-                className="relative flex items-center"
-              >
+              <div key={item.path} className="relative flex items-center">
                 <NavLink to={item.path} end={item.path === "/"}>
                   <DockItem
                     mouseY={mouseY}
