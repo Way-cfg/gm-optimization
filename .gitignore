@@ -7,3 +7,7 @@ Thumbs.db
 
 # Brainstorming companion mockups
 .superpowers/
+
+# Local-only context files
+AGENTS.md
+docs/architecture.md
