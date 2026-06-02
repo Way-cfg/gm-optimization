@@ -22,7 +22,18 @@ interface ToggleDefinition {
   requiresReboot?: boolean;
 }
 
-const toggles: ToggleDefinition[] = [];
+const toggles: ToggleDefinition[] = [
+  {
+    id: "WPFToggleDetailedBSoD",
+    title: "BSoD Verbose Mode",
+    description: "If enabled, you will see a detailed Blue Screen of Death (BSOD) with more information.",
+    defaultState: false,
+    registry: [
+      { path: "HKLM\\SYSTEM\\CurrentControlSet\\Control\\CrashControl", name: "DisplayParameters", value: "1", type_: "DWord" },
+      { path: "HKLM\\SYSTEM\\CurrentControlSet\\Control\\CrashControl", name: "DisableEmoticon", value: "1", type_: "DWord" },
+    ],
+  },
+];
 
 const container = {
   hidden: { opacity: 0 },
