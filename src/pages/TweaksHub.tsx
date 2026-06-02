@@ -361,6 +361,29 @@ const tweaks: TweakDefinition[] = [
     ],
   },
   {
+    id: "WPFTweaksEdgeDebloat",
+    title: "Microsoft Edge - Debloat",
+    description: "Disables various Edge annoyances such as startup boost, sleeping tabs, shopping, password manager, sidebar, and more.",
+    category: "Advanced Tweaks",
+    registry: [
+      { path: "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge", name: "StartupBoostEnabled", value: "0", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge", name: "SleepingTabsEnabled", value: "0", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge", name: "BackgroundModeEnabled", value: "0", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge", name: "PersonalizationReportingEnabled", value: "0", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge", name: "PasswordManagerEnabled", value: "0", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge", name: "AutofillCreditCardEnabled", value: "0", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge", name: "AddressBarEditingEnabled", value: "0", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge", name: "ShoppingListEnabled", value: "0", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge", name: "EdgeShoppingAssistantEnabled", value: "0", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge", name: "CollectionsServicesAndExportsEnabled", value: "0", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge", name: "WalletServiceEnabled", value: "0", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge", name: "HubSidebarEnabled", value: "0", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge", name: "ShowRecommendationsEnabled", value: "0", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge", name: "FamilySafetyEnabled", value: "0", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge", name: "EdgeDigitalWalletEnabled", value: "0", type_: "DWord" },
+    ],
+  },
+  {
     id: "WPFTweaksDisableBitLocker",
     title: "BitLocker - Disable",
     description: "Disables BitLocker encryption on the main system drive.",
@@ -531,7 +554,7 @@ export default function TweaksHub() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className={`text-sm font-medium ${isActive ? "text-white/90" : "text-white/60"}`}>{p.label}</div>
-                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/24 selected</div>
+                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/25 selected</div>
                   </div>
                 </div>
                 <div className={`text-[11px] leading-relaxed ${isActive ? "text-white/30" : "text-white/[0.15]"}`}>{p.description}</div>
