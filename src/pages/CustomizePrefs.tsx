@@ -33,6 +33,15 @@ const toggles: ToggleDefinition[] = [
       { path: "HKLM\\SYSTEM\\CurrentControlSet\\Control\\CrashControl", name: "DisableEmoticon", value: "1", type_: "DWord" },
     ],
   },
+  {
+    id: "WPFToggleDisableCrossDeviceResume",
+    title: "Cross-Device Resume",
+    description: "This tweak controls the Resume function in Windows 11 24H2 and later, which allows you to resume an activity from a mobile device and vice-versa.",
+    defaultState: true,
+    registry: [
+      { path: "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CrossDeviceResume\\Configuration", name: "IsResumeAllowed", value: "1", type_: "DWord" },
+    ],
+  },
 ];
 
 const container = {
