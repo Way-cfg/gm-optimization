@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, Zap, Settings, Info, type LucideIcon } from "lucide-react";
+import { LayoutDashboard, Zap, SlidersHorizontal, Settings, Info, type LucideIcon } from "lucide-react";
 import appLogo from "../../branding_assets/applogo.png";
 
 interface NavItem {
@@ -11,6 +11,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { path: "/", label: "Dashboard", icon: LayoutDashboard },
   { path: "/tweaks", label: "Tweaks Hub", icon: Zap },
+  { path: "/customize", label: "Customize Preferences", icon: SlidersHorizontal },
   { path: "/settings", label: "App Settings", icon: Settings },
   { path: "/about", label: "About System", icon: Info },
 ];

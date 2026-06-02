@@ -7,6 +7,7 @@ import SplashScreen from "./components/SplashScreen";
 import Layout from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
 import TweaksHub from "./pages/TweaksHub";
+import CustomizePrefs from "./pages/CustomizePrefs";
 import AppSettings from "./pages/AppSettings";
 import AboutSystem from "./pages/AboutSystem";
 
@@ -52,6 +53,7 @@ export default function App() {
               <Route element={<Layout />}>
                 <Route index element={<Dashboard initData={initData} />} />
                 <Route path="tweaks" element={<TweaksHub />} />
+                <Route path="customize" element={<CustomizePrefs />} />
                 <Route path="settings" element={<AppSettings />} />
                 <Route path="about" element={<AboutSystem />} />
               </Route>
