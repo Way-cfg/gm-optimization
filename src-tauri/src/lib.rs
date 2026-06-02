@@ -62,19 +62,6 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             commands::junk_cleaner::scan_junk,
             commands::junk_cleaner::clean_junk,
-            commands::startup_manager::get_startup_entries,
-            commands::startup_manager::toggle_startup_entry,
-            commands::startup_manager::delete_startup_entry,
-            commands::startup_manager::set_startup_delay,
-            commands::startup_manager::add_startup_entry,
-            commands::disk_analyzer::get_drives,
-            commands::disk_analyzer::scan_drive,
-            commands::disk_analyzer::delete_file,
-            commands::process_manager::get_processes,
-            commands::process_manager::kill_process,
-            commands::process_manager::get_services,
-            commands::process_manager::change_service_startup,
-            commands::process_manager::control_service,
             commands::history::get_scan_history,
             commands::history::clear_scan_history,
             commands::exclusions::get_exclusions,
@@ -103,41 +90,6 @@ pub fn run() {
             commands::profiles::import_profile,
         ])
         .run(tauri::generate_context!())
-                .expect("error while running tauri application");
-}// touch
-// build
-// build
-// build
-// build
-// build
-// build
-// build
-// build
-// build
-// build
-// build
-// build
-// build
-// build
-// build
-// build
-// build
-// build
-// build
-// build
-// build
-// build
-// build
-// build
-// build
-// build
-// build
-// build
-// build
-// build
-// build
-// build
-// build
-// build
-// rebuild 
+        .expect("error while running tauri application");
+}
 

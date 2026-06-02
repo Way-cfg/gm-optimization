@@ -1,7 +1,4 @@
 pub mod junk_cleaner;
-pub mod startup_manager;
-pub mod disk_analyzer;
-pub mod process_manager;
 pub mod history;
 pub mod exclusions;
 pub mod scheduler;

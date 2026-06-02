@@ -19,12 +19,6 @@ fn create_tables(conn: &Connection) -> Result<()> {
             id INTEGER PRIMARY KEY, path TEXT NOT NULL UNIQUE,
             added_at TEXT NOT NULL
         );
-        CREATE TABLE IF NOT EXISTS startup_entries (
-            id INTEGER PRIMARY KEY, name TEXT NOT NULL,
-            source TEXT NOT NULL, command TEXT NOT NULL,
-            enabled INTEGER NOT NULL DEFAULT 1,
-            delay_seconds INTEGER NOT NULL DEFAULT 0
-        );
         CREATE TABLE IF NOT EXISTS registry_backups (
             id INTEGER PRIMARY KEY, file_path TEXT NOT NULL,
             key_count INTEGER, created_at TEXT NOT NULL

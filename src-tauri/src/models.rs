@@ -24,53 +24,6 @@ pub struct CleanResult {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct StartupEntry {
-    pub id: Option<i64>,
-    pub name: String,
-    pub source: String,
-    pub command: String,
-    pub enabled: bool,
-    pub delay_seconds: u32,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct DriveInfo {
-    pub name: String,
-    pub label: String,
-    pub total_space: u64,
-    pub free_space: u64,
-    pub file_system: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct TreemapNode {
-    pub name: String,
-    pub path: String,
-    pub size: u64,
-    pub file_type: String,
-    pub is_directory: bool,
-    pub children: Vec<TreemapNode>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ProcessInfo {
-    pub pid: u32,
-    pub name: String,
-    pub cpu_usage: f32,
-    pub memory_mb: u64,
-    pub is_system: bool,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ServiceInfo {
-    pub name: String,
-    pub display_name: String,
-    pub status: String,
-    pub startup_type: String,
-    pub is_system: bool,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ScanHistoryEntry {
     pub id: i64,
     pub module: String,
