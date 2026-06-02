@@ -419,6 +419,24 @@ const tweaks: TweakDefinition[] = [
     ],
   },
   {
+    id: "WPFTweaksRazerBlock",
+    title: "Razer Software Auto-Install - Disable",
+    description: "Blocks ALL Razer Software installations. The hardware works fine without any software.",
+    category: "Advanced Tweaks",
+    registry: [
+      { path: "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\DriverSearching", name: "SearchOrderConfig", value: "0", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Device Installer", name: "DisableCoInstallers", value: "1", type_: "DWord" },
+    ],
+    enableScript: [
+      "$RazerPath = 'C:\\Windows\\Installer\\Razer'",
+      "if (Test-Path $RazerPath) { Remove-Item $RazerPath\\* -Recurse -Force } else { New-Item -Path $RazerPath -ItemType Directory -Force }",
+      "icacls $RazerPath /deny 'Everyone:(W)'",
+    ],
+    disableScript: [
+      "icacls 'C:\\Windows\\Installer\\Razer' /remove:d Everyone",
+    ],
+  },
+  {
     id: "WPFTweaksDisableBitLocker",
     title: "BitLocker - Disable",
     description: "Disables BitLocker encryption on the main system drive.",
@@ -589,7 +607,7 @@ export default function TweaksHub() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className={`text-sm font-medium ${isActive ? "text-white/90" : "text-white/60"}`}>{p.label}</div>
-                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/27 selected</div>
+                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/28 selected</div>
                   </div>
                 </div>
                 <div className={`text-[11px] leading-relaxed ${isActive ? "text-white/30" : "text-white/[0.15]"}`}>{p.description}</div>
