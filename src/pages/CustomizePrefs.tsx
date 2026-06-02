@@ -67,6 +67,21 @@ const toggles: ToggleDefinition[] = [
       { path: "HKLM\\SYSTEM\\CurrentControlSet\\Control\\FileSystem", name: "LongPathsEnabled", value: "1", type_: "DWord" },
     ],
   },
+  {
+    id: "WPFToggleShowExt",
+    title: "File Explorer File Extensions",
+    description: "If enabled, file extensions (e.g., .txt, .jpg) are visible.",
+    defaultState: false,
+    registry: [
+      { path: "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", name: "HideFileExt", value: "0", type_: "DWord" },
+    ],
+    enableScript: [
+      "Stop-Process -Name 'explorer' -Force",
+    ],
+    disableScript: [
+      "Stop-Process -Name 'explorer' -Force",
+    ],
+  },
 ];
 
 const container = {
