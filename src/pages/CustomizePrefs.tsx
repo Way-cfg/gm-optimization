@@ -59,6 +59,15 @@ const toggles: ToggleDefinition[] = [
     ],
   },
   {
+    id: "WPFToggleS3Sleep",
+    title: "S3 Sleep",
+    description: "Toggles between Modern Standby and S3 Sleep.",
+    defaultState: false,
+    registry: [
+      { path: "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Power", name: "PlatformAoAcOverride", value: "0", type_: "DWord" },
+    ],
+  },
+  {
     id: "WPFToggleStandbyFix",
     title: "S0 Sleep Network Connectivity",
     description: "Enable or disable network connectivity during S0 Sleep.",
