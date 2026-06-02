@@ -59,6 +59,16 @@ const toggles: ToggleDefinition[] = [
     ],
   },
   {
+    id: "WPFToggleGameMode",
+    title: "Game Mode",
+    description: "If enabled, Windows prioritizes gaming performance by allocating system resources. Disable for audio/video production to prevent interference.",
+    defaultState: true,
+    registry: [
+      { path: "HKCU\\Software\\Microsoft\\GameBar", name: "AllowAutoGameMode", value: "1", type_: "DWord" },
+      { path: "HKCU\\Software\\Microsoft\\GameBar", name: "AutoGameModeEnabled", value: "1", type_: "DWord" },
+    ],
+  },
+  {
     id: "WPFToggleHiddenFiles",
     title: "File Explorer Hidden Files",
     description: "If enabled, Hidden Files will be shown.",
