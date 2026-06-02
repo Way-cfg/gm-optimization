@@ -437,6 +437,15 @@ const tweaks: TweakDefinition[] = [
     ],
   },
   {
+    id: "WPFTweaksStorage",
+    title: "Storage Sense - Disable",
+    description: "Storage Sense deletes temp files automatically.",
+    category: "Advanced Tweaks",
+    registry: [
+      { path: "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\StorageSense\\Parameters\\StoragePolicy", name: "01", value: "0", type_: "DWord" },
+    ],
+  },
+  {
     id: "WPFTweaksRightClickMenu",
     title: "Right-Click Menu Previous Layout - Enable",
     description: "Restores the classic context menu when right-clicking in File Explorer, replacing the simplified Windows 11 version.",
@@ -632,7 +641,7 @@ export default function TweaksHub() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className={`text-sm font-medium ${isActive ? "text-white/90" : "text-white/60"}`}>{p.label}</div>
-                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/30 selected</div>
+                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/31 selected</div>
                   </div>
                 </div>
                 <div className={`text-[11px] leading-relaxed ${isActive ? "text-white/30" : "text-white/[0.15]"}`}>{p.description}</div>
