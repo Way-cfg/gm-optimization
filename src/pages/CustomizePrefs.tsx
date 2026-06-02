@@ -59,6 +59,15 @@ const toggles: ToggleDefinition[] = [
     ],
   },
   {
+    id: "WPFToggleStandbyFix",
+    title: "S0 Sleep Network Connectivity",
+    description: "Enable or disable network connectivity during S0 Sleep.",
+    defaultState: true,
+    registry: [
+      { path: "HKCU\\SOFTWARE\\Policies\\Microsoft\\Power\\PowerSettings\\f15576e8-98b7-4186-b944-eafa664402d9", name: "ACSettingIndex", value: "1", type_: "DWord" },
+    ],
+  },
+  {
     id: "WPFToggleNumLock",
     title: "Num Lock on Startup",
     description: "Toggle the Num Lock key state when your computer starts.",
