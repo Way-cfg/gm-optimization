@@ -111,14 +111,14 @@ export default function DockSidebar() {
   const widthRow = useTransform(isPanelHovered, [0, 1], [panelWidth, maxWidth]);
   const width = useSpring(widthRow, spring);
 
-  const updateHoveredZone = (pageY: number) => {
+  const updateHoveredZone = (clientY: number) => {
     let found: number | null = null;
     let closestDist = Infinity;
     itemRefs.current.forEach((el, i) => {
       if (!el) return;
       const r = el.getBoundingClientRect();
       const center = r.top + r.height / 2;
-      const dist = Math.abs(pageY - center);
+      const dist = Math.abs(clientY - center);
       if (dist < closestDist) {
         closestDist = dist;
         found = i;
@@ -133,10 +133,10 @@ export default function DockSidebar() {
     <aside className="h-screen flex items-center relative z-20 shrink-0">
       <motion.div
         style={{ width }}
-        onMouseMove={({ pageY }) => {
+        onMouseMove={({ clientY }) => {
           isPanelHovered.set(1);
-          mouseY.set(pageY);
-          updateHoveredZone(pageY);
+          mouseY.set(clientY);
+          updateHoveredZone(clientY);
         }}
         onMouseLeave={() => {
           isPanelHovered.set(0);
@@ -155,28 +155,28 @@ export default function DockSidebar() {
             const Icon = item.icon;
 
             return (
-              <NavLink
+              <div
                 key={item.path}
-                to={item.path}
-                end={item.path === "/"}
-                className="relative flex items-center"
                 ref={(el) => { itemRefs.current[index] = el; }}
+                className="relative flex items-center"
               >
-                <DockItem
-                  mouseY={mouseY}
-                  spring={spring}
-                  distance={distance}
-                  magnification={magnification}
-                  baseItemSize={baseItemSize}
-                  isActive={isActive}
-                  onHoverChange={(h) => {
-                    if (h) setHoveredIndex(index);
-                  }}
-                >
-                  <Icon size={18} strokeWidth={1.5} className={isActive ? "text-neon" : "text-white/35"} />
-                </DockItem>
+                <NavLink to={item.path} end={item.path === "/"}>
+                  <DockItem
+                    mouseY={mouseY}
+                    spring={spring}
+                    distance={distance}
+                    magnification={magnification}
+                    baseItemSize={baseItemSize}
+                    isActive={isActive}
+                    onHoverChange={(h) => {
+                      if (h) setHoveredIndex(index);
+                    }}
+                  >
+                    <Icon size={18} strokeWidth={1.5} className={isActive ? "text-neon" : "text-white/35"} />
+                  </DockItem>
+                </NavLink>
                 <DockLabel isVisible={hoveredIndex === index}>{item.label}</DockLabel>
-              </NavLink>
+              </div>
             );
           })}
         </nav>
