@@ -11,6 +11,7 @@ import CustomizePrefs from "./pages/CustomizePrefs";
 import AppSettings from "./pages/AppSettings";
 import AboutSystem from "./pages/AboutSystem";
 import OptimizationWizard from "./pages/OptimizationWizard";
+import Monitoring from "./pages/Monitoring";
 
 interface DriveSummary {
   letter: string;
@@ -54,6 +55,7 @@ export default function App() {
               <Route element={<Layout />}>
                 <Route index element={<Dashboard initData={initData} />} />
                 <Route path="wizard" element={<OptimizationWizard />} />
+                <Route path="monitoring" element={<Monitoring />} />
                 <Route path="tweaks" element={<TweaksHub />} />
                 <Route path="customize" element={<CustomizePrefs />} />
                 <Route path="settings" element={<AppSettings />} />

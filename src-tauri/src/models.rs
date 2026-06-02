@@ -74,6 +74,37 @@ pub struct RestorePointInfo {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PerformanceMetrics {
+    pub cpu_usage: f64,
+    pub ram_used_gb: f64,
+    pub ram_total_gb: f64,
+    pub ram_percent: f64,
+    pub disk_used_gb: f64,
+    pub disk_total_gb: f64,
+    pub disk_percent: f64,
+    pub gpu_usage: Option<f64>,
+    pub vram_used_gb: Option<f64>,
+    pub vram_total_gb: Option<f64>,
+    pub vram_percent: Option<f64>,
+    pub cpu_temp_celsius: Option<f64>,
+    pub gpu_temp_celsius: Option<f64>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct NetworkSpeed {
+    pub download_bytes_per_sec: f64,
+    pub upload_bytes_per_sec: f64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SystemStatus {
+    pub power_plan: String,
+    pub uptime: String,
+    pub windows_version: String,
+    pub windows_build: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Schedule {
     pub id: i64,
     pub name: String,
