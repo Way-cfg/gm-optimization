@@ -437,6 +437,32 @@ const tweaks: TweakDefinition[] = [
     ],
   },
   {
+    id: "WPFTweaksDisplay",
+    title: "Visual Effects - Set to Best Performance",
+    description: "Sets the system preferences to performance. You can do this manually with sysdm.cpl as well.",
+    category: "Advanced Tweaks",
+    registry: [
+      { path: "HKCU\\Control Panel\\Desktop", name: "DragFullWindows", value: "0", type_: "String" },
+      { path: "HKCU\\Control Panel\\Desktop", name: "MenuShowDelay", value: "200", type_: "String" },
+      { path: "HKCU\\Control Panel\\Desktop\\WindowMetrics", name: "MinAnimate", value: "0", type_: "String" },
+      { path: "HKCU\\Control Panel\\Keyboard", name: "KeyboardDelay", value: "0", type_: "DWord" },
+      { path: "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", name: "ListviewAlphaSelect", value: "0", type_: "DWord" },
+      { path: "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", name: "ListviewShadow", value: "0", type_: "DWord" },
+      { path: "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", name: "TaskbarAnimations", value: "0", type_: "DWord" },
+      { path: "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\VisualEffects", name: "VisualFXSetting", value: "3", type_: "DWord" },
+      { path: "HKCU\\Software\\Microsoft\\Windows\\DWM", name: "EnableAeroPeek", value: "0", type_: "DWord" },
+      { path: "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", name: "TaskbarMn", value: "0", type_: "DWord" },
+      { path: "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", name: "ShowTaskViewButton", value: "0", type_: "DWord" },
+      { path: "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Search", name: "SearchboxTaskbarMode", value: "0", type_: "DWord" },
+    ],
+    enableScript: [
+      "Set-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'UserPreferencesMask' -Type Binary -Value ([byte[]](144,18,3,128,16,0,0,0))",
+    ],
+    disableScript: [
+      "Remove-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'UserPreferencesMask'",
+    ],
+  },
+  {
     id: "WPFTweaksTeredo",
     title: "Teredo - Disable",
     description: "Teredo network tunneling is an IPv6 feature that can cause additional latency, but may cause problems with some games.",
@@ -666,7 +692,7 @@ export default function TweaksHub() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className={`text-sm font-medium ${isActive ? "text-white/90" : "text-white/60"}`}>{p.label}</div>
-                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/33 selected</div>
+                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/34 selected</div>
                   </div>
                 </div>
                 <div className={`text-[11px] leading-relaxed ${isActive ? "text-white/30" : "text-white/[0.15]"}`}>{p.description}</div>
