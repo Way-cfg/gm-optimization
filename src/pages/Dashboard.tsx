@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { invoke } from "@tauri-apps/api/core";
 import { Cpu, MemoryStick, HardDrive, Activity } from "lucide-react";
 import GlowCard from "../components/GlowCard";
+import Lanyard from "../components/Lanyard";
 
 interface DriveSummary {
   letter: string;
@@ -158,10 +159,14 @@ export default function Dashboard({ initData }: { initData?: InitResult | null }
   }, []);
 
   return (
-    <motion.div variants={container} initial="hidden" animate="show" className="max-w-4xl mx-auto">
+    <motion.div variants={container} initial="hidden" animate="show" className="max-w-4xl mx-auto relative">
       <motion.div variants={item} className="flex justify-center mb-8 mt-2">
         <OptimizationArc value={status === "EXTREME" ? 100 : 45} max={100} size={260} />
       </motion.div>
+
+      <div className="absolute -top-8 right-0 w-[220px] h-[250px] z-10 pointer-events-none">
+        <Lanyard />
+      </div>
 
       <motion.div variants={item} className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-6">
         <SpecCard icon={Cpu} label="CPU" value={initData?.cpu_name || "—"} />
