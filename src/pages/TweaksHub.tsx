@@ -437,6 +437,16 @@ const tweaks: TweakDefinition[] = [
     ],
   },
   {
+    id: "WPFTweaksDisableWarningForUnsignedRdp",
+    title: "RDP Unsigned File Warnings - Disable",
+    description: "Disables warnings shown when launching unsigned RDP files introduced with the latest Windows 10 and 11 updates.",
+    category: "Advanced Tweaks",
+    registry: [
+      { path: "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services\\Client", name: "RedirectionWarningDialogVersion", value: "1", type_: "DWord" },
+      { path: "HKCU\\SOFTWARE\\Microsoft\\Terminal Server Client", name: "RdpLaunchConsentAccepted", value: "1", type_: "DWord" },
+    ],
+  },
+  {
     id: "WPFTweaksDisableBitLocker",
     title: "BitLocker - Disable",
     description: "Disables BitLocker encryption on the main system drive.",
@@ -607,7 +617,7 @@ export default function TweaksHub() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className={`text-sm font-medium ${isActive ? "text-white/90" : "text-white/60"}`}>{p.label}</div>
-                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/28 selected</div>
+                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/29 selected</div>
                   </div>
                 </div>
                 <div className={`text-[11px] leading-relaxed ${isActive ? "text-white/30" : "text-white/[0.15]"}`}>{p.description}</div>
