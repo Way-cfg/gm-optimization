@@ -10,6 +10,7 @@ import TweaksHub from "./pages/TweaksHub";
 import CustomizePrefs from "./pages/CustomizePrefs";
 import AppSettings from "./pages/AppSettings";
 import AboutSystem from "./pages/AboutSystem";
+import OptimizationWizard from "./pages/OptimizationWizard";
 
 interface DriveSummary {
   letter: string;
@@ -52,6 +53,7 @@ export default function App() {
             <Routes>
               <Route element={<Layout />}>
                 <Route index element={<Dashboard initData={initData} />} />
+                <Route path="wizard" element={<OptimizationWizard />} />
                 <Route path="tweaks" element={<TweaksHub />} />
                 <Route path="customize" element={<CustomizePrefs />} />
                 <Route path="settings" element={<AppSettings />} />

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { invoke } from "@tauri-apps/api/core";
-import { Cpu, MemoryStick, HardDrive, Activity } from "lucide-react";
+import { Cpu, MemoryStick, HardDrive, Activity, Sparkles } from "lucide-react";
 import GlowCard from "../components/GlowCard";
 import Lanyard from "../components/Lanyard";
 
@@ -173,6 +174,23 @@ export default function Dashboard({ initData }: { initData?: InitResult | null }
         <SpecCard icon={Cpu} label="GPU" value={initData?.gpu_name || "—"} />
         <SpecCard icon={MemoryStick} label="RAM" value={initData?.ram_total || "—"} />
         <SpecCard icon={HardDrive} label="Drives" value={drivesText} />
+      </motion.div>
+
+      <motion.div variants={item}>
+        <Link to="/wizard" className="block group">
+          <GlowCard className="card-glow bg-frosted/80 backdrop-blur-xl border border-white/[0.05] rounded-2xl p-5 flex items-center gap-4 transition-all duration-200 hover:border-neon/30 hover:bg-neon/[0.03]">
+            <div className="w-10 h-10 rounded-xl bg-neon/[0.1] flex items-center justify-center shrink-0 group-hover:bg-neon/[0.15] transition-colors">
+              <Sparkles size={18} strokeWidth={1.5} className="text-neon" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-medium text-white/70 group-hover:text-white/80 transition-colors">Optimization Wizard</div>
+              <div className="text-[11px] text-white/25 mt-0.5">
+                Get recommended tweaks based on how you use your PC
+              </div>
+            </div>
+            <div className="text-xs text-neon font-medium shrink-0 group-hover:text-neon/80 transition-colors">Get Started →</div>
+          </GlowCard>
+        </Link>
       </motion.div>
 
       <motion.div variants={item}>
