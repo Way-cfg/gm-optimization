@@ -384,6 +384,22 @@ const tweaks: TweakDefinition[] = [
     ],
   },
   {
+    id: "WPFTweaksRemoveEdge",
+    title: "Microsoft Edge - Remove",
+    description: "Unblocks Microsoft Edge uninstaller restrictions then uses the uninstaller to remove Edge.",
+    category: "Advanced Tweaks",
+    enableScript: [
+      "Stop-Process -Name msedge, edgeupdate -Force -ErrorAction SilentlyContinue",
+      "$edgeSetup = Get-ChildItem -Path 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application' -Filter 'setup.exe' -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1",
+      "if ($edgeSetup) { Start-Process $edgeSetup.FullName -ArgumentList '--uninstall --system-level --force-uninstall --delete-profile' -Wait -NoNewWindow }",
+      "@('C:\\Program Files (x86)\\Microsoft\\Edge', 'C:\\Program Files (x86)\\Microsoft\\EdgeCore', 'C:\\Program Files (x86)\\Microsoft\\EdgeWebView', $env:LOCALAPPDATA+'\\Microsoft\\Edge', $env:LOCALAPPDATA+'\\Microsoft\\EdgeWebView', $env:APPDATA+'\\Microsoft\\Edge') | ForEach-Object { if (Test-Path $_) { Remove-Item $_ -Recurse -Force -ErrorAction SilentlyContinue } }",
+    ],
+    disableScript: [
+      "Write-Host 'Installing Microsoft Edge...'",
+      "winget install Microsoft.Edge --source winget",
+    ],
+  },
+  {
     id: "WPFTweaksDisableBitLocker",
     title: "BitLocker - Disable",
     description: "Disables BitLocker encryption on the main system drive.",
@@ -554,7 +570,7 @@ export default function TweaksHub() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className={`text-sm font-medium ${isActive ? "text-white/90" : "text-white/60"}`}>{p.label}</div>
-                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/25 selected</div>
+                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/26 selected</div>
                   </div>
                 </div>
                 <div className={`text-[11px] leading-relaxed ${isActive ? "text-white/30" : "text-white/[0.15]"}`}>{p.description}</div>
