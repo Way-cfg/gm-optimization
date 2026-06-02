@@ -59,6 +59,15 @@ const toggles: ToggleDefinition[] = [
     ],
   },
   {
+    id: "WPFToggleBatteryPercentage",
+    title: "System Tray Battery Percentage",
+    description: "If enabled, shows numeric battery percentage next to the battery icon in the system tray.",
+    defaultState: false,
+    registry: [
+      { path: "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", name: "IsBatteryPercentageEnabled", value: "1", type_: "DWord" },
+    ],
+  },
+  {
     id: "WPFToggleStickyKeys",
     title: "Sticky Keys",
     description: "If enabled, Sticky Keys is activated. Sticky keys is an accessibility feature that assists users who have physical disabilities or helps reduce repetitive strain injury.",
