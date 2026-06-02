@@ -58,6 +58,15 @@ const toggles: ToggleDefinition[] = [
       "Stop-Process -Name 'explorer' -Force",
     ],
   },
+  {
+    id: "WPFToggleLongPaths",
+    title: "Enable Long Paths",
+    description: "Enables support for file paths longer than 260 characters.",
+    defaultState: false,
+    registry: [
+      { path: "HKLM\\SYSTEM\\CurrentControlSet\\Control\\FileSystem", name: "LongPathsEnabled", value: "1", type_: "DWord" },
+    ],
+  },
 ];
 
 const container = {
