@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import appLogo from "../../branding_assets/applogo.png";
+import appLogo from "../assets/applogo.png";
 import Particles from "./Particles";
 
 function SpinnerRing() {

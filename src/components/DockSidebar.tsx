@@ -11,7 +11,7 @@ import {
 import { useMemo, useRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Zap, SlidersHorizontal, Settings, Info, type LucideIcon } from 'lucide-react';
-import appLogo from "../../branding_assets/applogo.png";
+import appLogo from "../assets/applogo.png";
 
 interface NavItem {
   path: string;

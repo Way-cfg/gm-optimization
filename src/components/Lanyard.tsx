@@ -12,7 +12,7 @@ import {
 } from "@react-three/rapier";
 import { MeshLineGeometry, MeshLineMaterial } from "meshline";
 import * as THREE from "three";
-import appLogo from "../../branding_assets/applogo.png";
+import appLogo from "../assets/applogo.png";
 
 extend({ MeshLineGeometry, MeshLineMaterial });
 
