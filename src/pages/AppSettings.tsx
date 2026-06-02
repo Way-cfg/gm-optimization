@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { invoke } from "@tauri-apps/api/core";
-import { Sun, Moon, Shield, Upload, Download, Clock, Palette } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Sun, Moon, Shield, Upload, Download, Clock, Palette, User } from "lucide-react";
 import { useToast } from "../components/Toast";
 import GlowCard from "../components/GlowCard";
 
@@ -119,6 +120,10 @@ export default function AppSettings() {
               Import Profile
             </button>
           </div>
+          <Link to="/profiles" className="flex items-center gap-2 px-3 py-2.5 mt-2 bg-white/[0.03] border border-white/[0.05] rounded-xl hover:bg-neon/[0.08] hover:border-neon/20 transition-all text-sm text-white/50 hover:text-neon">
+            <User size={14} strokeWidth={1.5} />
+            Manage Profiles
+          </Link>
         </GlowCard>
       </motion.div>
 

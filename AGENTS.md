@@ -14,20 +14,24 @@ A Windows system optimization utility built with Tauri v2 (Rust backend + React/
 
 | Route | Page | Description |
 |---|---|---|
-| `/` | Dashboard | Hardware summary (CPU, GPU, RAM, drives) + Lanyard 3D scene + activity stream + Optimizaton Wizard CTA card |
+| `/` | Dashboard | Hardware summary (CPU, GPU, RAM, drives) + Lanyard 3D scene + activity stream + quick action cards + Wizard CTA |
 | `/wizard` | OptimizationWizard | 4-step guided wizard with profiles (Gaming, Work/Productivity, Low-End PC, Maximum Performance) |
-| `/tweaks` | TweaksHub | Browse and apply 36 registry/PowerShell/service tweaks across categories with 3 presets (Simple, Balanced, Extreme+) |
+| `/tweaks` | TweaksHub | Browse and apply 36 registry/PowerShell/service tweaks across categories with 3 presets |
 | `/customize` | CustomizePrefs | 23 toggleable Windows customization settings (dark mode, taskbar, search, game mode, etc.) |
+| `/junk-cleaner` | JunkCleaner | Scan and clean temporary files, caches, and system junk |
+| `/benchmark` | Benchmark | Run disk, network, and CPU benchmarks with history |
+| `/restore` | Restore | Create, list, and restore Windows System Restore points |
+| `/profiles` | Profiles | Export and import optimization profiles as JSON |
 | `/settings` | AppSettings | Scheduler management, profile import/export |
 | `/about` | AboutSystem | Hardware specs (CPU, GPU, RAM, motherboard, storage, network) + app info |
 
 ### Internal Pages (not in sidebar)
 These pages exist as routes but are NOT accessible from the dock sidebar. They are linked from within other pages:
 - **Optimization Wizard** (`/wizard`) — accessible from Dashboard CTA card
-- **Junk Cleaner** — accessible from Dashboard activity stream
-- **Benchmark** — accessible from Dashboard activity stream
-- **Restore** — accessible from Dashboard activity stream
-- **Profiles** — accessible from Settings
+- **Junk Cleaner** (`/junk-cleaner`) — accessible from Dashboard quick actions
+- **Benchmark** (`/benchmark`) — accessible from Dashboard quick actions
+- **Restore Points** (`/restore`) — accessible from Dashboard quick actions
+- **Profiles** (`/profiles`) — accessible from Settings
 
 ## Navigation
 DockSidebar component with elastic magnifying dock effect (macOS-style). Items:

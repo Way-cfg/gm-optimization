@@ -1,9 +1,4 @@
-export interface RegistryEntry {
-  path: string;
-  name: string;
-  value: string;
-  type_: string;
-}
+import type { RegistryEntry } from "./types";
 
 export interface ToggleDefinition {
   id: string;

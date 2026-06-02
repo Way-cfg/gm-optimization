@@ -2,7 +2,7 @@
 name = "optimization-way"
 version = "0.1.0"
 description = "Optimization Way — Windows System Utility"
-authors = ["you"]
+authors = ["Optimization Way Contributors"]
 edition = "2021"
 
 [lib]

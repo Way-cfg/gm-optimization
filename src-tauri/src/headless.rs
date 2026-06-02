@@ -54,7 +54,7 @@ pub fn run_task(task: &str) {
     let db = match db::initialize_database_headless() {
         Ok(d) => d,
         Err(e) => {
-            eprintln!("Failed to init DB: {}", e);
+            eprintln!("Headless: failed to init DB: {}", e);
             return;
         }
     };
@@ -65,7 +65,7 @@ pub fn run_task(task: &str) {
             (msg, "junk_cleaner", 0i64, 0i64)
         }
         other => {
-            eprintln!("Unknown task: {}", other);
+            eprintln!("Headless: unknown task: {}", other);
             return;
         }
     };

@@ -1,11 +1,5 @@
 import { Zap, Gauge, Mountain, type LucideIcon } from "lucide-react";
-
-export interface RegistryEntry {
-  path: string;
-  name: string;
-  value: string;
-  type_: string;
-}
+import type { RegistryEntry } from "./types";
 
 export interface ServiceEntry {
   name: string;

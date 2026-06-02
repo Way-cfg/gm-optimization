@@ -11,6 +11,10 @@ import CustomizePrefs from "./pages/CustomizePrefs";
 import AppSettings from "./pages/AppSettings";
 import AboutSystem from "./pages/AboutSystem";
 import OptimizationWizard from "./pages/OptimizationWizard";
+import JunkCleaner from "./pages/JunkCleaner";
+import Benchmark from "./pages/Benchmark";
+import Restore from "./pages/Restore";
+import Profiles from "./pages/Profiles";
 interface DriveSummary {
   letter: string;
   size: string;
@@ -57,6 +61,10 @@ export default function App() {
                 <Route path="customize" element={<CustomizePrefs />} />
                 <Route path="settings" element={<AppSettings />} />
                 <Route path="about" element={<AboutSystem />} />
+                <Route path="junk-cleaner" element={<JunkCleaner />} />
+                <Route path="benchmark" element={<Benchmark />} />
+                <Route path="restore" element={<Restore />} />
+                <Route path="profiles" element={<Profiles />} />
               </Route>
             </Routes>
           </ToastProvider>

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { invoke } from "@tauri-apps/api/core";
-import { Cpu, MemoryStick, HardDrive, Activity, Sparkles } from "lucide-react";
+import { Cpu, MemoryStick, HardDrive, Activity, Sparkles, Trash2, Gauge, RotateCcw } from "lucide-react";
 import GlowCard from "../components/GlowCard";
 import Lanyard from "../components/Lanyard";
 
@@ -174,6 +174,42 @@ export default function Dashboard({ initData }: { initData?: InitResult | null }
         <SpecCard icon={Cpu} label="GPU" value={initData?.gpu_name || "—"} />
         <SpecCard icon={MemoryStick} label="RAM" value={initData?.ram_total || "—"} />
         <SpecCard icon={HardDrive} label="Drives" value={drivesText} />
+      </motion.div>
+
+      <motion.div variants={item} className="grid grid-cols-3 gap-2 mb-4">
+        <Link to="/junk-cleaner" className="block group">
+          <GlowCard className="card-glow bg-frosted/80 backdrop-blur-xl border border-white/[0.05] rounded-2xl p-4 flex items-center gap-3 transition-all duration-200 hover:border-neon/30 hover:bg-neon/[0.03]">
+            <div className="w-9 h-9 rounded-lg bg-white/[0.04] flex items-center justify-center shrink-0 group-hover:bg-neon/[0.1] transition-colors">
+              <Trash2 size={16} strokeWidth={1.5} className="text-white/30 group-hover:text-neon transition-colors" />
+            </div>
+            <div className="min-w-0">
+              <div className="text-sm font-medium text-white/60 group-hover:text-white/80 transition-colors">Junk Cleaner</div>
+              <div className="text-[10px] text-white/20 mt-0.5">Free up disk space</div>
+            </div>
+          </GlowCard>
+        </Link>
+        <Link to="/benchmark" className="block group">
+          <GlowCard className="card-glow bg-frosted/80 backdrop-blur-xl border border-white/[0.05] rounded-2xl p-4 flex items-center gap-3 transition-all duration-200 hover:border-neon/30 hover:bg-neon/[0.03]">
+            <div className="w-9 h-9 rounded-lg bg-white/[0.04] flex items-center justify-center shrink-0 group-hover:bg-neon/[0.1] transition-colors">
+              <Gauge size={16} strokeWidth={1.5} className="text-white/30 group-hover:text-neon transition-colors" />
+            </div>
+            <div className="min-w-0">
+              <div className="text-sm font-medium text-white/60 group-hover:text-white/80 transition-colors">Benchmark</div>
+              <div className="text-[10px] text-white/20 mt-0.5">Test system performance</div>
+            </div>
+          </GlowCard>
+        </Link>
+        <Link to="/restore" className="block group">
+          <GlowCard className="card-glow bg-frosted/80 backdrop-blur-xl border border-white/[0.05] rounded-2xl p-4 flex items-center gap-3 transition-all duration-200 hover:border-neon/30 hover:bg-neon/[0.03]">
+            <div className="w-9 h-9 rounded-lg bg-white/[0.04] flex items-center justify-center shrink-0 group-hover:bg-neon/[0.1] transition-colors">
+              <RotateCcw size={16} strokeWidth={1.5} className="text-white/30 group-hover:text-neon transition-colors" />
+            </div>
+            <div className="min-w-0">
+              <div className="text-sm font-medium text-white/60 group-hover:text-white/80 transition-colors">Restore Points</div>
+              <div className="text-[10px] text-white/20 mt-0.5">System protection & recovery</div>
+            </div>
+          </GlowCard>
+        </Link>
       </motion.div>
 
       <motion.div variants={item} className="mb-4">
