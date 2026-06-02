@@ -74,6 +74,27 @@ const tweaks: TweakDefinition[] = [
     ],
   },
   {
+    id: "WPFTweaksRevertStartMenu",
+    title: "Start Menu Previous Layout - Enable",
+    description: "Brings back the previous classic Start Menu layout from before the gradual feature configuration changes rolled out in newer Windows editions.",
+    category: "Essential Tweaks",
+    requiresReboot: true,
+    enableScript: [
+      "Invoke-WebRequest https://github.com/thebookisclosed/ViVe/releases/download/v0.3.4/ViVeTool-v0.3.4-IntelAmd.zip -OutFile ViVeTool.zip",
+      "Expand-Archive ViVeTool.zip -Force",
+      "Remove-Item ViVeTool.zip -Force",
+      "Start-Process 'ViVeTool\\ViVeTool.exe' -ArgumentList '/disable /id:47205210' -Wait -NoNewWindow",
+      "Remove-Item ViVeTool -Recurse -Force",
+    ],
+    disableScript: [
+      "Invoke-WebRequest https://github.com/thebookisclosed/ViVe/releases/download/v0.3.4/ViVeTool-v0.3.4-IntelAmd.zip -OutFile ViVeTool.zip",
+      "Expand-Archive ViVeTool.zip -Force",
+      "Remove-Item ViVeTool.zip -Force",
+      "Start-Process 'ViVeTool\\ViVeTool.exe' -ArgumentList '/enable /id:47205210' -Wait -NoNewWindow",
+      "Remove-Item ViVeTool -Recurse -Force",
+    ],
+  },
+  {
     id: "WPFTweaksRestorePoint",
     title: "Restore Point - Create",
     description: "Removes Windows creation frequency limits and creates a live System Restore snapshot before applying modifications.",
@@ -200,14 +221,14 @@ const presets: Preset[] = [
     label: "Balanced Tweak",
     description: "Moderate optimizations for daily use",
     icon: Gauge,
-    tweaks: ["WPFTweaksActivity", "WPFTweaksPowershell7Tele", "WPFTweaksDisableStoreSearch", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksRestorePoint", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksHiber", "WPFTweaksLocation"],
+    tweaks: ["WPFTweaksActivity", "WPFTweaksPowershell7Tele", "WPFTweaksDisableStoreSearch", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksRevertStartMenu", "WPFTweaksRestorePoint", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksHiber", "WPFTweaksLocation"],
   },
   {
     id: "extreme",
     label: "Extreme Plus Tweak",
     description: "Maximum system optimization",
     icon: Mountain,
-    tweaks: ["WPFTweaksActivity", "WPFTweaksPowershell7Tele", "WPFTweaksDisableStoreSearch", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksRestorePoint", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksHiber", "WPFTweaksLocation", "WPFTweaksDisableBitLocker"],
+    tweaks: ["WPFTweaksActivity", "WPFTweaksPowershell7Tele", "WPFTweaksDisableStoreSearch", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksRevertStartMenu", "WPFTweaksRestorePoint", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksHiber", "WPFTweaksLocation", "WPFTweaksDisableBitLocker"],
   },
 ];
 
@@ -341,7 +362,7 @@ export default function TweaksHub() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className={`text-sm font-medium ${isActive ? "text-white/90" : "text-white/60"}`}>{p.label}</div>
-                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/11 selected</div>
+                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/12 selected</div>
                   </div>
                 </div>
                 <div className={`text-[11px] leading-relaxed ${isActive ? "text-white/30" : "text-white/[0.15]"}`}>{p.description}</div>
