@@ -59,6 +59,15 @@ const toggles: ToggleDefinition[] = [
     ],
   },
   {
+    id: "WPFToggleHideSettingsHome",
+    title: "Settings Home Page",
+    description: "Enable or disable the Home Page in the Windows Settings app.",
+    defaultState: true,
+    registry: [
+      { path: "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer", name: "SettingsPageVisibility", value: "show:home", type_: "String" },
+    ],
+  },
+  {
     id: "WPFToggleS3Sleep",
     title: "S3 Sleep",
     description: "Toggles between Modern Standby and S3 Sleep.",
