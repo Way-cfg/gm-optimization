@@ -59,6 +59,17 @@ const toggles: ToggleDefinition[] = [
     ],
   },
   {
+    id: "WPFToggleMouseAcceleration",
+    title: "Mouse Acceleration",
+    description: "If enabled, the cursor movement is affected by the speed of your physical mouse movements.",
+    defaultState: true,
+    registry: [
+      { path: "HKCU\\Control Panel\\Mouse", name: "MouseSpeed", value: "1", type_: "DWord" },
+      { path: "HKCU\\Control Panel\\Mouse", name: "MouseThreshold1", value: "6", type_: "DWord" },
+      { path: "HKCU\\Control Panel\\Mouse", name: "MouseThreshold2", value: "10", type_: "DWord" },
+    ],
+  },
+  {
     id: "WPFToggleNewOutlook",
     title: "Microsoft Outlook New Version",
     description: "If disabled, it removes the new Outlook toggle, disables the new Outlook migration, and ensures the classic Outlook application is used.",
