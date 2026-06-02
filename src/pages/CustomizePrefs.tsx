@@ -59,6 +59,16 @@ const toggles: ToggleDefinition[] = [
     ],
   },
   {
+    id: "WPFToggleNumLock",
+    title: "Num Lock on Startup",
+    description: "Toggle the Num Lock key state when your computer starts.",
+    defaultState: false,
+    registry: [
+      { path: "HKU\\.Default\\Control Panel\\Keyboard", name: "InitialKeyboardIndicators", value: "2", type_: "String" },
+      { path: "HKCU\\Control Panel\\Keyboard", name: "InitialKeyboardIndicators", value: "2", type_: "String" },
+    ],
+  },
+  {
     id: "WPFToggleMultiplaneOverlay",
     title: "Multiplane Overlay",
     description: "Enable or disable the Multiplane Overlay, which can sometimes cause issues with graphics cards.",
