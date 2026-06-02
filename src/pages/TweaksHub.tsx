@@ -437,6 +437,16 @@ const tweaks: TweakDefinition[] = [
     ],
   },
   {
+    id: "WPFTweaksDisableNotifications",
+    title: "System Tray Notifications & Calendar - Disable",
+    description: "Disables all Notifications INCLUDING Calendar.",
+    category: "Advanced Tweaks",
+    registry: [
+      { path: "HKCU\\Software\\Policies\\Microsoft\\Windows\\Explorer", name: "DisableNotificationCenter", value: "1", type_: "DWord" },
+      { path: "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\PushNotifications", name: "ToastEnabled", value: "0", type_: "DWord" },
+    ],
+  },
+  {
     id: "WPFTweaksStorage",
     title: "Storage Sense - Disable",
     description: "Storage Sense deletes temp files automatically.",
@@ -641,7 +651,7 @@ export default function TweaksHub() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className={`text-sm font-medium ${isActive ? "text-white/90" : "text-white/60"}`}>{p.label}</div>
-                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/31 selected</div>
+                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/32 selected</div>
                   </div>
                 </div>
                 <div className={`text-[11px] leading-relaxed ${isActive ? "text-white/30" : "text-white/[0.15]"}`}>{p.description}</div>
