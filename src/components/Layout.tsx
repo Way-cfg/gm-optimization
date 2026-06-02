@@ -1,6 +1,6 @@
 import { Outlet, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import Sidebar from "./Sidebar";
+import DockSidebar from "./DockSidebar";
 import GlobalSpotlight from "./GlobalSpotlight";
 
 export default function Layout() {
@@ -9,7 +9,7 @@ export default function Layout() {
   return (
     <div className="flex h-screen bg-obsidian">
       <GlobalSpotlight />
-      <Sidebar />
+      <DockSidebar />
       <main className="flex-1 overflow-y-auto p-6">
         <motion.div
           key={location.pathname}
