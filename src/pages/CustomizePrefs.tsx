@@ -59,6 +59,23 @@ const toggles: ToggleDefinition[] = [
     ],
   },
   {
+    id: "WPFToggleStartMenuRecommendations",
+    title: "Start Menu Recommendations",
+    description: "If disabled, then you will not see recommendations in the Start Menu. WARNING: This will also disable Windows Spotlight on your Lock Screen as a side effect.",
+    defaultState: true,
+    registry: [
+      { path: "HKLM\\SOFTWARE\\Microsoft\\PolicyManager\\current\\device\\Start", name: "HideRecommendedSection", value: "0", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Microsoft\\PolicyManager\\current\\device\\Education", name: "IsEducationEnvironment", value: "0", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Explorer", name: "HideRecommendedSection", value: "0", type_: "DWord" },
+    ],
+    enableScript: [
+      "Stop-Process -Name 'explorer' -Force",
+    ],
+    disableScript: [
+      "Stop-Process -Name 'explorer' -Force",
+    ],
+  },
+  {
     id: "WPFToggleBingSearch",
     title: "Start Menu Bing Search",
     description: "If enabled, Bing web search results will be included in your Start Menu search.",
