@@ -59,6 +59,18 @@ const toggles: ToggleDefinition[] = [
     ],
   },
   {
+    id: "WPFToggleNewOutlook",
+    title: "Microsoft Outlook New Version",
+    description: "If disabled, it removes the new Outlook toggle, disables the new Outlook migration, and ensures the classic Outlook application is used.",
+    defaultState: true,
+    registry: [
+      { path: "HKCU\\SOFTWARE\\Microsoft\\Office\\16.0\\Outlook\\Preferences", name: "UseNewOutlook", value: "1", type_: "DWord" },
+      { path: "HKCU\\Software\\Microsoft\\Office\\16.0\\Outlook\\Options\\General", name: "HideNewOutlookToggle", value: "0", type_: "DWord" },
+      { path: "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\Outlook\\Options\\General", name: "DoNewOutlookAutoMigration", value: "0", type_: "DWord" },
+      { path: "HKCU\\Software\\Policies\\Microsoft\\Office\\16.0\\Outlook\\Preferences", name: "NewOutlookMigrationUserSetting", value: "0", type_: "DWord" },
+    ],
+  },
+  {
     id: "WPFToggleVerboseLogon",
     title: "Logon Verbose Mode",
     description: "Show detailed messages during the login process for troubleshooting and diagnostics.",
