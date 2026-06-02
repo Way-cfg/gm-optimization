@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unknown-property */
 import { useRef, useState } from "react";
 import { Canvas, extend, useFrame } from "@react-three/fiber";
-import { Environment, Lightformer } from "@react-three/drei";
+import { Environment, Lightformer, RoundedBoxGeometry, useTexture } from "@react-three/drei";
 import {
   BallCollider,
   CuboidCollider,
@@ -12,6 +12,7 @@ import {
 } from "@react-three/rapier";
 import { MeshLineGeometry, MeshLineMaterial } from "meshline";
 import * as THREE from "three";
+import appLogo from "../../branding_assets/applogo.png";
 
 extend({ MeshLineGeometry, MeshLineMaterial });
 
@@ -141,26 +142,15 @@ function Band() {
 
   curve.curveType = "chordal";
 
-  // Build card geometry procedurally (same structure as original GLB)
-  const baseMat = new THREE.MeshPhysicalMaterial({
-    color: 0x222222,
-    roughness: 0.9,
-    metalness: 0.8,
-  });
+  const logoTexture = useTexture(appLogo);
   const metalMat = new THREE.MeshPhysicalMaterial({
     color: 0x888888,
     roughness: 0.3,
     metalness: 0.6,
   });
-
-  const nodes = {
-    card: new THREE.Mesh(new THREE.BoxGeometry(1.6, 2.25, 0.04), baseMat),
-    clip: new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.4, 0.06), metalMat),
-    clamp: new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.2, 0.08), metalMat),
-  };
-  nodes.card.position.set(0, 0, 0);
-  nodes.clip.position.set(0, 1.0, 0);
-  nodes.clamp.position.set(0, 0.85, 0);
+  const cardWidth = 1.6;
+  const cardHeight = 2.25;
+  const cardDepth = 0.04;
 
   return (
     <>
@@ -219,9 +209,41 @@ function Band() {
               drag(false);
             }}
           >
-            <primitive object={nodes.card} />
-            <primitive object={nodes.clip} />
-            <primitive object={nodes.clamp} />
+            <mesh>
+              <RoundedBoxGeometry
+                args={[cardWidth, cardHeight, cardDepth]}
+                radius={0.1}
+                smoothness={4}
+              />
+              <meshPhysicalMaterial
+                color="#222222"
+                roughness={0.85}
+                metalness={0.1}
+              />
+            </mesh>
+            <mesh position={[0, 0, cardDepth / 2 + 0.001]}>
+              <planeGeometry args={[cardWidth * 0.7, cardHeight * 0.5]} />
+              <meshBasicMaterial map={logoTexture} transparent />
+            </mesh>
+            <mesh
+              position={[0, 0, -(cardDepth / 2 + 0.001)]}
+              rotation={[0, Math.PI, 0]}
+            >
+              <planeGeometry args={[cardWidth * 0.7, cardHeight * 0.5]} />
+              <meshBasicMaterial
+                map={logoTexture}
+                transparent
+                opacity={0.6}
+              />
+            </mesh>
+            <mesh position={[0, 0.95, 0]}>
+              <boxGeometry args={[0.25, 0.35, cardDepth + 0.01]} />
+              <meshPhysicalMaterial {...metalMat} />
+            </mesh>
+            <mesh position={[0, 0.82, 0]}>
+              <boxGeometry args={[0.04, 0.18, cardDepth + 0.02]} />
+              <meshPhysicalMaterial {...metalMat} />
+            </mesh>
           </group>
         </RigidBody>
       </group>
@@ -284,7 +306,7 @@ export default function Lanyard() {
           />
           <Lightformer
             intensity={10}
-            color="white"
+            color="#FF5500"
             position={[-10, 0, 14]}
             rotation={[0, Math.PI / 2, Math.PI / 3]}
             scale={[100, 10, 1]}
