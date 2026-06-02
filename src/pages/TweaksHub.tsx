@@ -298,6 +298,26 @@ const tweaks: TweakDefinition[] = [
     ],
   },
   {
+    id: "WPFTweaksBraveDebloat",
+    title: "Brave Browser - Debloat",
+    description: "Disables various annoyances like Brave Rewards, Leo AI, Crypto Wallet and VPN.",
+    category: "Advanced Tweaks",
+    registry: [
+      { path: "HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave", name: "BraveRewardsDisabled", value: "1", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave", name: "BraveWalletDisabled", value: "1", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave", name: "BraveVPNDisabled", value: "1", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave", name: "BraveAIChatEnabled", value: "0", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave", name: "BraveStatsPingEnabled", value: "0", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave", name: "BraveNewsDisabled", value: "1", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave", name: "BraveTalkDisabled", value: "1", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave", name: "TorDisabled", value: "1", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave", name: "BraveP3AEnabled", value: "0", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave", name: "UrlKeyedAnonymizedDataCollectionEnabled", value: "0", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave", name: "SafeBrowsingExtendedReportingEnabled", value: "0", type_: "DWord" },
+      { path: "HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave", name: "MetricsReportingEnabled", value: "0", type_: "DWord" },
+    ],
+  },
+  {
     id: "WPFTweaksDisableBitLocker",
     title: "BitLocker - Disable",
     description: "Disables BitLocker encryption on the main system drive.",
@@ -468,7 +488,7 @@ export default function TweaksHub() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className={`text-sm font-medium ${isActive ? "text-white/90" : "text-white/60"}`}>{p.label}</div>
-                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/19 selected</div>
+                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/20 selected</div>
                   </div>
                 </div>
                 <div className={`text-[11px] leading-relaxed ${isActive ? "text-white/30" : "text-white/[0.15]"}`}>{p.description}</div>
