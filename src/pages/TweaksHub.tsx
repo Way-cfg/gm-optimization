@@ -437,6 +437,21 @@ const tweaks: TweakDefinition[] = [
     ],
   },
   {
+    id: "WPFTweaksTeredo",
+    title: "Teredo - Disable",
+    description: "Teredo network tunneling is an IPv6 feature that can cause additional latency, but may cause problems with some games.",
+    category: "Advanced Tweaks",
+    registry: [
+      { path: "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip6\\Parameters", name: "DisabledComponents", value: "1", type_: "DWord" },
+    ],
+    enableScript: [
+      "netsh interface teredo set state disabled",
+    ],
+    disableScript: [
+      "netsh interface teredo set state default",
+    ],
+  },
+  {
     id: "WPFTweaksDisableNotifications",
     title: "System Tray Notifications & Calendar - Disable",
     description: "Disables all Notifications INCLUDING Calendar.",
@@ -651,7 +666,7 @@ export default function TweaksHub() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className={`text-sm font-medium ${isActive ? "text-white/90" : "text-white/60"}`}>{p.label}</div>
-                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/32 selected</div>
+                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/33 selected</div>
                   </div>
                 </div>
                 <div className={`text-[11px] leading-relaxed ${isActive ? "text-white/30" : "text-white/[0.15]"}`}>{p.description}</div>
