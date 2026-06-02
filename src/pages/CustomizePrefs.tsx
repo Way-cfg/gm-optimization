@@ -59,6 +59,21 @@ const toggles: ToggleDefinition[] = [
     ],
   },
   {
+    id: "WPFToggleTaskbarAlignment",
+    title: "Taskbar Centered Icons",
+    description: "[Windows 11] If enabled, the Taskbar Items will be shown on the Center, otherwise the Taskbar Items will be shown on the Left.",
+    defaultState: true,
+    registry: [
+      { path: "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", name: "TaskbarAl", value: "1", type_: "DWord" },
+    ],
+    enableScript: [
+      "Stop-Process -Name 'explorer' -Force",
+    ],
+    disableScript: [
+      "Stop-Process -Name 'explorer' -Force",
+    ],
+  },
+  {
     id: "WPFToggleBatteryPercentage",
     title: "System Tray Battery Percentage",
     description: "If enabled, shows numeric battery percentage next to the battery icon in the system tray.",
