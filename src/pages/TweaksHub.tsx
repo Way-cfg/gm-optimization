@@ -352,6 +352,15 @@ const tweaks: TweakDefinition[] = [
     ],
   },
   {
+    id: "WPFTweaksIPv46",
+    title: "IPv6 - Set IPv4 as Preferred",
+    description: "Setting the IPv4 preference can have latency and security benefits on private networks where IPv6 is not configured.",
+    category: "Advanced Tweaks",
+    registry: [
+      { path: "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip6\\Parameters", name: "DisabledComponents", value: "32", type_: "DWord" },
+    ],
+  },
+  {
     id: "WPFTweaksDisableBitLocker",
     title: "BitLocker - Disable",
     description: "Disables BitLocker encryption on the main system drive.",
@@ -522,7 +531,7 @@ export default function TweaksHub() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className={`text-sm font-medium ${isActive ? "text-white/90" : "text-white/60"}`}>{p.label}</div>
-                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/23 selected</div>
+                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/24 selected</div>
                   </div>
                 </div>
                 <div className={`text-[11px] leading-relaxed ${isActive ? "text-white/30" : "text-white/[0.15]"}`}>{p.description}</div>
