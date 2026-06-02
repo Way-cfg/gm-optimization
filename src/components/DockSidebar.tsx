@@ -7,9 +7,8 @@ import {
   useSpring,
   useTransform,
   type SpringOptions,
-  AnimatePresence
 } from 'framer-motion';
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Zap, SlidersHorizontal, Settings, Info, type LucideIcon } from 'lucide-react';
 import appLogo from "../../branding_assets/applogo.png";
@@ -36,7 +35,6 @@ function DockItem({
   magnification,
   baseItemSize,
   isActive,
-  onHoverChange,
 }: {
   children: React.ReactNode;
   mouseY: MotionValue<number>;
@@ -45,7 +43,6 @@ function DockItem({
   magnification: number;
   baseItemSize: number;
   isActive: boolean;
-  onHoverChange: (h: boolean) => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -61,8 +58,6 @@ function DockItem({
     <motion.div
       ref={ref}
       style={{ width: size, height: size }}
-      onMouseEnter={() => onHoverChange(true)}
-      onMouseLeave={() => onHoverChange(false)}
       className={`relative inline-flex items-center justify-center rounded-full border-2 transition-colors duration-200 cursor-pointer ${
         isActive
           ? "bg-neon/[0.12] border-neon/40 shadow-[0_0_12px_rgba(255,85,0,0.15)]"
@@ -76,29 +71,10 @@ function DockItem({
   );
 }
 
-function DockLabel({ children, isVisible }: { children: React.ReactNode; isVisible: boolean }) {
-  return (
-    <AnimatePresence>
-      {isVisible && (
-        <motion.div
-          initial={{ opacity: 0, x: -5 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -5 }}
-          transition={{ duration: 0.15 }}
-          className="absolute left-full ml-3 w-fit whitespace-nowrap rounded-lg border border-white/[0.06] bg-[#141619]/90 backdrop-blur-xl px-3 py-1.5 text-xs text-white/70 pointer-events-none z-30"
-        >
-          {children}
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-}
-
 export default function DockSidebar() {
   const location = useLocation();
   const mouseY = useMotionValue(Infinity);
   const isPanelHovered = useMotionValue(0);
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const spring: SpringOptions = { mass: 0.1, stiffness: 150, damping: 12 };
   const magnification = 70;
@@ -121,7 +97,6 @@ export default function DockSidebar() {
         onMouseLeave={() => {
           isPanelHovered.set(0);
           mouseY.set(Infinity);
-          setHoveredIndex(null);
         }}
         className="h-full flex flex-col items-center bg-frosted/80 backdrop-blur-xl border-r border-white/[0.04] py-4 overflow-hidden"
       >
@@ -130,29 +105,23 @@ export default function DockSidebar() {
         </div>
 
         <nav className="flex flex-col items-center gap-3 flex-1">
-          {navItems.map((item, index) => {
+          {navItems.map((item) => {
             const isActive = item.path === "/" ? location.pathname === "/" : location.pathname.startsWith(item.path);
             const Icon = item.icon;
 
             return (
-              <div key={item.path} className="relative flex items-center">
-                <NavLink to={item.path} end={item.path === "/"}>
-                  <DockItem
-                    mouseY={mouseY}
-                    spring={spring}
-                    distance={distance}
-                    magnification={magnification}
-                    baseItemSize={baseItemSize}
-                    isActive={isActive}
-                    onHoverChange={(h) => {
-                      if (h) setHoveredIndex(index);
-                    }}
-                  >
-                    <Icon size={18} strokeWidth={1.5} className={isActive ? "text-neon" : "text-white/35"} />
-                  </DockItem>
-                </NavLink>
-                <DockLabel isVisible={hoveredIndex === index}>{item.label}</DockLabel>
-              </div>
+              <NavLink key={item.path} to={item.path} end={item.path === "/"}>
+                <DockItem
+                  mouseY={mouseY}
+                  spring={spring}
+                  distance={distance}
+                  magnification={magnification}
+                  baseItemSize={baseItemSize}
+                  isActive={isActive}
+                >
+                  <Icon size={18} strokeWidth={1.5} className={isActive ? "text-neon" : "text-white/35"} />
+                </DockItem>
+              </NavLink>
             );
           })}
         </nav>
