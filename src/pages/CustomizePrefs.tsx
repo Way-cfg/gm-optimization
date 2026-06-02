@@ -59,6 +59,15 @@ const toggles: ToggleDefinition[] = [
     ],
   },
   {
+    id: "WPFToggleTaskbarSearch",
+    title: "Taskbar Search Icon",
+    description: "If enabled, Search Button will be on the Taskbar.",
+    defaultState: true,
+    registry: [
+      { path: "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Search", name: "SearchboxTaskbarMode", value: "1", type_: "DWord" },
+    ],
+  },
+  {
     id: "WPFToggleTaskbarAlignment",
     title: "Taskbar Centered Icons",
     description: "[Windows 11] If enabled, the Taskbar Items will be shown on the Center, otherwise the Taskbar Items will be shown on the Left.",
