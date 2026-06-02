@@ -42,6 +42,22 @@ const toggles: ToggleDefinition[] = [
       { path: "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CrossDeviceResume\\Configuration", name: "IsResumeAllowed", value: "1", type_: "DWord" },
     ],
   },
+  {
+    id: "WPFToggleDarkMode",
+    title: "Dark Theme for Windows",
+    description: "Enable/Disable Dark Mode.",
+    defaultState: false,
+    registry: [
+      { path: "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", name: "AppsUseLightTheme", value: "0", type_: "DWord" },
+      { path: "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", name: "SystemUsesLightTheme", value: "0", type_: "DWord" },
+    ],
+    enableScript: [
+      "Stop-Process -Name 'explorer' -Force",
+    ],
+    disableScript: [
+      "Stop-Process -Name 'explorer' -Force",
+    ],
+  },
 ];
 
 const container = {
