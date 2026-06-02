@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unknown-property */
 import { useRef, useState } from "react";
 import { Canvas, extend, useFrame } from "@react-three/fiber";
-import { useTexture, Environment, Lightformer } from "@react-three/drei";
+import { Environment, Lightformer } from "@react-three/drei";
 import {
   BallCollider,
   CuboidCollider,
@@ -12,7 +12,6 @@ import {
 } from "@react-three/rapier";
 import { MeshLineGeometry, MeshLineMaterial } from "meshline";
 import * as THREE from "three";
-import appLogo from "../../branding_assets/applogo.png";
 
 extend({ MeshLineGeometry, MeshLineMaterial });
 
@@ -65,7 +64,6 @@ function Band() {
     linearDamping: 4,
   };
 
-  const logoTexture = useTexture(appLogo);
   const [lanyardTexture] = useState(() => createLanyardTexture());
 
   const [curve] = useState(
@@ -143,21 +141,30 @@ function Band() {
 
   curve.curveType = "chordal";
 
-  const frontMat = new THREE.MeshStandardMaterial({
-    map: logoTexture,
-    roughness: 0.6,
-    metalness: 0.1,
-    color: new THREE.Color("#0B0C0E"),
+  // Build card geometry procedurally (same structure as original GLB)
+  const baseMat = new THREE.MeshPhysicalMaterial({
+    color: 0x222222,
+    roughness: 0.9,
+    metalness: 0.8,
   });
-  const backMat = new THREE.MeshStandardMaterial({
-    color: new THREE.Color("#141619"),
-    roughness: 0.8,
-    metalness: 0.2,
+  const metalMat = new THREE.MeshPhysicalMaterial({
+    color: 0x888888,
+    roughness: 0.3,
+    metalness: 0.6,
   });
+
+  const nodes = {
+    card: new THREE.Mesh(new THREE.BoxGeometry(1.6, 2.25, 0.04), baseMat),
+    clip: new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.4, 0.06), metalMat),
+    clamp: new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.2, 0.08), metalMat),
+  };
+  nodes.card.position.set(0, 0, 0);
+  nodes.clip.position.set(0, 1.0, 0);
+  nodes.clamp.position.set(0, 0.85, 0);
 
   return (
     <>
-      <group position={[0, 3.5, 0]}>
+      <group position={[0, 4, 0]}>
         <RigidBody ref={fixed} {...segmentProps} type="fixed" />
         <RigidBody
           position={[0.5, 0, 0]}
@@ -193,6 +200,12 @@ function Band() {
           <group
             scale={2.25}
             position={[0, -1.2, -0.05]}
+            onPointerOver={() => {
+              document.body.style.cursor = dragged ? "grabbing" : "grab";
+            }}
+            onPointerOut={() => {
+              document.body.style.cursor = "auto";
+            }}
             onPointerDown={(e: any) => {
               e.target.setPointerCapture(e.pointerId);
               drag(
@@ -206,63 +219,9 @@ function Band() {
               drag(false);
             }}
           >
-            <mesh>
-              <boxGeometry args={[1.6, 2.25, 0.04]} />
-              <meshStandardMaterial
-                attach="material-0"
-                color="#141619"
-                roughness={0.8}
-              />
-              <meshStandardMaterial
-                attach="material-1"
-                color="#141619"
-                roughness={0.8}
-              />
-              <meshStandardMaterial
-                attach="material-2"
-                color="#141619"
-                roughness={0.8}
-              />
-              <meshStandardMaterial
-                attach="material-3"
-                color="#141619"
-                roughness={0.8}
-              />
-              <meshStandardMaterial
-                attach="material-4"
-                {...frontMat}
-                roughness={0.4}
-                metalness={0.3}
-              />
-              <meshStandardMaterial
-                attach="material-5"
-                {...backMat}
-              />
-            </mesh>
-            <mesh position={[0, 0, 0.03]}>
-              <planeGeometry args={[1.4, 2.0]} />
-              <meshStandardMaterial
-                map={logoTexture}
-                transparent
-                roughness={0.3}
-                metalness={0.1}
-                toneMapped={false}
-              />
-            </mesh>
-            <mesh position={[0, -1.0, 0.03]}>
-              <planeGeometry args={[1.3, 0.35]} />
-              <meshStandardMaterial
-                color="#FF5500"
-                roughness={0.5}
-              />
-            </mesh>
-            <mesh position={[0, -1.0, 0.035]}>
-              <planeGeometry args={[1.15, 0.18]} />
-              <meshStandardMaterial
-                color="#0B0C0E"
-                roughness={0.5}
-              />
-            </mesh>
+            <primitive object={nodes.card} />
+            <primitive object={nodes.clip} />
+            <primitive object={nodes.clamp} />
           </group>
         </RigidBody>
       </group>
@@ -275,7 +234,7 @@ function Band() {
           useMap
           map={lanyardTexture}
           repeat={[-4, 1]}
-          lineWidth={0.8}
+          lineWidth={1}
         />
       </mesh>
     </>
@@ -288,9 +247,9 @@ export default function Lanyard() {
   );
 
   return (
-    <div className="relative w-[240px] h-[270px]">
+    <div className="relative w-full h-full">
       <Canvas
-        camera={{ position: [0, 0, 28], fov: 20 }}
+        camera={{ position: [0, 0, 30], fov: 20 }}
         dpr={[1, isMobile ? 1.5 : 2]}
         gl={{ alpha: true }}
         onCreated={({ gl }) =>
@@ -325,7 +284,7 @@ export default function Lanyard() {
           />
           <Lightformer
             intensity={10}
-            color="#FF5500"
+            color="white"
             position={[-10, 0, 14]}
             rotation={[0, Math.PI / 2, Math.PI / 3]}
             scale={[100, 10, 1]}

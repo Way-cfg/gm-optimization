@@ -164,7 +164,7 @@ export default function Dashboard({ initData }: { initData?: InitResult | null }
         <OptimizationArc value={status === "EXTREME" ? 100 : 45} max={100} size={260} />
       </motion.div>
 
-      <div className="absolute -top-8 right-0 w-[220px] h-[250px] z-10 pointer-events-none">
+      <div className="absolute -top-8 right-0 w-[260px] h-[280px] z-10">
         <Lanyard />
       </div>
 
