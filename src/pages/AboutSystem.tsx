@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { invoke } from "@tauri-apps/api/core";
 import { Cpu, Monitor, HardDrive, Wifi, CircuitBoard, Info } from "lucide-react";
+import GlowCard from "../components/GlowCard";
 
 interface SystemInfo {
   cpu: { label: string; value: string }[];
@@ -26,7 +27,7 @@ function SpecSection({ icon: Icon, title, entries }: {
 }) {
   if (entries.length === 0) return null;
   return (
-    <div className="bg-frosted/80 backdrop-blur-xl border border-white/[0.05] rounded-2xl p-5">
+    <GlowCard className="card-glow bg-frosted/80 backdrop-blur-xl border border-white/[0.05] rounded-2xl p-5">
       <div className="flex items-center gap-2 mb-4">
         <Icon size={14} strokeWidth={1.5} className="text-white/20" />
         <span className="text-[11px] text-white/20 uppercase tracking-widest">{title}</span>
@@ -39,7 +40,7 @@ function SpecSection({ icon: Icon, title, entries }: {
           </div>
         ))}
       </div>
-    </div>
+    </GlowCard>
   );
 }
 
@@ -69,22 +70,24 @@ export default function AboutSystem() {
         <SpecSection icon={Wifi} title="Network" entries={info?.network || []} />
       </motion.div>
 
-      <motion.div variants={child} className="bg-frosted/80 backdrop-blur-xl border border-white/[0.05] rounded-2xl p-5">
-        <div className="text-[11px] text-white/20 uppercase tracking-widest mb-4">Application</div>
-        <div className="space-y-2">
-          {[
-            { label: "App", value: "Optimization Way" },
-            { label: "Version", value: "0.1.0" },
-            { label: "Platform", value: "Windows (x64)" },
-            { label: "Framework", value: "Tauri 2 + React 19" },
-            { label: "License", value: "MIT" },
-          ].map(e => (
-            <div key={e.label} className="flex justify-between py-1 border-b border-white/[0.03] last:border-0">
-              <span className="text-xs text-white/25 font-mono uppercase tracking-wider">{e.label}</span>
-              <span className="text-xs text-white/60 font-mono">{e.value}</span>
-            </div>
-          ))}
-        </div>
+      <motion.div variants={child}>
+        <GlowCard className="card-glow bg-frosted/80 backdrop-blur-xl border border-white/[0.05] rounded-2xl p-5">
+          <div className="text-[11px] text-white/20 uppercase tracking-widest mb-4">Application</div>
+          <div className="space-y-2">
+            {[
+              { label: "App", value: "Optimization Way" },
+              { label: "Version", value: "0.1.0" },
+              { label: "Platform", value: "Windows (x64)" },
+              { label: "Framework", value: "Tauri 2 + React 19" },
+              { label: "License", value: "MIT" },
+            ].map(e => (
+              <div key={e.label} className="flex justify-between py-1 border-b border-white/[0.03] last:border-0">
+                <span className="text-xs text-white/25 font-mono uppercase tracking-wider">{e.label}</span>
+                <span className="text-xs text-white/60 font-mono">{e.value}</span>
+              </div>
+            ))}
+          </div>
+        </GlowCard>
       </motion.div>
     </motion.div>
   );

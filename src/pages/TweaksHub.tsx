@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { invoke } from "@tauri-apps/api/core";
-import { Check, History, ShieldOff, AlertTriangle, RotateCw, Zap, Gauge, Mountain, Sparkles } from "lucide-react";
+import { Check, History, AlertTriangle, RotateCw, Zap, Gauge, Mountain, Sparkles } from "lucide-react";
 import { useToast } from "../components/Toast";
+import GlowCard from "../components/GlowCard";
 
 interface RegistryEntry {
   path: string;
@@ -618,6 +619,7 @@ export default function TweaksHub() {
   const [running, setRunning] = useState(false);
   const [applying, setApplying] = useState<Set<string>>(new Set());
   const [confirm, setConfirm] = useState<TweakDefinition | null>(null);
+  void confirm;
   const { toast } = useToast();
 
   const toggleCheck = (id: string) => {
@@ -714,14 +716,15 @@ export default function TweaksHub() {
             const isActive = activePreset === p.id;
             const count = p.tweaks.filter(id => selected.has(id)).length;
             return (
-              <div
+              <GlowCard
                 key={p.id}
-                onClick={() => applyPreset(p)}
-                className={`flex-1 p-4 rounded-2xl border cursor-pointer transition-all duration-200 ${
+                className={`card-glow flex-1 p-4 rounded-2xl border cursor-pointer transition-all duration-200 ${
                   isActive
                     ? "bg-neon/[0.06] border-neon/30"
-                    : "bg-frosted/80 backdrop-blur-xl border-white/[0.05] hover:border-white/[0.12]"
+                    : "bg-frosted/80 backdrop-blur-xl border-white/[0.05]"
                 }`}
+                onClick={() => applyPreset(p)}
+                tilt
               >
                 <div className="flex items-center gap-2.5 mb-2">
                   <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
@@ -735,29 +738,26 @@ export default function TweaksHub() {
                   </div>
                 </div>
                 <div className={`text-[11px] leading-relaxed ${isActive ? "text-white/30" : "text-white/[0.15]"}`}>{p.description}</div>
-              </div>
+              </GlowCard>
             );
           })}
         </motion.div>
 
         {categories.map(cat => (
-          <motion.div key={cat} variants={child} className="bg-frosted/80 backdrop-blur-xl border border-white/[0.05] rounded-2xl p-5 mb-4">
-            <div className="flex items-center gap-2 mb-4">
-              <History size={14} strokeWidth={1.5} className="text-white/20" />
-              <span className="text-[11px] text-white/20 uppercase tracking-widest">{cat}</span>
-            </div>
+          <motion.div key={cat} variants={child}>
+            <GlowCard className="card-glow bg-frosted/80 backdrop-blur-xl border border-white/[0.05] rounded-2xl p-5 mb-4">
+              <div className="flex items-center gap-2 mb-4">
+                <History size={14} strokeWidth={1.5} className="text-white/20" />
+                <span className="text-[11px] text-white/20 uppercase tracking-widest">{cat}</span>
+              </div>
             <div className="space-y-1">
               {tweaks.filter(t => t.category === cat).map(tweak => {
                 const isChecked = selected.has(tweak.id);
                 const isApplying = applying.has(tweak.id);
                 return (
-                  <div
-                    key={tweak.id}
-                    onClick={() => !running && toggleCheck(tweak.id)}
-                    className={`flex items-center gap-3 px-3 py-3 rounded-xl bg-white/[0.02] border transition-all duration-200 ${
-                      running ? "opacity-50 pointer-events-none" : "cursor-pointer hover:bg-white/[0.04]"
-                    } ${isChecked ? "border-white/[0.08]" : "border-white/[0.04]"}`}
-                  >
+                  <GlowCard key={tweak.id} className={`card-glow flex items-center gap-3 px-3 py-3 rounded-xl bg-white/[0.02] border transition-all duration-200 ${
+                    running ? "opacity-50 pointer-events-none" : "cursor-pointer"
+                  } ${isChecked ? "border-white/[0.08]" : "border-white/[0.04]"}`} onClick={() => !running && toggleCheck(tweak.id)} tilt>
                     <div className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all duration-200 shrink-0 ${
                       isApplying
                         ? "border-neon/40 bg-neon/[0.1]"
@@ -783,10 +783,11 @@ export default function TweaksHub() {
                     {tweak.requiresConfirmation && (
                       <AlertTriangle size={12} strokeWidth={1.5} className="text-white/15 shrink-0" />
                     )}
-                  </div>
+                  </GlowCard>
                 );
               })}
-            </div>
+              </div>
+            </GlowCard>
           </motion.div>
         ))}
 
@@ -814,53 +815,6 @@ export default function TweaksHub() {
           </button>
         </motion.div>
       </motion.div>
-
-      {confirm && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
-          onClick={() => setConfirm(null)}
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96, y: 8 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: 8 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            onClick={e => e.stopPropagation()}
-            className="bg-frosted/90 backdrop-blur-2xl border border-white/[0.06] rounded-2xl p-6 max-w-sm w-full mx-4 shadow-2xl"
-          >
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-9 h-9 rounded-full bg-crimson/[0.12] flex items-center justify-center">
-                <ShieldOff size={16} strokeWidth={1.5} className="text-crimson" />
-              </div>
-              <div>
-                <div className="text-sm font-medium text-white/80">{confirm.confirmTitle}</div>
-                <div className="text-[11px] text-white/25 mt-0.5">This action requires confirmation</div>
-              </div>
-            </div>
-            <p className="text-xs text-white/40 leading-relaxed mb-6">{confirm.confirmMessage}</p>
-            <div className="flex gap-2 justify-end">
-              <button
-                onClick={() => setConfirm(null)}
-                className="px-4 py-2 rounded-lg text-xs text-white/40 hover:text-white/70 bg-white/[0.04] hover:bg-white/[0.08] transition-all duration-200"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  setConfirm(null);
-                  executeBatch(Array.from(selected));
-                }}
-                className="px-4 py-2 rounded-lg text-xs font-medium text-white bg-crimson/80 hover:bg-crimson transition-all duration-200"
-              >
-                Disable BitLocker
-              </button>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
     </>
   );
 }

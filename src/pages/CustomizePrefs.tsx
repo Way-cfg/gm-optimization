@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { invoke } from "@tauri-apps/api/core";
 import { RotateCw } from "lucide-react";
 import { useToast } from "../components/Toast";
+import GlowCard from "../components/GlowCard";
 
 interface RegistryEntry {
   path: string;
@@ -330,39 +331,40 @@ export default function CustomizePrefs() {
             <motion.div
               key={tweak.id}
               variants={child}
-              className="bg-frosted/80 backdrop-blur-xl border border-white/[0.05] rounded-2xl px-5 py-4 flex items-center gap-4 transition-all duration-200 hover:border-white/[0.08]"
             >
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-white/70">{tweak.title}</span>
-                  {tweak.requiresReboot && (
-                    <RotateCw size={11} strokeWidth={1.5} className="text-neon/40 shrink-0" />
-                  )}
+              <GlowCard className="card-glow bg-frosted/80 backdrop-blur-xl border border-white/[0.05] rounded-2xl px-5 py-4 flex items-center gap-4 transition-all duration-200">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-white/70">{tweak.title}</span>
+                    {tweak.requiresReboot && (
+                      <RotateCw size={11} strokeWidth={1.5} className="text-neon/40 shrink-0" />
+                    )}
+                  </div>
+                  <div className="text-[11px] text-white/25 mt-0.5">{tweak.description}</div>
                 </div>
-                <div className="text-[11px] text-white/25 mt-0.5">{tweak.description}</div>
-              </div>
 
-              <button
-                onClick={() => !busy && handleToggle(tweak)}
-                disabled={busy}
-                className={`relative w-11 h-[26px] rounded-full shrink-0 transition-all duration-300 ${
-                  busy
-                    ? "bg-white/[0.06]"
-                    : on
-                      ? "bg-neon/30"
-                      : "bg-white/[0.08]"
-                }`}
-              >
-                {busy ? (
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3.5 h-3.5 border-2 border-neon/20 border-t-neon rounded-full animate-spin" />
-                ) : (
-                  <div
-                    className={`absolute top-[3px] w-5 h-5 rounded-full bg-white shadow-md transition-all duration-300 ${
-                      on ? "left-[22px] bg-neon" : "left-[3px] bg-white/40"
-                    }`}
-                  />
-                )}
-              </button>
+                <button
+                  onClick={() => !busy && handleToggle(tweak)}
+                  disabled={busy}
+                  className={`relative w-11 h-[26px] rounded-full shrink-0 transition-all duration-300 ${
+                    busy
+                      ? "bg-white/[0.06]"
+                      : on
+                        ? "bg-neon/30"
+                        : "bg-white/[0.08]"
+                  }`}
+                >
+                  {busy ? (
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3.5 h-3.5 border-2 border-neon/20 border-t-neon rounded-full animate-spin" />
+                  ) : (
+                    <div
+                      className={`absolute top-[3px] w-5 h-5 rounded-full bg-white shadow-md transition-all duration-300 ${
+                        on ? "left-[22px] bg-neon" : "left-[3px] bg-white/40"
+                      }`}
+                    />
+                  )}
+                </button>
+              </GlowCard>
             </motion.div>
           );
         })}

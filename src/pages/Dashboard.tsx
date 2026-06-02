@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { invoke } from "@tauri-apps/api/core";
 import { Cpu, MemoryStick, HardDrive, Activity } from "lucide-react";
-import MagicBento from "../components/MagicBento";
+import GlowCard from "../components/GlowCard";
 
 interface DriveSummary {
   letter: string;
@@ -77,7 +77,7 @@ function SpecCard({ icon: Icon, label, value }: {
   icon: typeof Cpu; label: string; value: string;
 }) {
   return (
-    <div className="flex items-center gap-3 px-4 py-3 bg-white/[0.03] border border-white/[0.05] rounded-xl">
+    <GlowCard className="card-glow flex items-center gap-3 px-4 py-3 bg-white/[0.03] border border-white/[0.05] rounded-xl" tilt magnetism>
       <div className="w-9 h-9 rounded-lg bg-white/[0.04] flex items-center justify-center shrink-0">
         <Icon size={16} strokeWidth={1.5} className="text-white/35" />
       </div>
@@ -85,7 +85,7 @@ function SpecCard({ icon: Icon, label, value }: {
         <div className="text-[11px] text-white/25 uppercase tracking-widest">{label}</div>
         <div className="text-sm font-mono font-medium text-white/70 mt-0.5 truncate">{value}</div>
       </div>
-    </div>
+    </GlowCard>
   );
 }
 
@@ -113,7 +113,7 @@ function ActivityStream({ entries }: { entries: ScanEntry[] }) {
   };
 
   return (
-    <div className="bg-white/[0.02] border border-white/[0.05] rounded-xl overflow-hidden">
+    <GlowCard className="card-glow bg-white/[0.02] border border-white/[0.05] rounded-xl overflow-hidden" tilt>
       <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/[0.04]">
         <Activity size={12} strokeWidth={1.5} className="text-white/20" />
         <span className="text-[10px] text-white/15 uppercase tracking-widest">Optimization Log</span>
@@ -135,7 +135,7 @@ function ActivityStream({ entries }: { entries: ScanEntry[] }) {
           <span className="text-white/12 terminal-cursor">awaiting next task</span>
         </div>
       </div>
-    </div>
+    </GlowCard>
   );
 }
 
@@ -172,11 +172,6 @@ export default function Dashboard({ initData }: { initData?: InitResult | null }
 
       <motion.div variants={item}>
         <ActivityStream entries={history} />
-      </motion.div>
-
-      <motion.div variants={item} className="mt-8">
-        <div className="text-xs text-white/15 uppercase tracking-widest mb-3 pl-1">Architecture</div>
-        <MagicBento />
       </motion.div>
     </motion.div>
   );
