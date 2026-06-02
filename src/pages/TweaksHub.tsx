@@ -172,6 +172,18 @@ const tweaks: TweakDefinition[] = [
     ],
   },
   {
+    id: "WPFTweaksDeBloat",
+    title: "Unwanted Pre-Installed Apps - Remove",
+    description: "This will remove a bunch of Windows pre-installed applications which most people dont want on their system.",
+    category: "Essential Tweaks",
+    enableScript: [
+      "@(\"Microsoft.WindowsFeedbackHub\",\"Microsoft.BingNews\",\"Microsoft.BingSearch\",\"Microsoft.BingWeather\",\"Clipchamp.Clipchamp\",\"Microsoft.Todos\",\"Microsoft.PowerAutomateDesktop\",\"Microsoft.MicrosoftSolitaireCollection\",\"Microsoft.WindowsSoundRecorder\",\"Microsoft.MicrosoftStickyNotes\",\"Microsoft.Windows.DevHome\",\"Microsoft.Paint\",\"Microsoft.OutlookForWindows\",\"Microsoft.WindowsAlarms\",\"Microsoft.StartExperiencesApp\",\"Microsoft.GetHelp\",\"Microsoft.ZuneMusic\",\"MicrosoftCorporationII.QuickAssist\",\"MSTeams\") | ForEach-Object { Get-AppxPackage $_ -AllUsers | Remove-AppxPackage -AllUsers }",
+      "$TeamsPath = \"$Env:LocalAppData\\Microsoft\\Teams\\Update.exe\"",
+      "if (Test-Path $TeamsPath) { Start-Process $TeamsPath -ArgumentList '-uninstall' -Wait; Remove-Item $TeamsPath -Recurse -Force }",
+    ],
+    disableScript: [],
+  },
+  {
     id: "WPFTweaksDisableExplorerAutoDiscovery",
     title: "File Explorer Automatic Folder Discovery - Disable",
     description: "Windows Explorer automatically tries to guess the type of the folder based on its contents, slowing down the browsing experience. WARNING! Will disable File Explorer grouping.",
@@ -256,21 +268,21 @@ const presets: Preset[] = [
     label: "Simple Tweak",
     description: "Essential privacy and performance tweaks",
     icon: Zap,
-    tweaks: ["WPFTweaksActivity", "WPFTweaksTelemetry", "WPFTweaksPowershell7Tele", "WPFTweaksDisableStoreSearch", "WPFTweaksDeleteTempFiles", "WPFTweaksEndTaskOnTaskbar"],
+    tweaks: ["WPFTweaksActivity", "WPFTweaksTelemetry", "WPFTweaksPowershell7Tele", "WPFTweaksDisableStoreSearch", "WPFTweaksDeleteTempFiles", "WPFTweaksDeBloat", "WPFTweaksEndTaskOnTaskbar"],
   },
   {
     id: "balanced",
     label: "Balanced Tweak",
     description: "Moderate optimizations for daily use",
     icon: Gauge,
-    tweaks: ["WPFTweaksActivity", "WPFTweaksTelemetry", "WPFTweaksPowershell7Tele", "WPFTweaksDisableStoreSearch", "WPFTweaksDeleteTempFiles", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksRevertStartMenu", "WPFTweaksRestorePoint", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksHiber", "WPFTweaksLocation"],
+    tweaks: ["WPFTweaksActivity", "WPFTweaksTelemetry", "WPFTweaksPowershell7Tele", "WPFTweaksDisableStoreSearch", "WPFTweaksDeleteTempFiles", "WPFTweaksDeBloat", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksRevertStartMenu", "WPFTweaksRestorePoint", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksHiber", "WPFTweaksLocation"],
   },
   {
     id: "extreme",
     label: "Extreme Plus Tweak",
     description: "Maximum system optimization",
     icon: Mountain,
-    tweaks: ["WPFTweaksActivity", "WPFTweaksTelemetry", "WPFTweaksPowershell7Tele", "WPFTweaksDisableStoreSearch", "WPFTweaksDeleteTempFiles", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksRevertStartMenu", "WPFTweaksRestorePoint", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksHiber", "WPFTweaksLocation", "WPFTweaksDisableBitLocker"],
+    tweaks: ["WPFTweaksActivity", "WPFTweaksTelemetry", "WPFTweaksPowershell7Tele", "WPFTweaksDisableStoreSearch", "WPFTweaksDeleteTempFiles", "WPFTweaksDeBloat", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksRevertStartMenu", "WPFTweaksRestorePoint", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksHiber", "WPFTweaksLocation", "WPFTweaksDisableBitLocker"],
   },
 ];
 
@@ -404,7 +416,7 @@ export default function TweaksHub() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className={`text-sm font-medium ${isActive ? "text-white/90" : "text-white/60"}`}>{p.label}</div>
-                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/14 selected</div>
+                    <div className={`text-[10px] mt-0.5 ${isActive ? "text-white/25" : "text-white/[0.15]"}`}>{count}/15 selected</div>
                   </div>
                 </div>
                 <div className={`text-[11px] leading-relaxed ${isActive ? "text-white/30" : "text-white/[0.15]"}`}>{p.description}</div>
