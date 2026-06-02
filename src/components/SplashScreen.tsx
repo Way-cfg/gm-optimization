@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import appLogo from "../../branding_assets/applogo.png";
+import Particles from "./Particles";
 
 function SpinnerRing() {
   const size = 180;
@@ -58,12 +59,20 @@ export default function SplashScreen({ loading }: { loading: boolean }) {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5, ease: "easeInOut" }}
         >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="flex flex-col items-center gap-10"
-          >
+          <div className="absolute inset-0">
+            <Particles
+              particleCount={250}
+              particleSpread={15}
+              speed={0.12}
+              particleColors={['#FF5500', '#FF7733', '#FF5500']}
+              alphaParticles
+              particleBaseSize={80}
+              sizeRandomness={0.8}
+              cameraDistance={25}
+              pixelRatio={1}
+            />
+          </div>
+          <div className="relative z-10 flex flex-col items-center gap-10">
             <SpinnerRing />
 
             <div className="flex flex-col items-center gap-5">
@@ -101,7 +110,7 @@ export default function SplashScreen({ loading }: { loading: boolean }) {
                 ))}
               </motion.div>
             </div>
-          </motion.div>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
