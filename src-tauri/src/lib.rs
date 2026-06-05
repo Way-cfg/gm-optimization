@@ -88,6 +88,7 @@ pub fn run() {
             commands::restore::restore_system,
             commands::profiles::export_profile,
             commands::profiles::import_profile,
+            commands::tweaks::shutdown_system,
 
         ])
         .run(tauri::generate_context!())

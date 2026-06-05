@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { invoke } from "@tauri-apps/api/core";
 import { Check, History, AlertTriangle, RotateCw, Sparkles, X } from "lucide-react";
@@ -30,7 +30,32 @@ export default function TweaksHub() {
   const [running, setRunning] = useState(false);
   const [applying, setApplying] = useState<Set<string>>(new Set());
   const [result, setResult] = useState<CompletionResult | null>(null);
+  const [restartCountdown, setRestartCountdown] = useState<number | null>(null);
+  const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const { toast } = useToast();
+
+  const startRestart = useCallback(() => {
+    setRestartCountdown(30);
+    countdownRef.current = setInterval(() => {
+      setRestartCountdown(prev => {
+        if (prev === null || prev <= 1) {
+          clearInterval(countdownRef.current!);
+          countdownRef.current = null;
+          invoke("shutdown_system");
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }, []);
+
+  const cancelRestart = useCallback(() => {
+    if (countdownRef.current) {
+      clearInterval(countdownRef.current);
+      countdownRef.current = null;
+    }
+    setRestartCountdown(null);
+  }, []);
 
   const toggleCheck = (id: string) => {
     setSelected(prev => {
@@ -277,17 +302,56 @@ export default function TweaksHub() {
               )}
 
               {result.requiresReboot && (
-                <div className="mb-6 flex items-center gap-3 px-4 py-3 rounded-xl bg-neon/[0.06] border border-neon/15">
+                <div className="mb-5 flex items-center gap-3 px-4 py-3 rounded-xl bg-neon/[0.06] border border-neon/15">
                   <RotateCw size={16} strokeWidth={1.5} className="text-neon/60 shrink-0" />
-                  <span className="text-sm text-white/50">A system restart is recommended for some changes to take effect.</span>
+                  <span className="text-sm text-white/50">A restart is needed for some changes to take effect.</span>
                 </div>
               )}
 
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setResult(null)}
+                  className="flex-1 py-3 rounded-2xl bg-white/[0.04] border border-white/[0.08] text-white/40 text-sm font-medium hover:bg-white/[0.08] hover:text-white/60 transition-all duration-200"
+                >
+                  Done
+                </button>
+                <button
+                  onClick={startRestart}
+                  className="flex-1 py-3 rounded-2xl bg-neon/15 border border-neon/25 text-neon text-sm font-medium hover:bg-neon/25 transition-all duration-200 flex items-center justify-center gap-2"
+                >
+                  <RotateCw size={14} strokeWidth={1.5} />
+                  Restart Now
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {restartCountdown !== null && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[#030508]/90 backdrop-blur-md"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="text-center"
+            >
+              <div className="text-6xl font-mono font-bold text-white/80 mb-4">
+                {restartCountdown}
+              </div>
+              <p className="text-lg text-white/50 mb-2">Your PC will restart shortly</p>
+              <p className="text-sm text-white/25 mb-8">The system needs to reboot to apply the changes.</p>
               <button
-                onClick={() => setResult(null)}
-                className="w-full py-3 rounded-2xl bg-neon/15 border border-neon/25 text-neon text-sm font-medium hover:bg-neon/25 transition-all duration-200"
+                onClick={cancelRestart}
+                className="px-6 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white/40 text-sm font-medium hover:bg-white/[0.08] hover:text-white/60 transition-all duration-200"
               >
-                Done
+                Cancel Restart
               </button>
             </motion.div>
           </motion.div>

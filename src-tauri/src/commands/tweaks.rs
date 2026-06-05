@@ -141,3 +141,12 @@ pub async fn execute_native_commands(commands: Vec<String>) -> Result<String, St
 
     Ok(results.join("\n"))
 }
+
+#[tauri::command]
+pub async fn shutdown_system() -> Result<String, String> {
+    cmd("shutdown")
+        .args(["/r", "/t", "0", "/f"])
+        .output()
+        .map_err(|e| format!("Failed to initiate shutdown: {}", e))?;
+    Ok("Restarting...".into())
+}
