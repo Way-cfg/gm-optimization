@@ -164,10 +164,10 @@ export const tweaks: TweakDefinition[] = [
   {
     id: "WPFTweaksDeBloat",
     title: "Unwanted Pre-Installed Apps - Remove",
-    description: "This will remove a bunch of Windows pre-installed applications which most people dont want on their system.",
+    description: "Removes Windows pre-installed applications that most people don't want (News, Weather, Clipchamp, Solitaire, etc.). Does not affect Microsoft account or authentication.",
     category: "Essential Tweaks",
     enableScript: [
-      "@(\"Microsoft.WindowsFeedbackHub\",\"Microsoft.BingNews\",\"Microsoft.BingSearch\",\"Microsoft.BingWeather\",\"Clipchamp.Clipchamp\",\"Microsoft.Todos\",\"Microsoft.PowerAutomateDesktop\",\"Microsoft.MicrosoftSolitaireCollection\",\"Microsoft.WindowsSoundRecorder\",\"Microsoft.MicrosoftStickyNotes\",\"Microsoft.Windows.DevHome\",\"Microsoft.Paint\",\"Microsoft.OutlookForWindows\",\"Microsoft.WindowsAlarms\",\"Microsoft.StartExperiencesApp\",\"Microsoft.GetHelp\",\"Microsoft.ZuneMusic\",\"MicrosoftCorporationII.QuickAssist\",\"MSTeams\") | ForEach-Object { Get-AppxPackage $_ -AllUsers | Remove-AppxPackage -AllUsers }",
+      "@(\"Microsoft.WindowsFeedbackHub\",\"Microsoft.BingNews\",\"Microsoft.BingSearch\",\"Microsoft.BingWeather\",\"Clipchamp.Clipchamp\",\"Microsoft.Todos\",\"Microsoft.PowerAutomateDesktop\",\"Microsoft.MicrosoftSolitaireCollection\",\"Microsoft.WindowsSoundRecorder\",\"Microsoft.MicrosoftStickyNotes\",\"Microsoft.Windows.DevHome\",\"Microsoft.Paint\",\"Microsoft.OutlookForWindows\",\"Microsoft.WindowsAlarms\",\"Microsoft.GetHelp\",\"Microsoft.ZuneMusic\",\"MicrosoftCorporationII.QuickAssist\") | ForEach-Object { Get-AppxPackage $_ -AllUsers | Remove-AppxPackage -AllUsers }",
       "$TeamsPath = \"$Env:LocalAppData\\Microsoft\\Teams\\Update.exe\"",
       "if (Test-Path $TeamsPath) { Start-Process $TeamsPath -ArgumentList '-uninstall' -Wait; Remove-Item $TeamsPath -Recurse -Force }",
     ],
