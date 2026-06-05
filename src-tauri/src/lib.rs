@@ -13,11 +13,6 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_shell::init())
-        .on_window_event(|window, event| {
-            if let tauri::WindowEvent::CloseRequested { .. } = event {
-                let _ = window.hide();
-            }
-        })
         .setup(|app| {
             let conn = db::initialize_database(app.handle())
                 .expect("Failed to initialize database");
@@ -59,16 +54,12 @@ pub fn run() {
                         _ => {}
                     }
                 })
-                .on_tray_icon_event(|tray, event| {
-                    if let tauri::tray::TrayIconEvent::Click { .. } = event {
-                        if let Some(window) = tray.app_handle().get_webview_window("main") {
-                            let _ = window.show();
-                            let _ = window.set_focus();
-                        }
-                    }
-                })
                 .build(app)
                 .expect("failed to build system tray");
+
+            let window = app.get_webview_window("main").unwrap();
+            let _ = window.show();
+            let _ = window.set_focus();
 
             Ok(())
         })
