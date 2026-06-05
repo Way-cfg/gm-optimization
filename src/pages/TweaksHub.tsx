@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { invoke } from "@tauri-apps/api/core";
-import { Check, History, AlertTriangle, RotateCw, Sparkles } from "lucide-react";
+import { Check, History, AlertTriangle, RotateCw, Sparkles, X } from "lucide-react";
 import { useToast } from "../components/Toast";
 import GlowCard from "../components/GlowCard";
 import { tweaks, presets, categories, type Preset } from "../data/tweaks";
+import confetti from "canvas-confetti";
 
 const container = {
   hidden: { opacity: 0 },
@@ -15,11 +16,20 @@ const child = {
   show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } as const },
 } as const;
 
+interface CompletionResult {
+  total: number;
+  success: number;
+  fail: number;
+  errors: string[];
+  requiresReboot: boolean;
+}
+
 export default function TweaksHub() {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [activePreset, setActivePreset] = useState<string | null>(null);
   const [running, setRunning] = useState(false);
   const [applying, setApplying] = useState<Set<string>>(new Set());
+  const [result, setResult] = useState<CompletionResult | null>(null);
   const { toast } = useToast();
 
   const toggleCheck = (id: string) => {
@@ -49,13 +59,16 @@ export default function TweaksHub() {
 
   const executeBatch = async (ids: string[]) => {
     setRunning(true);
+    setResult(null);
     let success = 0;
     let fail = 0;
     const errors: string[] = [];
+    let needsReboot = false;
 
     for (const id of ids) {
       setApplying(prev => new Set(prev).add(id));
       const tweak = tweaks.find(t => t.id === id)!;
+      if (tweak.requiresReboot) needsReboot = true;
 
       try {
         if (tweak.registry) {
@@ -88,11 +101,13 @@ export default function TweaksHub() {
     }
 
     setRunning(false);
+    setResult({ total: ids.length, success, fail, errors, requiresReboot: needsReboot });
 
-    if (fail > 0) {
-      toast("error", `Applied ${success}/${ids.length} tweaks — ${fail} failed`);
-    } else {
+    if (success === ids.length) {
+      confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
       toast("success", `Applied all ${success} tweaks successfully`);
+    } else if (fail > 0) {
+      toast("error", `Applied ${success}/${ids.length} tweaks — ${fail} failed`);
     }
   };
 
@@ -209,6 +224,75 @@ export default function TweaksHub() {
           </button>
         </motion.div>
       </motion.div>
+      <AnimatePresence>
+        {result && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[#030508]/80 backdrop-blur-sm"
+            onClick={() => setResult(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              onClick={e => e.stopPropagation()}
+              className="bg-frosted/90 backdrop-blur-xl border border-white/[0.08] rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl"
+            >
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                    result.fail === 0 ? "bg-emerald/[0.12]" : "bg-crimson/[0.12]"
+                  }`}>
+                    {result.fail === 0 ? (
+                      <Check size={20} strokeWidth={2} className="text-emerald" />
+                    ) : (
+                      <AlertTriangle size={20} strokeWidth={2} className="text-crimson" />
+                    )}
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-semibold text-white/90">
+                      {result.fail === 0 ? "All Tweaks Applied" : "Completed with Errors"}
+                    </h2>
+                    <p className="text-sm text-white/30 mt-0.5">
+                      {result.success}/{result.total} successful
+                    </p>
+                  </div>
+                </div>
+                <button onClick={() => setResult(null)} className="text-white/20 hover:text-white/50 transition-colors">
+                  <X size={18} strokeWidth={1.5} />
+                </button>
+              </div>
+
+              {result.fail > 0 && result.errors.length > 0 && (
+                <div className="mb-6 max-h-32 overflow-y-auto space-y-1">
+                  {result.errors.map((err, i) => (
+                    <div key={i} className="text-xs text-crimson/70 font-mono bg-crimson/[0.04] border border-crimson/[0.08] rounded-lg px-3 py-2">
+                      {err}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {result.requiresReboot && (
+                <div className="mb-6 flex items-center gap-3 px-4 py-3 rounded-xl bg-neon/[0.06] border border-neon/15">
+                  <RotateCw size={16} strokeWidth={1.5} className="text-neon/60 shrink-0" />
+                  <span className="text-sm text-white/50">A system restart is recommended for some changes to take effect.</span>
+                </div>
+              )}
+
+              <button
+                onClick={() => setResult(null)}
+                className="w-full py-3 rounded-2xl bg-neon/15 border border-neon/25 text-neon text-sm font-medium hover:bg-neon/25 transition-all duration-200"
+              >
+                Done
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
