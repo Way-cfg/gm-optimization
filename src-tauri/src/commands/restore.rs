@@ -31,24 +31,38 @@ pub async fn create_restore_point(label: String) -> Result<String, String> {
 #[tauri::command]
 pub async fn get_restore_points() -> Result<Vec<RestorePointInfo>, String> {
     let output = cmd("powershell")
-        .args(["-Command", "Get-ComputerRestorePoint | Select-Object Description, CreationTime, SequenceNumber | ConvertTo-Csv -NoTypeInformation"])
+        .args(["-NoProfile", "-Command", "Get-ComputerRestorePoint | Select-Object Description, CreationTime, SequenceNumber | ConvertTo-Json -Compression"])
         .output()
         .map_err(|e| format!("PowerShell failed: {}", e))?;
 
     let stdout = String::from_utf8_lossy(&output.stdout);
-    let mut points = Vec::new();
 
-    for line in stdout.lines().skip(1) {
-        if line.is_empty() { continue; }
-        let parts: Vec<&str> = line.split(',').collect();
-        if parts.len() >= 3 {
-            let description = parts[0].trim_matches('"').to_string();
-            let created_at = parts[1].trim_matches('"').to_string();
-            let seq = parts[2].trim_matches('"').parse::<i64>().unwrap_or(0);
-            points.push(RestorePointInfo { description, created_at, sequence_number: seq });
-        }
+    let trimmed = stdout.trim();
+    if trimmed.is_empty() || trimmed == "[]" || trimmed == "\n" {
+        return Ok(Vec::new());
     }
-    Ok(points)
+
+    // ConvertTo-Json returns a single object or array depending on count
+    let json = if trimmed.starts_with('[') { trimmed.to_string() } else { format!("[{}]", trimmed) };
+
+    #[derive(serde::Deserialize)]
+    struct RawPoint {
+        #[serde(rename = "Description")]
+        description: String,
+        #[serde(rename = "CreationTime")]
+        creation_time: String,
+        #[serde(rename = "SequenceNumber")]
+        sequence_number: i64,
+    }
+
+    let raw: Vec<RawPoint> = serde_json::from_str(&json)
+        .map_err(|e| format!("Failed to parse restore points: {}", e))?;
+
+    Ok(raw.into_iter().map(|r| RestorePointInfo {
+        description: r.description,
+        created_at: r.creation_time,
+        sequence_number: r.sequence_number,
+    }).collect())
 }
 
 #[tauri::command]

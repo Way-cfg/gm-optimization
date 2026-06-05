@@ -30,6 +30,7 @@ export default function JunkCleaner() {
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [cleanResult, setCleanResult] = useState<string | null>(null);
+  const [confirmClean, setConfirmClean] = useState(false);
   const [exclusions, setExclusions] = useState<ExclusionEntry[]>([]);
   const [showExclusions, setShowExclusions] = useState(false);
   const [newExclusion, setNewExclusion] = useState("");
@@ -65,6 +66,7 @@ export default function JunkCleaner() {
     try {
       const res = await invoke<JunkResult>("scan_junk", { request: { custom_paths: [] } });
       setResult(res);
+      setSelected([]);
       toast("info", `Found ${res.total_files} files (${(res.total_size / (1024 * 1024)).toFixed(1)} MB)`);
     } catch (e) {
       setCleanResult(`Error: ${e}`);
@@ -74,7 +76,12 @@ export default function JunkCleaner() {
     setLoading(false);
   };
 
+  const confirmCleanDialog = () => {
+    setConfirmClean(true);
+  };
+
   const clean = async () => {
+    setConfirmClean(false);
     setLoading(true);
     setProgress(null);
     await listenProgress();
@@ -208,13 +215,34 @@ export default function JunkCleaner() {
             ))}
           </div>
           <div className="flex gap-3">
-            <button onClick={clean} disabled={selected.length === 0} className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:bg-gray-700 disabled:text-gray-500 rounded text-sm font-medium transition-colors">
+            <button onClick={confirmCleanDialog} disabled={selected.length === 0} className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:bg-gray-700 disabled:text-gray-500 rounded text-sm font-medium transition-colors">
               Clean Selected
             </button>
             <button onClick={() => setResult(null)} className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded text-sm transition-colors">
               Back
             </button>
           </div>
+
+          {/* Confirm clean dialog */}
+          {confirmClean && (
+            <div className="mt-4 p-4 bg-gray-800 border border-yellow-600/30 rounded-lg">
+              <p className="text-sm text-gray-200 mb-2">Delete selected files?</p>
+              <p className="text-xs text-gray-400 mb-3">
+                {selected.reduce((sum, id) => {
+                  const cat = result?.categories.find(c => c.category_id === id);
+                  return sum + (cat?.file_count || 0);
+                }, 0)} files will be permanently removed.
+              </p>
+              <div className="flex gap-2">
+                <button onClick={clean} className="px-3 py-1.5 bg-red-600 hover:bg-red-500 rounded text-xs font-medium transition-colors">
+                  Yes, Clean
+                </button>
+                <button onClick={() => setConfirmClean(false)} className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 rounded text-xs transition-colors">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
       {cleanResult && (

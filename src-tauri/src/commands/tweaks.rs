@@ -143,6 +143,29 @@ pub async fn execute_native_commands(commands: Vec<String>) -> Result<String, St
 }
 
 #[tauri::command]
+pub async fn read_registry_values(entries: Vec<String>) -> Result<Vec<(String, bool)>, String> {
+    let mut results = Vec::new();
+    for entry in &entries {
+        let parts: Vec<&str> = entry.splitn(3, '|').collect();
+        if parts.len() < 3 { continue; }
+        let ps = format!(
+            r#"try {{ $v = (Get-ItemProperty "{}" -ErrorAction Stop)."{}"; if ($v -eq "{}") {{ "true" }} else {{ "false" }} }} catch {{ "false" }}"#,
+            parts[0], parts[1], parts[2]
+        );
+        let output = cmd("powershell")
+            .args(["-NoProfile", "-Command", &ps])
+            .output();
+        let is_match = output
+            .ok()
+            .and_then(|o| String::from_utf8(o.stdout).ok())
+            .map(|s| s.trim() == "true")
+            .unwrap_or(false);
+        results.push((entry.clone(), is_match));
+    }
+    Ok(results)
+}
+
+#[tauri::command]
 pub async fn shutdown_system() -> Result<String, String> {
     cmd("shutdown")
         .args(["/r", "/t", "0", "/f"])

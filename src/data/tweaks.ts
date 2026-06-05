@@ -587,7 +587,7 @@ export const presets: Preset[] = [
     label: "Extreme Plus Tweak",
     description: "Maximum system optimization",
     icon: Mountain,
-    tweaks: ["WPFTweaksActivity", "WPFTweaksTelemetry", "WPFTweaksPowershell7Tele", "WPFTweaksDisableStoreSearch", "WPFTweaksDeleteTempFiles", "WPFTweaksDeBloat", "WPFTweaksWidget", "WPFTweaksEndTaskOnTaskbar", "WPFTweaksConsumerFeatures", "WPFTweaksRevertStartMenu", "WPFTweaksRestorePoint", "WPFTweaksDisableExplorerAutoDiscovery", "WPFTweaksDiskCleanup", "WPFTweaksWPBT", "WPFTweaksHiber", "WPFTweaksLocation", "WPFTweaksDisableBitLocker"],
+    tweaks: tweaks.map(t => t.id),
   },
 ];
 

@@ -152,17 +152,19 @@ const item = {
 
 export default function Dashboard({ initData }: { initData?: InitResult | null }) {
   const [history, setHistory] = useState<ScanEntry[]>([]);
-  const status: string = "OPTIMIZED";
   const drivesText = initData?.drives.map(d => `${d.letter} ${d.size}`).join(", ") || "—";
 
   useEffect(() => {
     invoke<ScanEntry[]>("get_scan_history", { limit: 15 }).then(setHistory).catch(() => {});
   }, []);
 
+  const tweakCount = history.filter(e => e.module.toLowerCase().includes("tweak")).length;
+  const score = Math.min(tweakCount * 15 + 10, 100);
+
   return (
     <motion.div variants={container} initial="hidden" animate="show" className="max-w-4xl mx-auto relative">
       <motion.div variants={item} className="flex justify-center mb-8 mt-2">
-        <OptimizationArc value={status === "EXTREME" ? 100 : 45} max={100} size={260} />
+        <OptimizationArc value={score} max={100} size={260} />
       </motion.div>
 
       <div className="absolute -top-8 right-0 w-[260px] h-[280px] z-10">

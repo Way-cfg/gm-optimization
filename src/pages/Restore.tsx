@@ -72,7 +72,7 @@ export default function Restore() {
             placeholder="e.g. Before gaming tweaks"
             className="flex-1 bg-gray-800 border border-gray-700 rounded px-3 py-1.5 text-sm outline-none focus:border-emerald-500"
           />
-          <button onClick={create} disabled={creating} className="px-4 py-1.5 bg-emerald-700 hover:bg-emerald-600 disabled:bg-gray-700 rounded text-xs transition-colors">
+          <button onClick={create} disabled={creating || restoring} className="px-4 py-1.5 bg-emerald-700 hover:bg-emerald-600 disabled:bg-gray-700 rounded text-xs transition-colors">
             {creating ? "Creating..." : "Create"}
           </button>
         </div>
@@ -95,7 +95,7 @@ export default function Restore() {
               </div>
               <button
                 onClick={() => restore(p.sequence_number, p.description)}
-                disabled={restoring}
+                disabled={restoring || creating}
                 className="px-3 py-1.5 bg-yellow-700 hover:bg-yellow-600 disabled:bg-gray-700 rounded text-xs transition-colors"
               >
                 {restoring ? "..." : "Restore"}

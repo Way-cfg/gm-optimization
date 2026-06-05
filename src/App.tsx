@@ -31,18 +31,32 @@ interface InitResult {
 export default function App() {
   const [ready, setReady] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [initError, setInitError] = useState(false);
   const [initData, setInitData] = useState<InitResult | null>(null);
 
   useEffect(() => {
+    let t: ReturnType<typeof setTimeout> | null = null;
     invoke<InitResult>("init_app")
       .then(data => {
         setInitData(data);
         setLoading(false);
-        const t = setTimeout(() => setReady(true), 600);
-        return () => clearTimeout(t);
+        t = setTimeout(() => setReady(true), 600);
       })
-      .catch(() => setLoading(false));
+      .catch(() => {
+        setLoading(false);
+        setInitError(true);
+      });
+    return () => { if (t) clearTimeout(t); };
   }, []);
+
+  if (initError) {
+    return (
+      <div className="h-screen flex flex-col items-center justify-center bg-[#030508]">
+        <p className="text-sm text-white/30 font-mono mb-2">Failed to initialize</p>
+        <p className="text-xs text-white/15 font-mono">Try restarting the application</p>
+      </div>
+    );
+  }
 
   return (
     <>

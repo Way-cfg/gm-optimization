@@ -31,14 +31,17 @@ pub async fn init_app() -> Result<InitResult, String> {
     let ram_total = run_pwsh("[math]::Round((Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory / 1e9, 1)");
 
     let mut drives = Vec::new();
-    let drives_raw = run_pwsh("Get-CimInstance Win32_LogicalDisk -Filter \"DriveType=3\" | Select-Object DeviceID, @{N='SizeGB';E={[math]::Round($_.Size/1e9,0)}} | ConvertTo-Csv -NoTypeInformation");
-    for line in drives_raw.lines() {
-        if line.is_empty() || line.starts_with('\"') && !line.starts_with("\"DeviceID\"") {
-            let parts: Vec<&str> = line.split(',').collect();
-            if parts.len() >= 2 {
-                let letter = parts[0].trim_matches('"').to_string();
-                let size = parts[1].trim_matches('"').to_string();
-                drives.push(DriveSummary { letter, size });
+    let drives_raw = run_pwsh("Get-CimInstance Win32_LogicalDisk -Filter \"DriveType=3\" | Select-Object DeviceID, @{N='SizeGB';E={[math]::Round($_.Size/1e9,0)}} | ConvertTo-Json -Compression");
+    if !drives_raw.is_empty() && drives_raw != "[]" && drives_raw != "\n" {
+        let json = if drives_raw.trim().starts_with('[') { drives_raw.trim().to_string() } else { format!("[{}]", drives_raw.trim()) };
+        if let Ok(parsed) = serde_json::from_str::<Vec<serde_json::Value>>(&json) {
+            for item in &parsed {
+                if let (Some(letter), Some(size)) = (
+                    item.get("DeviceID").and_then(|v| v.as_str()),
+                    item.get("SizeGB").and_then(|v| v.as_str()),
+                ) {
+                    drives.push(DriveSummary { letter: letter.to_string(), size: size.to_string() });
+                }
             }
         }
     }

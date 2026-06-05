@@ -73,17 +73,18 @@ pub async fn collect_system_info() -> Result<SystemInfo, String> {
 
     // Storage
     let mut storage = Vec::new();
-    for line in run_pwsh("Get-CimInstance Win32_DiskDrive | Select-Object Model, Size, InterfaceType, MediaType | ConvertTo-Csv -NoTypeInformation").lines() {
-        if line.is_empty() || line.starts_with('\"') && !line.starts_with("\"Model\"") {
-            let parts: Vec<&str> = line.split(',').collect();
-            if parts.len() >= 4 {
-                let model = parts[0].trim_matches('"').to_string();
-                let size_gb = parts[1].trim_matches('"').parse::<f64>().unwrap_or(0.0) / 1e9;
-                let iface = parts[2].trim_matches('"').to_string();
-                let media = parts[3].trim_matches('"').to_string();
+    let storage_raw = run_pwsh("Get-CimInstance Win32_DiskDrive | Select-Object Model, Size, InterfaceType, MediaType | ConvertTo-Json -Compression");
+    if !storage_raw.is_empty() && storage_raw != "[]" && storage_raw != "\n" {
+        let json = if storage_raw.trim().starts_with('[') { storage_raw.trim().to_string() } else { format!("[{}]", storage_raw.trim()) };
+        if let Ok(parsed) = serde_json::from_str::<Vec<serde_json::Value>>(&json) {
+            for item in &parsed {
+                let model = item.get("Model").and_then(|v| v.as_str()).unwrap_or("Unknown");
+                let size_gb = item.get("Size").and_then(|v| v.as_f64()).unwrap_or(0.0) / 1e9;
+                let iface = item.get("InterfaceType").and_then(|v| v.as_str()).unwrap_or("");
+                let media = item.get("MediaType").and_then(|v| v.as_str()).unwrap_or("");
                 storage.push(InfoEntry {
                     label: format!("{:.0} GB {} {}", size_gb, iface, media),
-                    value: model,
+                    value: model.to_string(),
                 });
             }
         }

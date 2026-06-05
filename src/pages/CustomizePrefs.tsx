@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { invoke } from "@tauri-apps/api/core";
 import { RotateCw } from "lucide-react";
@@ -16,10 +16,29 @@ const child = {
   show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } as const },
 } as const;
 
+const keyForToggle = (t: ToggleDefinition): string | null => {
+  if (!t.registry || t.registry.length === 0) return null;
+  const r = t.registry[0];
+  return `${r.path}|${r.name}|${r.value}`;
+};
+
 export default function CustomizePrefs() {
   const [states, setStates] = useState<Record<string, boolean>>({});
   const [applying, setApplying] = useState<string | null>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const keys = toggles.map(keyForToggle).filter(Boolean) as string[];
+    invoke<[string, boolean][]>("read_registry_values", { entries: keys })
+      .then(results => {
+        const map: Record<string, boolean> = {};
+        for (let i = 0; i < results.length; i++) {
+          if (results[i][1]) map[toggles[i].id] = true;
+        }
+        setStates(map);
+      })
+      .catch(() => {});
+  }, []);
 
   const isOn = (t: ToggleDefinition) => states[t.id] ?? t.defaultState;
 

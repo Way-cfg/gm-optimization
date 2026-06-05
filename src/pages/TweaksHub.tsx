@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { invoke } from "@tauri-apps/api/core";
 import { Check, History, AlertTriangle, RotateCw, Sparkles, X } from "lucide-react";
@@ -34,6 +34,15 @@ export default function TweaksHub() {
   const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const { toast } = useToast();
 
+  useEffect(() => {
+    return () => {
+      if (countdownRef.current) {
+        clearInterval(countdownRef.current);
+        countdownRef.current = null;
+      }
+    };
+  }, []);
+
   const startRestart = useCallback(() => {
     setRestartCountdown(30);
     countdownRef.current = setInterval(() => {
@@ -41,7 +50,7 @@ export default function TweaksHub() {
         if (prev === null || prev <= 1) {
           clearInterval(countdownRef.current!);
           countdownRef.current = null;
-          invoke("shutdown_system");
+          invoke("shutdown_system").catch(() => {});
           return 0;
         }
         return prev - 1;
@@ -92,7 +101,13 @@ export default function TweaksHub() {
 
     for (const id of ids) {
       setApplying(prev => new Set(prev).add(id));
-      const tweak = tweaks.find(t => t.id === id)!;
+      const tweak = tweaks.find(t => t.id === id);
+      if (!tweak) {
+        fail++;
+        errors.push(`Unknown tweak: ${id}`);
+        setApplying(prev => { const next = new Set(prev); next.delete(id); return next; });
+        continue;
+      }
       if (tweak.requiresReboot) needsReboot = true;
 
       try {

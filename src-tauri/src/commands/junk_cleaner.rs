@@ -34,6 +34,13 @@ fn get_junk_locations() -> Vec<(String, String, Vec<PathBuf>)> {
     ]
 }
 
+fn is_excluded(path_str: &str, exclusions: &[String]) -> bool {
+    exclusions.iter().any(|e| {
+        path_str == e.as_str()
+            || path_str.starts_with(&format!("{}\\", e))
+    })
+}
+
 fn scan_path_size(path: &std::path::Path, exclusions: &[String]) -> (u64, u64, Vec<String>) {
     if !path.exists() { return (0, 0, vec![]); }
     let mut size = 0u64;
@@ -42,7 +49,7 @@ fn scan_path_size(path: &std::path::Path, exclusions: &[String]) -> (u64, u64, V
     for entry in WalkDir::new(path).max_depth(3).into_iter().filter_map(|e| e.ok()) {
         if entry.file_type().is_file() {
             let path_str = entry.path().to_string_lossy();
-            if exclusions.iter().any(|e| path_str.starts_with(e.as_str())) {
+            if is_excluded(&path_str, exclusions) {
                 continue;
             }
             if let Ok(meta) = entry.metadata() {
@@ -156,14 +163,17 @@ pub async fn clean_junk(app_handle: tauri::AppHandle, selected_categories: Vec<S
                 Err(e) => errors.push(format!("Failed {}: {}", path.display(), e)),
             }
         } else if path.is_dir() {
+            let mut dir_freed = 0u64;
+            let mut dir_removed = 0u64;
             for entry in WalkDir::new(path).into_iter().filter_map(|e| e.ok()) {
                 if entry.file_type().is_file() {
-                    if let Ok(meta) = entry.metadata() { freed += meta.len(); }
-                    removed += 1;
+                    if let Ok(meta) = entry.metadata() { dir_freed += meta.len(); }
+                    dir_removed += 1;
                 }
             }
-            if let Err(e) = std::fs::remove_dir_all(path) {
-                errors.push(format!("Failed {}: {}", path.display(), e));
+            match std::fs::remove_dir_all(path) {
+                Ok(_) => { freed += dir_freed; removed += dir_removed; }
+                Err(e) => errors.push(format!("Failed {}: {}", path.display(), e)),
             }
         }
     }

@@ -8,7 +8,12 @@ export default function Profiles() {
   const [exporting, setExporting] = useState(false);
   const [importing, setImporting] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const nameRef = useRef(profileName);
+  const descRef = useRef(profileDesc);
   const { toast } = useToast();
+
+  nameRef.current = profileName;
+  descRef.current = profileDesc;
 
   const handleExport = useCallback(async () => {
     setExporting(true);
@@ -38,8 +43,8 @@ export default function Profiles() {
     setImporting(true);
     try {
       const text = await file.text();
-      const name = profileName.trim() || file.name.replace(/\.json$/i, "");
-      const desc = profileDesc.trim() || `Imported from ${file.name}`;
+      const name = nameRef.current.trim() || file.name.replace(/\.json$/i, "");
+      const desc = descRef.current.trim() || `Imported from ${file.name}`;
       const msg = await invoke<string>("import_profile", { json: text, name, description: desc });
       toast("success", msg);
       setProfileName("");
@@ -49,7 +54,7 @@ export default function Profiles() {
     }
     setImporting(false);
     if (fileRef.current) fileRef.current.value = "";
-  }, [profileName, profileDesc, toast]);
+  }, [toast]);
 
   return (
     <div>

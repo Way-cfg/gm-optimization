@@ -41,11 +41,11 @@ pub async fn run_disk_benchmark() -> Result<BenchmarkResult, String> {
 
     let _ = std::fs::remove_file(&temp_file);
 
-    // Write speed = size / time
-    let write_speed = (size_bytes as f64 / write_time.as_secs_f64()) / (1024.0 * 1024.0);
-    let read_speed = (size_bytes as f64 / read_time.as_secs_f64()) / (1024.0 * 1024.0);
+    let write_secs = write_time.as_secs_f64().max(0.001);
+    let read_secs = read_time.as_secs_f64().max(0.001);
+    let write_speed = (size_bytes as f64 / write_secs) / (1024.0 * 1024.0);
+    let read_speed = (size_bytes as f64 / read_secs) / (1024.0 * 1024.0);
 
-    // Return combined score as avg MB/s
     let avg = (write_speed + read_speed) / 2.0;
 
     Ok(BenchmarkResult {
@@ -71,11 +71,13 @@ pub async fn run_network_benchmark() -> Result<BenchmarkResult, String> {
             .map_err(|e| format!("ping failed: {}", e))?;
         let stdout = String::from_utf8_lossy(&output.stdout);
         for line in stdout.lines() {
-            if let Some(ms_str) = line.split("time=").nth(1) {
-                if let Some(ms_val) = ms_str.split_whitespace().next() {
-                    if let Ok(ms) = ms_val.parse::<f64>() {
+            for token in line.split_whitespace() {
+                let cleaned = token.replace(|c: char| !c.is_ascii_digit() && c != '.', "");
+                if !cleaned.is_empty() && token.contains("ms") {
+                    if let Ok(ms) = cleaned.parse::<f64>() {
                         total_ms += ms;
                         count += 1;
+                        break;
                     }
                 }
             }

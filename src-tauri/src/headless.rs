@@ -24,11 +24,11 @@ fn junk_clean_headless() -> String {
         if !p.exists() { continue; }
         for entry in WalkDir::new(p).max_depth(3).into_iter().filter_map(|e| e.ok()) {
             if entry.file_type().is_file() {
-                if let Ok(meta) = entry.metadata() {
-                    freed += meta.len();
+                let file_size = entry.metadata().ok().map(|m| m.len()).unwrap_or(0);
+                if std::fs::remove_file(entry.path()).is_ok() {
+                    freed += file_size;
+                    removed += 1;
                 }
-                let _ = std::fs::remove_file(entry.path());
-                removed += 1;
             }
         }
     }
@@ -64,11 +64,16 @@ pub fn run_task(task: &str) {
         }
     };
 
-    // Save to scan history
-    let _ = db.conn.lock().map(|conn| {
-        conn.execute(
-            "INSERT INTO scan_history (module, scanned_at, total_size, item_count, result_json) VALUES (?1, ?2, ?3, ?4, ?5)",
-            rusqlite::params![module, Local::now().to_rfc3339(), total_size, item_count, result_json],
-        )
-    });
+    let lock_result = db.conn.lock();
+    match lock_result {
+        Ok(conn) => {
+            if let Err(e) = conn.execute(
+                "INSERT INTO scan_history (module, scanned_at, total_size, item_count, result_json) VALUES (?1, ?2, ?3, ?4, ?5)",
+                rusqlite::params![module, Local::now().to_rfc3339(), total_size, item_count, result_json],
+            ) {
+                eprintln!("Headless: failed to save scan history: {}", e);
+            }
+        }
+        Err(_) => eprintln!("Headless: mutex poisoned, cannot save scan history"),
+    }
 }

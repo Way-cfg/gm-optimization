@@ -2,7 +2,7 @@ use crate::models::StartupItem;
 use crate::util::cmd;
 use std::fs;
 
-fn scan_registry(_hive: &str, path: &str, label: &str) -> Vec<StartupItem> {
+fn scan_registry(path: &str, label: &str) -> Vec<StartupItem> {
     let mut items = Vec::new();
     let script = format!(
         r#"$items = @(); try {{
@@ -11,10 +11,10 @@ fn scan_registry(_hive: &str, path: &str, label: &str) -> Vec<StartupItem> {
                 $name = $_.Name;
                 $val = $_.Value;
                 $disabled = $name.StartsWith("_disabled_");
-                $clean = if ($disabled) {{ $name.Substring(10) }} else {{ $name }};
+                if ($disabled) {{ $name = $name.Substring(10) }};
                 $items += @{{
-                    id = "registry|{}|$clean";
-                    name = $clean;
+                    id = "registry|{}|$name";
+                    name = $name;
                     command = "$val";
                     location = "{}";
                     enabled = !$disabled
@@ -49,13 +49,14 @@ fn scan_folder(path: &str, label: &str) -> Vec<StartupItem> {
     if let Ok(entries) = fs::read_dir(path) {
         for entry in entries.flatten() {
             let p = entry.path();
-            if p.extension().map_or(false, |e| e == "lnk" || e == "url") {
+            if p.extension().is_some_and(|e| e == "lnk" || e == "url") {
+                let filename = p.file_name().unwrap_or_default().to_string_lossy().to_string();
                 let name = p.file_stem().unwrap_or_default().to_string_lossy().to_string();
                 items.push(StartupItem {
-                    id: format!("folder|{}|{}", path, name),
+                    id: format!("folder|{}|{}", path, filename),
                     name,
                     command: p.to_string_lossy().to_string(),
-                    location: format!("{}", label),
+                    location: label.to_string(),
                     enabled: true,
                 });
             }
@@ -65,26 +66,18 @@ fn scan_folder(path: &str, label: &str) -> Vec<StartupItem> {
     if let Ok(entries) = fs::read_dir(&disabled_path) {
         for entry in entries.flatten() {
             let p = entry.path();
-            if p.extension().map_or(false, |e| e == "lnk" || e == "url") {
+            if p.extension().is_some_and(|e| e == "lnk" || e == "url") {
                 let name = p.file_stem().unwrap_or_default().to_string_lossy().to_string();
-                if name.starts_with("_disabled_") {
-                    let clean = &name[10..];
-                    items.push(StartupItem {
-                        id: format!("folder|{}|{}", path, clean),
-                        name: clean.to_string(),
-                        command: p.to_string_lossy().to_string(),
-                        location: format!("{}", label),
-                        enabled: false,
-                    });
-                } else {
-                    items.push(StartupItem {
-                        id: format!("folder|{}|{}", path, name),
-                        name,
-                        command: p.to_string_lossy().to_string(),
-                        location: format!("{}", label),
-                        enabled: false,
-                    });
-                }
+                let clean = name.strip_prefix("_disabled_").unwrap_or(&name).to_string();
+                let ext = p.extension().unwrap_or_default().to_string_lossy();
+                let original_filename = format!("{}.{}", clean, ext);
+                items.push(StartupItem {
+                    id: format!("folder|{}|{}", path, original_filename),
+                    name: clean,
+                    command: p.to_string_lossy().to_string(),
+                    location: label.to_string(),
+                    enabled: false,
+                });
             }
         }
     }
@@ -97,12 +90,10 @@ pub async fn get_startup_items() -> Result<Vec<StartupItem>, String> {
     let mut items = Vec::new();
 
     items.extend(scan_registry(
-        "HKCU",
         "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run",
         "HKCU\\Run",
     ));
     items.extend(scan_registry(
-        "HKLM",
         "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
         "HKLM\\Run",
     ));
@@ -121,7 +112,7 @@ pub async fn get_startup_items() -> Result<Vec<StartupItem>, String> {
         items.extend(scan_folder(&common_startup, "Startup Folder (Common)"));
     }
 
-    items.sort_by(|a, b| a.name.to_lowercase().cmp(&b.name.to_lowercase()));
+    items.sort_by_key(|a| a.name.to_lowercase());
     Ok(items)
 }
 
@@ -171,10 +162,10 @@ pub async fn toggle_startup_item(id: String, enabled: bool) -> Result<(), String
             }
         }
         "folder" => {
-            let name = parts[2];
-            let source = format!("{}\\{}.lnk", path, name);
+            let filename = parts[2];
+            let source = format!("{}\\{}", path, filename);
             let disabled_dir = format!("{}\\Disabled", path);
-            let disabled_target = format!("{}\\Disabled\\{}.lnk", path, name);
+            let disabled_target = format!("{}\\Disabled\\{}", path, filename);
 
             if enabled {
                 fs::rename(&disabled_target, &source)

@@ -94,9 +94,14 @@ pub async fn delete_schedule(db: State<'_, Database>, id: i64) -> Result<(), Str
         .query_row("SELECT name FROM schedules WHERE id = ?1", [id], |row| row.get(0))
         .map_err(|_| format!("Schedule not found: {}", id))?;
     let tn = task_name(&name);
-    let _ = cmd("schtasks")
+    let output = cmd("schtasks")
         .args(["/delete", "/tn", &tn, "/f"])
-        .output();
+        .output()
+        .map_err(|e| format!("schtasks failed: {}", e))?;
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        return Err(format!("Failed to delete scheduled task: {}", stderr.trim()));
+    }
     conn.execute("DELETE FROM schedules WHERE id = ?1", [id])
         .map_err(|e| e.to_string())?;
     Ok(())
@@ -110,9 +115,14 @@ pub async fn toggle_schedule(db: State<'_, Database>, id: i64, enabled: bool) ->
         .map_err(|_| format!("Schedule not found: {}", id))?;
     let tn = task_name(&name);
     let flag = if enabled { "/enable" } else { "/disable" };
-    let _ = cmd("schtasks")
+    let output = cmd("schtasks")
         .args(["/change", "/tn", &tn, flag])
-        .output();
+        .output()
+        .map_err(|e| format!("schtasks failed: {}", e))?;
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        return Err(format!("Failed to toggle scheduled task: {}", stderr.trim()));
+    }
     conn.execute(
         "UPDATE schedules SET enabled = ?1 WHERE id = ?2",
         rusqlite::params![enabled, id],
