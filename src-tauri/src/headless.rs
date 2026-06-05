@@ -33,17 +33,11 @@ fn junk_clean_headless() -> String {
         }
     }
 
-    // App caches
-    let app_caches = vec![
-        format!("{}\\Spotify", localappdata),
-        format!("{}\\Discord", localappdata),
-        format!("{}\\Microsoft\\Windows\\ShaderCache", localappdata),
-    ];
-    for loc in &app_caches {
-        let p = std::path::Path::new(loc);
-        if p.exists() {
-            let _ = std::fs::remove_dir_all(p);
-        }
+    // Shader cache
+    let shader_cache = format!("{}\\Microsoft\\Windows\\ShaderCache", localappdata);
+    let p = std::path::Path::new(&shader_cache);
+    if p.exists() {
+        let _ = std::fs::remove_dir_all(p);
     }
 
     let summary = format!("Headless junk clean: {} items, {} MB freed", removed, freed / (1024 * 1024));

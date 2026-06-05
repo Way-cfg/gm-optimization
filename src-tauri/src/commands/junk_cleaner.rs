@@ -25,8 +25,6 @@ fn get_junk_locations() -> Vec<(String, String, Vec<PathBuf>)> {
             PathBuf::from(&format!("{}\\System32\\winevt\\Logs", windir)),
         ]),
         ("app_caches".into(), "Application Caches".into(), vec![
-            PathBuf::from(&format!("{}\\Spotify", localappdata)),
-            PathBuf::from(&format!("{}\\Discord", localappdata)),
             PathBuf::from(&format!("{}\\Microsoft\\Windows\\ShaderCache", localappdata)),
         ]),
         ("windows_update".into(), "Windows Update Files".into(), vec![
