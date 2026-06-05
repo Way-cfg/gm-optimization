@@ -31,10 +31,10 @@ pub async fn collect_system_info() -> Result<SystemInfo, String> {
     ];
 
     // GPU
-    let gpu_name = run_pwsh("(Get-CimInstance Win32_VideoController).Name -join ', '");
-    let gpu_ram = run_pwsh("(Get-CimInstance Win32_VideoController).AdapterRAM | ForEach-Object { if ($_ -gt 1e9) { '{0:N1} GB' -f ($_ / 1e9) } else { '{0:N0} MB' -f ($_ / 1e6) } }");
-    let gpu_driver = run_pwsh("(Get-CimInstance Win32_VideoController).DriverVersion");
-    let gpu_res = run_pwsh("(Get-CimInstance Win32_VideoController).CurrentHorizontalResolution + 'x' + (Get-CimInstance Win32_VideoController).CurrentVerticalResolution");
+    let gpu_name = run_pwsh("$gpus = Get-CimInstance Win32_VideoController | Where-Object { $_.Name -notlike '*Microsoft*' -and $_.AdapterRAM -gt 0 }; ($gpus | ForEach-Object { $_.Name }) -join ', '");
+    let gpu_ram = run_pwsh("$gpus = Get-CimInstance Win32_VideoController | Where-Object { $_.Name -notlike '*Microsoft*' -and $_.AdapterRAM -gt 0 }; ($gpus | ForEach-Object { if ($_.AdapterRAM -gt 1e9) { '{0:N1} GB' -f ($_.AdapterRAM / 1e9) } else { '{0:N0} MB' -f ($_.AdapterRAM / 1e6) } }) -join ', '");
+    let gpu_driver = run_pwsh("$gpu = Get-CimInstance Win32_VideoController | Where-Object { $_.Name -notlike '*Microsoft*' -and $_.AdapterRAM -gt 0 } | Select-Object -First 1; if ($gpu) { $gpu.DriverVersion } else { '' }");
+    let gpu_res = run_pwsh("$gpu = Get-CimInstance Win32_VideoController | Where-Object { $_.Name -notlike '*Microsoft*' -and $_.AdapterRAM -gt 0 } | Select-Object -First 1; if ($gpu) { $gpu.CurrentHorizontalResolution.ToString() + 'x' + $gpu.CurrentVerticalResolution.ToString() } else { 'Unknown' }");
 
     let gpu = vec![
         InfoEntry { label: "GPU".into(), value: gpu_name },
