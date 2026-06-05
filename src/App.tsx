@@ -15,6 +15,7 @@ import JunkCleaner from "./pages/JunkCleaner";
 import Benchmark from "./pages/Benchmark";
 import Restore from "./pages/Restore";
 import Profiles from "./pages/Profiles";
+import StartupManager from "./pages/StartupManager";
 interface DriveSummary {
   letter: string;
   size: string;
@@ -65,6 +66,7 @@ export default function App() {
                 <Route path="benchmark" element={<Benchmark />} />
                 <Route path="restore" element={<Restore />} />
                 <Route path="profiles" element={<Profiles />} />
+                <Route path="startup" element={<StartupManager />} />
               </Route>
             </Routes>
           </ToastProvider>

@@ -8,7 +8,7 @@ import {
 } from 'framer-motion';
 import { useMemo, useRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Zap, SlidersHorizontal, Settings, Info, type LucideIcon } from 'lucide-react';
+import { LayoutDashboard, Zap, SlidersHorizontal, Settings, Info, Play, type LucideIcon } from 'lucide-react';
 import appLogo from "../assets/applogo.png";
 
 interface NavItem {
@@ -23,6 +23,7 @@ const navItems: NavItem[] = [
   { path: "/customize", label: "Customize", icon: SlidersHorizontal },
   { path: "/settings", label: "Settings", icon: Settings },
   { path: "/about", label: "About System", icon: Info },
+  { path: "/startup", label: "Startup", icon: Play },
 ];
 
 function DockItem({

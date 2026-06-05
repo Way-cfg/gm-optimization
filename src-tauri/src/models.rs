@@ -103,6 +103,15 @@ pub struct ProfileExport {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct StartupItem {
+    pub id: String,
+    pub name: String,
+    pub command: String,
+    pub location: String,
+    pub enabled: bool,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProfileImport {
     pub name: String,
     pub description: String,

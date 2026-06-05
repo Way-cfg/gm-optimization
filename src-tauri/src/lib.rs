@@ -93,6 +93,8 @@ pub fn run() {
             commands::profiles::export_profile,
             commands::profiles::import_profile,
             commands::tweaks::shutdown_system,
+            commands::startup::get_startup_items,
+            commands::startup::toggle_startup_item,
 
         ])
         .run(tauri::generate_context!())
