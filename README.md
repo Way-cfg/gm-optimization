@@ -1,4 +1,4 @@
-# GM Optimization
+# Optimization Way
 
 A Windows system optimization utility with deep registry and service configuration capabilities. Built with Tauri v2 for a native desktop experience with a modern React frontend.
 
@@ -84,7 +84,7 @@ src-tauri/            # Backend (Rust)
 
 ## Architecture
 
-GM Optimization uses a split-frontend architecture with Tauri v2 as the bridge:
+Optimization Way uses a split-frontend architecture with Tauri v2 as the bridge:
 
 1. **Frontend** (React) handles all UI rendering and user interaction via standard web technologies
 2. **Backend** (Rust) executes system-level operations — registry edits, PowerShell scripts, service management, file system access

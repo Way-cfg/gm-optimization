@@ -136,7 +136,7 @@ export const tweaks: TweakDefinition[] = [
     ],
     enableScript: [
       "if (-not (Get-ComputerRestorePoint)) { Enable-ComputerRestore -Drive $Env:SystemDrive }",
-      "Checkpoint-Computer -Description \"System Restore Point created by GM Optimization\" -RestorePointType MODIFY_SETTINGS",
+      "Checkpoint-Computer -Description \"System Restore Point created by Optimization Way\" -RestorePointType MODIFY_SETTINGS",
     ],
     disableScript: [],
   },

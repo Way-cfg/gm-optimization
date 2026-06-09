@@ -10,10 +10,10 @@ fn main() {
             .and_then(|i| args.get(i + 1))
             .map(|s| s.as_str());
         if let Some(t) = task {
-            gm_optimization_lib::headless::run_task(t);
+            optimization_way_lib::headless::run_task(t);
         }
         return;
     }
 
-    gm_optimization_lib::run();
+    optimization_way_lib::run();
 }

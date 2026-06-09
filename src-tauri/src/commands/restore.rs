@@ -3,7 +3,7 @@ use crate::util::cmd;
 
 #[tauri::command]
 pub async fn create_restore_point(label: String) -> Result<String, String> {
-    let desc = format!("'GM Optimization - {}'", label.replace('\'', ""));
+    let desc = format!("'Optimization Way - {}'", label.replace('\'', ""));
     let ps = format!(
         "Checkpoint-Computer -Description {} -RestorePointType MODIFY_SETTINGS",
         desc
