@@ -63,7 +63,7 @@ export default function ProgressBar({ current, total, label, compact }: Progress
       </div>
       <div className="w-full h-[3px] bg-white/[0.06] rounded-full overflow-hidden">
         <div
-          className="h-full bg-white/30 rounded-full transition-all duration-500 ease-out"
+          className="h-full bg-neon/60 rounded-full transition-all duration-500 ease-out"
           style={{ width: `${pct}%` }}
         />
       </div>
