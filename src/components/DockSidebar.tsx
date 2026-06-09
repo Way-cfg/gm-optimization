@@ -126,7 +126,7 @@ export default function DockSidebar() {
         </nav>
 
         <div className="mt-auto px-3 shrink-0">
-          <span className="text-[10px] text-white/15 font-mono">v0.1.1</span>
+          <span className="text-[10px] text-white/15 font-mono">v0.1.2</span>
         </div>
       </motion.div>
     </aside>
