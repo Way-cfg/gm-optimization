@@ -7,7 +7,7 @@ use tauri::State;
 
 #[tauri::command]
 pub async fn run_disk_benchmark() -> Result<BenchmarkResult, String> {
-    let temp_file = std::env::temp_dir().join("opt_way_bench.tmp");
+    let temp_file = std::env::temp_dir().join("gm_opt_bench.tmp");
     let size_mb = 512u64;
     let size_bytes = size_mb * 1024 * 1024;
     let buffer = vec![0u8; 65536];

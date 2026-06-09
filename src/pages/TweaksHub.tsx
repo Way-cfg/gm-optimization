@@ -256,7 +256,7 @@ export default function TweaksHub() {
               ) : (
                 <>
                   <Sparkles size={15} strokeWidth={1.5} />
-                  Run Optimization Way Engine
+                  Run GM Optimization Engine
                   <span className="text-[11px] text-neon/40 font-normal">({selected.size})</span>
                 </>
               )}

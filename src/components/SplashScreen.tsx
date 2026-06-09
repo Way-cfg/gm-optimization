@@ -31,7 +31,7 @@ function SpinnerRing() {
       </svg>
       <motion.img
         src={appLogo}
-        alt="Optimization Way"
+        alt="GM Optimization"
         className="h-24 w-auto"
         initial={{ opacity: 0, scale: 0.85 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -82,7 +82,7 @@ export default function SplashScreen({ loading }: { loading: boolean }) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.5, ease: "easeOut" }}
               >
-                Optimization Way
+                GM Optimization
               </motion.p>
               <motion.p
                 className="text-[11px] text-white/20 tracking-[0.15em] uppercase"

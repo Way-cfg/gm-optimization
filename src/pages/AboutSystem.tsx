@@ -75,7 +75,7 @@ export default function AboutSystem() {
           <div className="text-[11px] text-white/20 uppercase tracking-widest mb-4">Application</div>
           <div className="space-y-2">
             {[
-              { label: "App", value: "Optimization Way" },
+              { label: "App", value: "GM Optimization" },
               { label: "Version", value: "0.1.0" },
               { label: "Platform", value: "Windows (x64)" },
               { label: "Framework", value: "Tauri 2 + React 19" },

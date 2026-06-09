@@ -5,13 +5,13 @@ use chrono::Local;
 use tauri::State;
 
 fn task_name(name: &str) -> String {
-    format!("OptimizationWay-{}", name)
+    format!("GmOptimization-{}", name)
 }
 
 fn exe_path() -> String {
     std::env::current_exe()
         .map(|p| p.to_string_lossy().to_string())
-        .unwrap_or_else(|_| "optimization-way.exe".into())
+        .unwrap_or_else(|_| "gm-optimization.exe".into())
 }
 
 fn build_schtasks_args(

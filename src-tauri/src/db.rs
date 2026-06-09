@@ -47,7 +47,7 @@ fn create_tables(conn: &Connection) -> Result<()> {
 }
 
 fn get_db_path(app_dir: &Path) -> std::path::PathBuf {
-    app_dir.join("optimization_way.db")
+    app_dir.join("gm_optimization.db")
 }
 
 pub fn initialize_database(app_handle: &tauri::AppHandle) -> Result<Database> {
@@ -68,7 +68,7 @@ pub fn initialize_database_headless() -> Result<Database> {
     let app_dir = std::env::var("APPDATA")
         .map(std::path::PathBuf::from)
         .unwrap_or_else(|_| std::path::PathBuf::from(r"C:\ProgramData"))
-        .join("com.optimization-way.optimizer");
+        .join("com.gm-optimization.optimizer");
     std::fs::create_dir_all(&app_dir).expect("Failed to create app data dir");
     let db_path = get_db_path(&app_dir);
     let conn = Connection::open(db_path)?;

@@ -100,7 +100,7 @@ export default function DockSidebar() {
         className="h-full flex flex-col items-center bg-frosted/80 backdrop-blur-xl border-r border-white/[0.04] py-4 overflow-hidden"
       >
         <div className="flex items-center justify-center mb-6 px-3 shrink-0">
-          <img src={appLogo} alt="Optimization Way" className="h-12 w-auto" />
+          <img src={appLogo} alt="GM Optimization" className="h-12 w-auto" />
         </div>
 
         <nav className="flex flex-col items-center gap-3 flex-1">

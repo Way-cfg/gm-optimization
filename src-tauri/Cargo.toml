@@ -1,12 +1,12 @@
 [package]
-name = "optimization-way"
+name = "gm-optimization"
 version = "0.1.0"
-description = "Optimization Way — Windows System Utility"
-authors = ["Optimization Way Contributors"]
+description = "GM Optimization — Windows System Utility"
+authors = ["GM Optimization Contributors"]
 edition = "2021"
 
 [lib]
-name = "optimization_way_lib"
+name = "gm_optimization_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]

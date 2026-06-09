@@ -51,7 +51,7 @@ pub async fn export_profile(db: State<'_, Database>) -> Result<String, String> {
     let profile = ProfileExport {
         version: 1,
         name: "Optimization Profile".into(),
-        description: "Exported from Optimization Way".into(),
+        description: "Exported from GM Optimization".into(),
         created_at: Utc::now().format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
         tweaks,
         network_tweaks,
