@@ -23,7 +23,7 @@ export function RingSpinner({ size = 32, strokeWidth = 3 }: RingSpinnerProps) {
           cy={size / 2}
           r={r}
           fill="none"
-          stroke="rgba(255,255,255,0.35)"
+          stroke="rgba(255,85,0,0.5)"
           strokeWidth={strokeWidth}
           strokeLinecap="round"
           strokeDasharray={circumference}
